@@ -240,13 +240,12 @@ struct TransactionFilterBar: View {
                 }
             }
             .labelsHidden()
-            .frame(width: 150)
+            .fixedSize()
             
             if let onAdd = onAddTransaction {
                 Button(action: onAdd) {
-                    Image(systemName: "plus")
+                    Label("Add", systemImage: "plus")
                 }
-                .buttonStyle(.bordered)
             }
         }
         .padding(.horizontal)
