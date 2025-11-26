@@ -336,6 +336,8 @@ struct SetupWizardView: View {
                 .foregroundStyle(.secondary)
                 .frame(width: 24)
             
+            Text(accountInfo.accountType.localizedName)
+            
             Spacer()
             
             // Show balance input only for assets and liabilities

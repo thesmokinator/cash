@@ -322,9 +322,9 @@ final class Account {
         balance
     }
     
-    /// Returns the display name - uses localized type name
+    /// Returns the display name - uses account name
     var displayName: String {
-        accountType.localizedName
+        name
     }
     
     init(
@@ -352,64 +352,15 @@ final class Account {
 
 struct ChartOfAccounts {
     /// Creates a default set of accounts for a new user
+    /// Creates a default set of accounts with localized names
     static func createDefaultAccounts(currency: String = "EUR") -> [Account] {
-        var accounts: [Account] = []
-        
-        // System equity account for opening balances
-        accounts.append(Account(
-            name: "Opening Balance Equity",
-            accountNumber: "",
-            currency: currency,
-            accountClass: .equity,
-            accountType: .openingBalance,
-            isSystem: true
-        ))
-        
-        // Default asset accounts
-        accounts.append(Account(
-            name: "Cash",
-            accountNumber: "",
-            currency: currency,
-            accountClass: .asset,
-            accountType: .cash
-        ))
-        
-        accounts.append(Account(
-            name: "Bank Account",
-            accountNumber: "",
-            currency: currency,
-            accountClass: .asset,
-            accountType: .bank
-        ))
-        
-        // Default liability account
-        accounts.append(Account(
-            name: "Credit Card",
-            accountNumber: "",
-            currency: currency,
-            accountClass: .liability,
-            accountType: .creditCard
-        ))
-        
-        // Default income accounts
-        accounts.append(Account(
-            name: "Salary",
-            accountNumber: "",
-            currency: currency,
-            accountClass: .income,
-            accountType: .salary
-        ))
-        
-        accounts.append(Account(
-            name: "Other Income",
-            accountNumber: "",
-            currency: currency,
-            accountClass: .income,
-            accountType: .otherIncome
-        ))
-        
-        // Default expense accounts
-        let expenseTypes: [AccountType] = [
+        let defaultTypes: [AccountType] = [
+            .openingBalance,
+            .cash,
+            .bank,
+            .creditCard,
+            .salary,
+            .otherIncome,
             .food,
             .transportation,
             .utilities,
@@ -421,16 +372,15 @@ struct ChartOfAccounts {
             .otherExpense,
         ]
         
-        for type in expenseTypes {
-            accounts.append(Account(
-                name: type.rawValue,
+        return defaultTypes.map { type in
+            Account(
+                name: type.localizedName,
                 accountNumber: "",
                 currency: currency,
-                accountClass: .expense,
-                accountType: type
-            ))
+                accountClass: type.accountClass,
+                accountType: type,
+                isSystem: type == .openingBalance
+            )
         }
-        
-        return accounts
     }
 }
