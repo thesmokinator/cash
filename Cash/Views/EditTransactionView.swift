@@ -20,6 +20,8 @@ struct EditTransactionView: View {
     @State private var amountText: String = ""
     @State private var selectedDebitAccount: Account?
     @State private var selectedCreditAccount: Account?
+    @State private var newAttachments: [AttachmentData] = []
+    @State private var attachmentsToDelete: Set<UUID> = []
     
     @State private var showingValidationError = false
     @State private var validationMessage: LocalizedStringKey = ""
@@ -41,6 +43,10 @@ struct EditTransactionView: View {
         guard selectedDebitAccount != nil && selectedCreditAccount != nil else { return false }
         guard selectedDebitAccount?.id != selectedCreditAccount?.id else { return false }
         return true
+    }
+    
+    private var existingAttachments: [Attachment] {
+        (transaction.attachments ?? []).filter { !attachmentsToDelete.contains($0.id) }
     }
     
     init(transaction: Transaction) {
@@ -75,6 +81,26 @@ struct EditTransactionView: View {
                 Section("Description") {
                     TextEditor(text: $descriptionText)
                         .frame(minHeight: 80)
+                }
+                
+                Section("Attachments") {
+                    if !existingAttachments.isEmpty || !newAttachments.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 12) {
+                                ForEach(existingAttachments) { attachment in
+                                    ExistingAttachmentView(attachment: attachment) {
+                                        attachmentsToDelete.insert(attachment.id)
+                                    }
+                                }
+                                ForEach(newAttachments) { attachment in
+                                    AttachmentThumbnail(attachment: attachment, onTap: {}, onDelete: {
+                                        newAttachments.removeAll { $0.id == attachment.id }
+                                    })
+                                }
+                            }
+                        }
+                    }
+                    AttachmentPickerView(attachments: $newAttachments)
                 }
                 
                 Section {
@@ -133,6 +159,24 @@ struct EditTransactionView: View {
         if let creditEntry = transaction.creditEntry {
             creditEntry.amount = amount
             creditEntry.account = creditAccount
+        }
+        
+        // Delete removed attachments
+        for attachmentId in attachmentsToDelete {
+            if let attachment = (transaction.attachments ?? []).first(where: { $0.id == attachmentId }) {
+                modelContext.delete(attachment)
+            }
+        }
+        
+        // Add new attachments
+        for attachmentData in newAttachments {
+            let attachment = Attachment(
+                filename: attachmentData.filename,
+                mimeType: attachmentData.mimeType,
+                data: attachmentData.data
+            )
+            attachment.transaction = transaction
+            modelContext.insert(attachment)
         }
         
         dismiss()

@@ -45,6 +45,7 @@ struct AddTransactionView: View {
     @State private var date: Date = Date()
     @State private var descriptionText: String = ""
     @State private var amountText: String = ""
+    @State private var attachments: [AttachmentData] = []
     
     @State private var selectedExpenseAccount: Account?
     @State private var selectedPaymentAccount: Account?
@@ -123,6 +124,10 @@ struct AddTransactionView: View {
                 Section("Description") {
                     TextEditor(text: $descriptionText)
                         .frame(minHeight: 80)
+                }
+                
+                Section("Attachments") {
+                    AttachmentPickerView(attachments: $attachments)
                 }
                 
                 Section {
@@ -216,6 +221,7 @@ struct AddTransactionView: View {
         }
         
         let description = descriptionText.trimmingCharacters(in: .whitespacesAndNewlines)
+        var transaction: Transaction?
         
         switch transactionType {
         case .expense:
@@ -223,7 +229,7 @@ struct AddTransactionView: View {
                 showValidationError()
                 return
             }
-            _ = TransactionBuilder.createExpense(
+            transaction = TransactionBuilder.createExpense(
                 date: date,
                 description: description.isEmpty ? expenseAccount.name : description,
                 amount: amount,
@@ -238,7 +244,7 @@ struct AddTransactionView: View {
                 showValidationError()
                 return
             }
-            _ = TransactionBuilder.createIncome(
+            transaction = TransactionBuilder.createIncome(
                 date: date,
                 description: description.isEmpty ? incomeAccount.name : description,
                 amount: amount,
@@ -253,7 +259,7 @@ struct AddTransactionView: View {
                 showValidationError()
                 return
             }
-            _ = TransactionBuilder.createTransfer(
+            transaction = TransactionBuilder.createTransfer(
                 date: date,
                 description: description.isEmpty ? "Transfer" : description,
                 amount: amount,
@@ -262,6 +268,19 @@ struct AddTransactionView: View {
                 reference: "",
                 context: modelContext
             )
+        }
+        
+        // Save attachments
+        if let transaction = transaction {
+            for attachmentData in attachments {
+                let attachment = Attachment(
+                    filename: attachmentData.filename,
+                    mimeType: attachmentData.mimeType,
+                    data: attachmentData.data
+                )
+                attachment.transaction = transaction
+                modelContext.insert(attachment)
+            }
         }
         
         dismiss()

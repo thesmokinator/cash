@@ -54,6 +54,9 @@ final class Transaction {
     @Relationship(deleteRule: .cascade, inverse: \Entry.transaction)
     var entries: [Entry]? = []
     
+    @Relationship(deleteRule: .cascade, inverse: \Attachment.transaction)
+    var attachments: [Attachment]? = []
+    
     /// Total amount of debit entries
     var totalDebits: Decimal {
         (entries ?? [])

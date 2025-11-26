@@ -125,6 +125,16 @@
         }
       }
     },
+    "Add Attachment" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi Allegato"
+          }
+        }
+      }
+    },
     "Add Transaction" : {
       "localizations" : {
         "it" : {
@@ -171,6 +181,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importo"
+          }
+        }
+      }
+    },
+    "Attachments" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allegati"
           }
         }
       }
@@ -665,17 +685,6 @@
         }
       }
     },
-    "Enter the transaction amount" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inserisci l'importo della transazione"
-          }
-        }
-      }
-    },
     "Entertainment" : {
       "localizations" : {
         "it" : {
@@ -1102,6 +1111,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Spesa Anticipata"
+          }
+        }
+      }
+    },
+    "Preview Unavailable" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima Non Disponibile"
           }
         }
       }

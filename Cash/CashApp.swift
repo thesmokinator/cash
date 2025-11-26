@@ -17,6 +17,7 @@ struct CashApp: App {
             Account.self,
             Transaction.self,
             Entry.self,
+            Attachment.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

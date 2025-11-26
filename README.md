@@ -51,22 +51,6 @@ To add a new language, edit `Localizable.xcstrings` in Xcode.
 
 All data is stored locally using SwiftData.
 
-### Data Models
-- **Account**: Chart of accounts with double-entry bookkeeping support
-- **Transaction**: Journal entries with debit/credit entries
-- **Entry**: Individual debit or credit line items
-
-## Roadmap
-
-- [ ] Budget planning and tracking
-- [ ] Financial reports and charts
-- [ ] Transaction import (CSV, OFX)
-- [ ] Multiple currency conversion
-- [ ] Split transactions
-- [ ] Tags and notes
-- [ ] Export data
-- [ ] iCloud sync
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
