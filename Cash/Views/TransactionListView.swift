@@ -10,6 +10,7 @@ import SwiftData
 
 struct TransactionListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppSettings.self) private var settings
     @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
     @State private var showingAddTransaction = false
     @State private var transactionToEdit: Transaction?
@@ -19,7 +20,9 @@ struct TransactionListView: View {
     
     private var filteredTransactions: [Transaction] {
         if let account {
-            return transactions.filter { $0.account?.id == account.id }
+            return transactions.filter { transaction in
+                (transaction.entries ?? []).contains { $0.account?.id == account.id }
+            }
         }
         return transactions
     }
@@ -34,21 +37,24 @@ struct TransactionListView: View {
     var body: some View {
         Group {
             if filteredTransactions.isEmpty {
-                ContentUnavailableView {
-                    Label(String(localized: "No Transactions"), systemImage: "arrow.left.arrow.right")
-                } description: {
-                    Text("Add your first transaction to track your finances.")
-                } actions: {
-                    Button(String(localized: "Add Transaction")) {
-                        showingAddTransaction = true
+                VStack {
+                    ContentUnavailableView {
+                        Label("No Transactions", systemImage: "arrow.left.arrow.right")
+                    } description: {
+                        Text("Add your first transaction to track your finances.")
+                    } actions: {
+                        Button("Add Transaction") {
+                            showingAddTransaction = true
+                        }
                     }
+                    Spacer()
                 }
             } else {
                 List {
                     ForEach(groupedTransactions, id: \.0) { dateString, dayTransactions in
                         Section(dateString) {
                             ForEach(dayTransactions) { transaction in
-                                TransactionRowView(transaction: transaction, showAccount: account == nil)
+                                TransactionRowView(transaction: transaction, highlightAccount: account)
                                     .contentShape(Rectangle())
                                     .onTapGesture {
                                         transactionToEdit = transaction
@@ -57,13 +63,13 @@ struct TransactionListView: View {
                                         Button {
                                             transactionToEdit = transaction
                                         } label: {
-                                            Label(String(localized: "Edit"), systemImage: "pencil")
+                                            Label("Edit", systemImage: "pencil")
                                         }
                                         
                                         Button(role: .destructive) {
                                             transactionToDelete = transaction
                                         } label: {
-                                            Label(String(localized: "Delete"), systemImage: "trash")
+                                            Label("Delete", systemImage: "trash")
                                         }
                                     }
                             }
@@ -80,7 +86,7 @@ struct TransactionListView: View {
             if account == nil {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: { showingAddTransaction = true }) {
-                        Label(String(localized: "Add Transaction"), systemImage: "plus")
+                        Label("Add Transaction", systemImage: "plus")
                     }
                 }
             }
@@ -92,24 +98,25 @@ struct TransactionListView: View {
             EditTransactionView(transaction: transaction)
         }
         .confirmationDialog(
-            String(localized: "Delete Transaction"),
+            "Delete Transaction",
             isPresented: Binding(
                 get: { transactionToDelete != nil },
                 set: { if !$0 { transactionToDelete = nil } }
             ),
             titleVisibility: .visible
         ) {
-            Button(String(localized: "Delete"), role: .destructive) {
+            Button("Delete", role: .destructive) {
                 if let transaction = transactionToDelete {
                     deleteTransaction(transaction)
                 }
             }
-            Button(String(localized: "Cancel"), role: .cancel) {
+            Button("Cancel", role: .cancel) {
                 transactionToDelete = nil
             }
         } message: {
             Text("Are you sure you want to delete this transaction?")
         }
+        .id(settings.refreshID)
     }
     
     private func deleteTransactions(from dayTransactions: [Transaction], at offsets: IndexSet) {
@@ -123,9 +130,6 @@ struct TransactionListView: View {
     
     private func deleteTransaction(_ transaction: Transaction) {
         withAnimation {
-            if let account = transaction.account {
-                account.balance -= transaction.signedAmount
-            }
             modelContext.delete(transaction)
         }
     }
@@ -133,52 +137,98 @@ struct TransactionListView: View {
 
 struct TransactionRowView: View {
     let transaction: Transaction
-    var showAccount: Bool = true
+    var highlightAccount: Account? = nil
     
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: CategoryList.icon(for: transaction.category))
+            transactionIcon
                 .font(.title2)
-                .foregroundColor(transaction.transactionType == .income ? .green : .red)
                 .frame(width: 32)
             
             VStack(alignment: .leading, spacing: 2) {
-                Text(transaction.descriptionText.isEmpty ? transaction.category : transaction.descriptionText)
+                Text(transaction.descriptionText.isEmpty ? transactionSummary : transaction.descriptionText)
                     .font(.headline)
                 
                 HStack(spacing: 4) {
-                    Text(transaction.category)
+                    Text(accountsSummary)
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    
-                    if showAccount, let account = transaction.account {
-                        Text("•")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Text(account.name)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
+                        .lineLimit(1)
                 }
             }
             
             Spacer()
             
-            Text(formatAmount(transaction))
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(transaction.transactionType == .income ? .green : .red)
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(formatAmount(transaction.amount))
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                
+                if let highlight = highlightAccount {
+                    if let entry = (transaction.entries ?? []).first(where: { $0.account?.id == highlight.id }) {
+                        Text(entry.entryType.shortName)
+                            .font(.caption2)
+                            .foregroundStyle(entry.entryType == .debit ? .blue : .green)
+                    }
+                }
+            }
         }
         .padding(.vertical, 4)
     }
     
-    private func formatAmount(_ transaction: Transaction) -> String {
+    private var transactionIcon: some View {
+        let entries = transaction.entries ?? []
+        let hasExpense = entries.contains { $0.account?.accountClass == .expense }
+        let hasIncome = entries.contains { $0.account?.accountClass == .income }
+        
+        let iconName: String
+        let color: Color
+        
+        if hasExpense {
+            iconName = entries.first { $0.account?.accountClass == .expense }?.account?.accountType.iconName ?? "arrow.up.circle.fill"
+            color = .red
+        } else if hasIncome {
+            iconName = entries.first { $0.account?.accountClass == .income }?.account?.accountType.iconName ?? "arrow.down.circle.fill"
+            color = .green
+        } else {
+            iconName = "arrow.left.arrow.right.circle.fill"
+            color = .blue
+        }
+        
+        return Image(systemName: iconName)
+            .foregroundColor(color)
+    }
+    
+    private var transactionSummary: String {
+        let entries = transaction.entries ?? []
+        let expenseAccount = entries.first { $0.account?.accountClass == .expense }?.account
+        let incomeAccount = entries.first { $0.account?.accountClass == .income }?.account
+        
+        if let expense = expenseAccount {
+            return expense.name
+        } else if let income = incomeAccount {
+            return income.name
+        } else {
+            return String(localized: "Transfer")
+        }
+    }
+    
+    private var accountsSummary: String {
+        let entries = transaction.entries ?? []
+        let debitAccount = entries.first { $0.entryType == .debit }?.account
+        let creditAccount = entries.first { $0.entryType == .credit }?.account
+        
+        if let debit = debitAccount, let credit = creditAccount {
+            return "\(credit.name) → \(debit.name)"
+        }
+        return ""
+    }
+    
+    private func formatAmount(_ amount: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.currencyCode = transaction.account?.currency ?? "EUR"
-        let prefix = transaction.transactionType == .income ? "+" : "-"
-        let formatted = formatter.string(from: transaction.amount as NSDecimalNumber) ?? "\(transaction.amount)"
-        return "\(prefix)\(formatted)"
+        formatter.currencyCode = "EUR"
+        return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
 }
 
@@ -187,4 +237,5 @@ struct TransactionRowView: View {
         TransactionListView()
     }
     .modelContainer(for: Account.self, inMemory: true)
+    .environment(AppSettings.shared)
 }

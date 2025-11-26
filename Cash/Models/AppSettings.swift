@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AppKit
 
 enum AppTheme: String, CaseIterable, Identifiable {
     case system = "system"
@@ -77,6 +78,30 @@ enum AppLanguage: String, CaseIterable, Identifiable {
             return "flag.fill"
         }
     }
+    
+    var locale: Locale {
+        switch self {
+        case .system:
+            return .current
+        case .english:
+            return Locale(identifier: "en")
+        case .italian:
+            return Locale(identifier: "it")
+        }
+    }
+    
+    var bundle: Bundle {
+        switch self {
+        case .system:
+            return .main
+        case .english, .italian:
+            guard let path = Bundle.main.path(forResource: rawValue, ofType: "lproj"),
+                  let bundle = Bundle(path: path) else {
+                return .main
+            }
+            return bundle
+        }
+    }
 }
 
 @Observable
@@ -95,9 +120,12 @@ final class AppSettings {
     var language: AppLanguage {
         didSet {
             UserDefaults.standard.set(language.rawValue, forKey: languageKey)
-            applyLanguage()
+            refreshID = UUID()
         }
     }
+    
+    // Used to force UI refresh when language changes
+    var refreshID = UUID()
     
     private init() {
         if let themeRaw = UserDefaults.standard.string(forKey: themeKey),
@@ -115,11 +143,14 @@ final class AppSettings {
         }
     }
     
-    private func applyLanguage() {
-        if language == .system {
-            UserDefaults.standard.removeObject(forKey: "AppleLanguages")
-        } else {
-            UserDefaults.standard.set([language.rawValue], forKey: "AppleLanguages")
-        }
+    func restartApp() {
+        let url = URL(fileURLWithPath: Bundle.main.resourcePath!)
+        let path = url.deletingLastPathComponent().deletingLastPathComponent().absoluteString
+        let task = Process()
+        task.launchPath = "/usr/bin/open"
+        task.arguments = [path]
+        task.launch()
+        
+        NSApp.terminate(nil)
     }
 }

@@ -6,19 +6,21 @@
 //
 
 import SwiftUI
+import SwiftData
+import AppKit
 
 struct SettingsView: View {
     @Environment(AppSettings.self) private var settings
-    @State private var showingRestartAlert = false
-    @State private var showingCategories = false
-    @State private var showingRecurring = false
+    @Environment(\.modelContext) private var modelContext
+    @State private var showingFirstResetAlert = false
+    @State private var showingSecondResetAlert = false
     
     var body: some View {
         @Bindable var settings = settings
         
         Form {
             Section {
-                Picker(String(localized: "Theme"), selection: $settings.theme) {
+                Picker("Theme", selection: $settings.theme) {
                     ForEach(AppTheme.allCases) { theme in
                         Label(theme.localizedName, systemImage: theme.iconName)
                             .tag(theme)
@@ -26,96 +28,83 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.inline)
             } header: {
-                Label(String(localized: "Appearance"), systemImage: "paintbrush.fill")
+                Label("Appearance", systemImage: "paintbrush.fill")
             } footer: {
                 Text("Choose how Cash looks. System follows your macOS appearance settings.")
             }
             
             Section {
-                Picker(String(localized: "Language"), selection: $settings.language) {
+                Picker("Language", selection: $settings.language) {
                     ForEach(AppLanguage.allCases) { language in
                         Label(language.localizedName, systemImage: language.iconName)
                             .tag(language)
                     }
                 }
                 .pickerStyle(.inline)
-                .onChange(of: settings.language) {
-                    showingRestartAlert = true
-                }
             } header: {
-                Label(String(localized: "Language"), systemImage: "globe")
-            } footer: {
-                Text("Language changes require restarting the app to take full effect.")
+                Label("Language", systemImage: "globe")
             }
             
             Section {
-                Button(action: { showingCategories = true }) {
-                    HStack {
-                        Label(String(localized: "Manage Categories"), systemImage: "tag")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.secondary)
-                    }
+                Button(role: .destructive) {
+                    showingFirstResetAlert = true
+                } label: {
+                    Label("Reset All Data", systemImage: "trash.fill")
                 }
-                .buttonStyle(.plain)
-                
-                Button(action: { showingRecurring = true }) {
-                    HStack {
-                        Label(String(localized: "Recurring Transactions"), systemImage: "repeat")
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .buttonStyle(.plain)
             } header: {
-                Label(String(localized: "Data"), systemImage: "folder.fill")
+                Label("Data", systemImage: "externaldrive.fill")
+            } footer: {
+                Text("This will delete all accounts and transactions and restart the app.")
             }
             
             Section {
                 HStack {
-                    Text(String(localized: "Version"))
+                    Text("Version")
                     Spacer()
                     Text("1.0.0")
                         .foregroundStyle(.secondary)
                 }
             } header: {
-                Label(String(localized: "About"), systemImage: "info.circle.fill")
+                Label("About", systemImage: "info.circle.fill")
             }
         }
         .formStyle(.grouped)
-        .navigationTitle(String(localized: "Settings"))
-        .alert(String(localized: "Restart Required"), isPresented: $showingRestartAlert) {
-            Button(String(localized: "OK"), role: .cancel) { }
+        .navigationTitle("Settings")
+        .id(settings.refreshID)
+        .alert("Reset All Data?", isPresented: $showingFirstResetAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Continue", role: .destructive) {
+                showingSecondResetAlert = true
+            }
         } message: {
-            Text("Please restart the app for the language change to take effect.")
+            Text("This will permanently delete all your accounts and transactions. This action cannot be undone.")
         }
-        .sheet(isPresented: $showingCategories) {
-            NavigationStack {
-                CategoryListView()
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(String(localized: "Done")) {
-                                showingCategories = false
-                            }
-                        }
-                    }
+        .alert("Are you absolutely sure?", isPresented: $showingSecondResetAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete Everything", role: .destructive) {
+                resetAllData()
             }
-            .frame(minWidth: 500, minHeight: 500)
+        } message: {
+            Text("All data will be permanently deleted and the app will restart.")
         }
-        .sheet(isPresented: $showingRecurring) {
-            NavigationStack {
-                RecurringTransactionListView()
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) {
-                            Button(String(localized: "Done")) {
-                                showingRecurring = false
-                            }
-                        }
-                    }
-            }
-            .frame(minWidth: 600, minHeight: 500)
+    }
+    
+    private func resetAllData() {
+        // Delete all data
+        do {
+            try modelContext.delete(model: Entry.self)
+            try modelContext.delete(model: Transaction.self)
+            try modelContext.delete(model: Account.self)
+            try modelContext.save()
+        } catch {
+            print("Error deleting data: \(error)")
         }
+        
+        // Reset first launch flag
+        UserDefaults.standard.removeObject(forKey: "hasLaunchedBefore")
+        
+        // Restart the app
+        settings.restartApp()
     }
 }
 

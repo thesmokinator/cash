@@ -10,7 +10,8 @@ import SwiftData
 
 struct AccountListView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Account.name) private var accounts: [Account]
+    @Environment(AppSettings.self) private var settings
+    @Query(sort: \Account.accountNumber) private var accounts: [Account]
     @State private var showingAddAccount = false
     @State private var selectedAccount: Account?
     
@@ -19,19 +20,15 @@ struct AccountListView: View {
             List(selection: $selectedAccount) {
                 if accounts.isEmpty {
                     ContentUnavailableView {
-                        Label(String(localized: "No Accounts"), systemImage: "building.columns")
+                        Label("No Accounts", systemImage: "building.columns")
                     } description: {
                         Text("Create your first account to get started.")
-                    } actions: {
-                        Button(String(localized: "Add Account")) {
-                            showingAddAccount = true
-                        }
                     }
                 } else {
-                    ForEach(AccountType.allCases) { accountType in
-                        let filteredAccounts = accounts.filter { $0.accountType == accountType }
+                    ForEach(AccountClass.allCases.sorted(by: { $0.displayOrder < $1.displayOrder })) { accountClass in
+                        let filteredAccounts = accounts.filter { $0.accountClass == accountClass && $0.isActive && !$0.isSystem }
                         if !filteredAccounts.isEmpty {
-                            Section(accountType.localizedName) {
+                            Section(accountClass.localizedPluralName) {
                                 ForEach(filteredAccounts) { account in
                                     AccountRowView(account: account)
                                         .tag(account)
@@ -44,24 +41,25 @@ struct AccountListView: View {
                     }
                 }
             }
-            .navigationTitle(String(localized: "Accounts"))
-            .navigationSplitViewColumnWidth(min: 250, ideal: 300)
+            .navigationTitle("Chart of Accounts")
+            .navigationSplitViewColumnWidth(min: 280, ideal: 320)
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: { showingAddAccount = true }) {
-                        Label(String(localized: "Add Account"), systemImage: "plus")
+                        Label("Add Account", systemImage: "plus")
                     }
                 }
             }
             .sheet(isPresented: $showingAddAccount) {
                 AddAccountView()
             }
+            .id(settings.refreshID)
         } detail: {
             if let account = selectedAccount {
                 AccountDetailView(account: account)
             } else {
                 ContentUnavailableView {
-                    Label(String(localized: "Select an Account"), systemImage: "building.columns")
+                    Label("Select an Account", systemImage: "building.columns")
                 } description: {
                     Text("Choose an account from the sidebar to view details.")
                 }
@@ -73,7 +71,9 @@ struct AccountListView: View {
         withAnimation {
             for index in offsets {
                 let account = filteredAccounts[index]
-                modelContext.delete(account)
+                if !account.isSystem {
+                    modelContext.delete(account)
+                }
             }
         }
     }
@@ -89,11 +89,15 @@ struct AccountRowView: View {
                 .frame(width: 24)
             
             VStack(alignment: .leading, spacing: 2) {
-                Text(account.name)
-                    .font(.headline)
-                Text(account.accountNumber)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack {
+                    Text(account.displayName)
+                        .font(.headline)
+                    if account.isSystem {
+                        Image(systemName: "lock.fill")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
             
             Spacer()
@@ -101,8 +105,27 @@ struct AccountRowView: View {
             Text(formatBalance(account.balance, currency: account.currency))
                 .font(.subheadline)
                 .fontWeight(.medium)
+                .foregroundColor(balanceColor(for: account))
         }
         .padding(.vertical, 4)
+    }
+    
+    private func balanceColor(for account: Account) -> Color {
+        if account.balance == 0 {
+            return .secondary
+        }
+        switch account.accountClass {
+        case .asset:
+            return account.balance >= 0 ? .primary : .red
+        case .liability:
+            return .primary
+        case .income:
+            return .green
+        case .expense:
+            return .red
+        case .equity:
+            return .primary
+        }
     }
     
     private func formatBalance(_ balance: Decimal, currency: String) -> String {
@@ -116,4 +139,5 @@ struct AccountRowView: View {
 #Preview {
     AccountListView()
         .modelContainer(for: Account.self, inMemory: true)
+        .environment(AppSettings.shared)
 }

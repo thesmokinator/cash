@@ -24,23 +24,37 @@ open Cash.xcodeproj
 
 3. Build and run the project (⌘R)
 
+## Development
+
+### Resetting the Data Store
+
+If you need to reset the application data (e.g., after schema changes during development), delete the SwiftData store:
+
+```bash
+rm -rf ~/Library/Application\ Support/Cash
+rm -rf ~/Library/Containers/com.thesmokinator.Cash/Data/Library/Application\ Support/Cash
+```
+
+Then restart the application. The setup wizard will appear to create new default accounts.
+
 ## Localization
 
 Cash is fully localized in:
 - 🇬🇧 English
 - 🇮🇹 Italian
 
+Language can be changed on-the-fly in Settings without restarting the app.
+
 To add a new language, edit `Localizable.xcstrings` in Xcode.
 
 ## Data Persistence
 
-All data is stored locally using SwiftData with automatic iCloud sync.
+All data is stored locally using SwiftData.
 
 ### Data Models
-- **Account**: Stores account information and balances
-- **Transaction**: Individual income/expense records
-- **RecurringTransaction**: Recurring transaction templates
-- **Category**: Custom category definitions
+- **Account**: Chart of accounts with double-entry bookkeeping support
+- **Transaction**: Journal entries with debit/credit entries
+- **Entry**: Individual debit or credit line items
 
 ## Roadmap
 
@@ -51,6 +65,7 @@ All data is stored locally using SwiftData with automatic iCloud sync.
 - [ ] Split transactions
 - [ ] Tags and notes
 - [ ] Export data
+- [ ] iCloud sync
 
 ## Contributing
 

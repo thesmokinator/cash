@@ -11,27 +11,49 @@ import SwiftData
 struct EditAccountView: View {
     @Bindable var account: Account
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppSettings.self) private var settings
     
     @State private var name: String = ""
     @State private var accountNumber: String = ""
     @State private var selectedCurrency: String = "EUR"
+    @State private var selectedClass: AccountClass = .asset
     @State private var selectedType: AccountType = .bank
-    @State private var balanceText: String = ""
+    @State private var isActive: Bool = true
     
     @State private var showingValidationError = false
-    @State private var validationMessage = ""
+    @State private var validationMessage: LocalizedStringKey = ""
+    
+    private var availableTypes: [AccountType] {
+        AccountType.types(for: selectedClass)
+    }
     
     var body: some View {
         NavigationStack {
             Form {
-                Section(String(localized: "Account Information")) {
-                    TextField(String(localized: "Account Name"), text: $name)
-                    TextField(String(localized: "Account Number"), text: $accountNumber)
+                Section("Account Information") {
+                    TextField("Account Name", text: $name)
+                    TextField("Account Number", text: $accountNumber)
                 }
                 
-                Section(String(localized: "Account Type")) {
-                    Picker(String(localized: "Type"), selection: $selectedType) {
-                        ForEach(AccountType.allCases) { type in
+                Section("Account Class") {
+                    Picker("Class", selection: $selectedClass) {
+                        ForEach(AccountClass.allCases) { accountClass in
+                            Label(accountClass.localizedName, systemImage: accountClass.iconName)
+                                .tag(accountClass)
+                        }
+                    }
+                    .pickerStyle(.inline)
+                    .labelsHidden()
+                    .onChange(of: selectedClass) {
+                        if let firstType = availableTypes.first {
+                            selectedType = firstType
+                        }
+                    }
+                }
+                
+                Section("Account Type") {
+                    Picker("Type", selection: $selectedType) {
+                        ForEach(availableTypes) { type in
                             Label(type.localizedName, systemImage: type.iconName)
                                 .tag(type)
                         }
@@ -40,8 +62,8 @@ struct EditAccountView: View {
                     .labelsHidden()
                 }
                 
-                Section(String(localized: "Currency")) {
-                    Picker(String(localized: "Currency"), selection: $selectedCurrency) {
+                Section("Currency") {
+                    Picker("Currency", selection: $selectedCurrency) {
                         ForEach(CurrencyList.currencies) { currency in
                             Text(currency.displayName)
                                 .tag(currency.code)
@@ -49,69 +71,74 @@ struct EditAccountView: View {
                     }
                 }
                 
-                Section(String(localized: "Balance")) {
-                    TextField(String(localized: "Balance"), text: $balanceText)
+                Section("Status") {
+                    Toggle("Active", isOn: $isActive)
+                        .help("Inactive accounts are hidden from selection lists")
+                }
+                
+                Section {
+                    HStack {
+                        Text("Current Balance")
+                        Spacer()
+                        Text(CurrencyFormatter.format(account.balance, currency: account.currency))
+                            .fontWeight(.medium)
+                    }
+                } header: {
+                    Text("Balance")
+                } footer: {
+                    Text("Balance is calculated from all journal entries. To adjust, create a correcting entry.")
                 }
             }
             .formStyle(.grouped)
-            .navigationTitle(String(localized: "Edit Account"))
+            .navigationTitle("Edit Account")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) {
+                    Button("Cancel") {
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Save")) {
+                    Button("Save") {
                         saveChanges()
                     }
                     .disabled(name.isEmpty)
                 }
             }
-            .alert(String(localized: "Validation Error"), isPresented: $showingValidationError) {
-                Button(String(localized: "OK"), role: .cancel) { }
+            .alert("Validation Error", isPresented: $showingValidationError) {
+                Button("OK", role: .cancel) { }
             } message: {
                 Text(validationMessage)
             }
             .onAppear {
                 loadAccountData()
             }
+            .id(settings.refreshID)
         }
-        .frame(minWidth: 400, minHeight: 500)
+        .frame(minWidth: 400, minHeight: 550)
     }
     
     private func loadAccountData() {
         name = account.name
         accountNumber = account.accountNumber
         selectedCurrency = account.currency
+        selectedClass = account.accountClass
         selectedType = account.accountType
-        balanceText = "\(account.balance)"
+        isActive = account.isActive
     }
     
     private func saveChanges() {
         guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            validationMessage = String(localized: "Please enter an account name.")
+            validationMessage = "Please enter an account name."
             showingValidationError = true
             return
-        }
-        
-        var balance: Decimal = account.balance
-        if !balanceText.isEmpty {
-            let cleanedBalance = balanceText.replacingOccurrences(of: ",", with: ".")
-            if let parsedBalance = Decimal(string: cleanedBalance) {
-                balance = parsedBalance
-            } else {
-                validationMessage = String(localized: "Please enter a valid number for the balance.")
-                showingValidationError = true
-                return
-            }
         }
         
         account.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         account.accountNumber = accountNumber.trimmingCharacters(in: .whitespacesAndNewlines)
         account.currency = selectedCurrency
+        account.accountClass = selectedClass
         account.accountType = selectedType
-        account.balance = balance
+        account.isActive = isActive
         
         dismiss()
     }
@@ -119,13 +146,14 @@ struct EditAccountView: View {
 
 #Preview {
     @Previewable @State var account = Account(
-        name: "Main Checking",
-        accountNumber: "1234567890",
+        name: "Checking Account",
+        accountNumber: "1010",
         currency: "EUR",
-        accountType: .bank,
-        balance: 1000
+        accountClass: .asset,
+        accountType: .bank
     )
     
     EditAccountView(account: account)
         .modelContainer(for: Account.self, inMemory: true)
+        .environment(AppSettings.shared)
 }

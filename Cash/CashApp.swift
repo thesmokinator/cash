@@ -16,8 +16,7 @@ struct CashApp: App {
         let schema = Schema([
             Account.self,
             Transaction.self,
-            RecurringTransaction.self,
-            Category.self,
+            Entry.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -32,6 +31,7 @@ struct CashApp: App {
         WindowGroup {
             ContentView()
                 .preferredColorScheme(settings.theme.colorScheme)
+                .environment(\.locale, settings.language.locale)
         }
         .modelContainer(sharedModelContainer)
         .environment(settings)
@@ -39,6 +39,7 @@ struct CashApp: App {
         Settings {
             SettingsView()
                 .environment(settings)
+                .environment(\.locale, settings.language.locale)
         }
     }
 }

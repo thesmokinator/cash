@@ -8,35 +8,268 @@
 import Foundation
 import SwiftData
 
-enum AccountType: String, Codable, CaseIterable, Identifiable {
-    case bank = "bank"
-    case cash = "cash"
-    case investment = "investment"
+// MARK: - Entry Type (Debit or Credit)
+
+/// In double-entry bookkeeping, every entry is either a debit or credit
+enum EntryType: String, Codable, CaseIterable, Identifiable {
+    case debit = "debit"
+    case credit = "credit"
     
     var id: String { rawValue }
     
     var localizedName: String {
         switch self {
-        case .bank:
-            return String(localized: "Bank Account")
-        case .cash:
-            return String(localized: "Cash Account")
-        case .investment:
-            return String(localized: "Investment Account")
+        case .debit:
+            return String(localized: "Debit")
+        case .credit:
+            return String(localized: "Credit")
+        }
+    }
+    
+    var shortName: String {
+        switch self {
+        case .debit:
+            return String(localized: "Dr")
+        case .credit:
+            return String(localized: "Cr")
+        }
+    }
+    
+    var opposite: EntryType {
+        self == .debit ? .credit : .debit
+    }
+}
+
+// MARK: - Account Class (Double-Entry Bookkeeping)
+
+/// The five fundamental account classes in double-entry bookkeeping.
+/// These follow the accounting equation: Assets = Liabilities + Equity
+/// with Income increasing Equity and Expenses decreasing Equity.
+enum AccountClass: String, Codable, CaseIterable, Identifiable {
+    case asset = "asset"
+    case liability = "liability"
+    case equity = "equity"
+    case income = "income"
+    case expense = "expense"
+    
+    var id: String { rawValue }
+    
+    var localizedName: String {
+        switch self {
+        case .asset:
+            return String(localized: "Asset")
+        case .liability:
+            return String(localized: "Liability")
+        case .equity:
+            return String(localized: "Equity")
+        case .income:
+            return String(localized: "Income")
+        case .expense:
+            return String(localized: "Expense")
+        }
+    }
+    
+    var localizedPluralName: String {
+        switch self {
+        case .asset:
+            return String(localized: "Assets")
+        case .liability:
+            return String(localized: "Liabilities")
+        case .equity:
+            return String(localized: "Equity")
+        case .income:
+            return String(localized: "Income")
+        case .expense:
+            return String(localized: "Expenses")
         }
     }
     
     var iconName: String {
         switch self {
-        case .bank:
-            return "building.columns"
-        case .cash:
-            return "banknote"
-        case .investment:
-            return "chart.line.uptrend.xyaxis"
+        case .asset:
+            return "building.columns.fill"
+        case .liability:
+            return "creditcard.fill"
+        case .equity:
+            return "chart.pie.fill"
+        case .income:
+            return "arrow.down.circle.fill"
+        case .expense:
+            return "arrow.up.circle.fill"
+        }
+    }
+    
+    /// In double-entry bookkeeping:
+    /// - Assets and Expenses have normal DEBIT balances (debits increase, credits decrease)
+    /// - Liabilities, Equity, and Income have normal CREDIT balances (credits increase, debits decrease)
+    var normalBalance: EntryType {
+        switch self {
+        case .asset, .expense:
+            return .debit
+        case .liability, .equity, .income:
+            return .credit
+        }
+    }
+    
+    /// Display order for the chart of accounts
+    var displayOrder: Int {
+        switch self {
+        case .asset: return 0
+        case .liability: return 1
+        case .equity: return 2
+        case .income: return 3
+        case .expense: return 4
         }
     }
 }
+
+// MARK: - Account Type (Subtypes within each class)
+
+/// Common account types for organizing accounts within each class
+enum AccountType: String, Codable, CaseIterable, Identifiable {
+    // Asset types
+    case cash = "cash"
+    case bank = "bank"
+    case investment = "investment"
+    case receivable = "receivable"
+    case prepaidExpense = "prepaidExpense"
+    
+    // Liability types
+    case creditCard = "creditCard"
+    case loan = "loan"
+    case payable = "payable"
+    
+    // Equity types
+    case retainedEarnings = "retainedEarnings"
+    case openingBalance = "openingBalance"
+    
+    // Income types
+    case salary = "salary"
+    case freelance = "freelance"
+    case interestIncome = "interestIncome"
+    case dividendIncome = "dividendIncome"
+    case rentalIncome = "rentalIncome"
+    case otherIncome = "otherIncome"
+    
+    // Expense types
+    case food = "food"
+    case transportation = "transportation"
+    case utilities = "utilities"
+    case housing = "housing"
+    case healthcare = "healthcare"
+    case entertainment = "entertainment"
+    case shopping = "shopping"
+    case education = "education"
+    case travel = "travel"
+    case insurance = "insurance"
+    case personalCare = "personalCare"
+    case subscriptions = "subscriptions"
+    case otherExpense = "otherExpense"
+    
+    var id: String { rawValue }
+    
+    var localizedName: String {
+        switch self {
+        // Asset types
+        case .cash: return String(localized: "Cash")
+        case .bank: return String(localized: "Bank Account")
+        case .investment: return String(localized: "Investment")
+        case .receivable: return String(localized: "Receivable")
+        case .prepaidExpense: return String(localized: "Prepaid Expense")
+        // Liability types
+        case .creditCard: return String(localized: "Credit Card")
+        case .loan: return String(localized: "Loan")
+        case .payable: return String(localized: "Payable")
+        // Equity types
+        case .retainedEarnings: return String(localized: "Retained Earnings")
+        case .openingBalance: return String(localized: "Opening Balance")
+        // Income types
+        case .salary: return String(localized: "Salary")
+        case .freelance: return String(localized: "Freelance")
+        case .interestIncome: return String(localized: "Interest Income")
+        case .dividendIncome: return String(localized: "Dividend Income")
+        case .rentalIncome: return String(localized: "Rental Income")
+        case .otherIncome: return String(localized: "Other Income")
+        // Expense types
+        case .food: return String(localized: "Food & Dining")
+        case .transportation: return String(localized: "Transportation")
+        case .utilities: return String(localized: "Utilities")
+        case .housing: return String(localized: "Housing")
+        case .healthcare: return String(localized: "Healthcare")
+        case .entertainment: return String(localized: "Entertainment")
+        case .shopping: return String(localized: "Shopping")
+        case .education: return String(localized: "Education")
+        case .travel: return String(localized: "Travel")
+        case .insurance: return String(localized: "Insurance")
+        case .personalCare: return String(localized: "Personal Care")
+        case .subscriptions: return String(localized: "Subscriptions")
+        case .otherExpense: return String(localized: "Other Expense")
+        }
+    }
+    
+    var iconName: String {
+        switch self {
+        // Asset types
+        case .cash: return "banknote"
+        case .bank: return "building.columns"
+        case .investment: return "chart.line.uptrend.xyaxis"
+        case .receivable: return "arrow.down.doc"
+        case .prepaidExpense: return "calendar.badge.clock"
+        // Liability types
+        case .creditCard: return "creditcard"
+        case .loan: return "doc.text"
+        case .payable: return "arrow.up.doc"
+        // Equity types
+        case .retainedEarnings: return "chart.pie"
+        case .openingBalance: return "flag"
+        // Income types
+        case .salary: return "briefcase.fill"
+        case .freelance: return "laptopcomputer"
+        case .interestIncome: return "percent"
+        case .dividendIncome: return "chart.bar.fill"
+        case .rentalIncome: return "building.2.fill"
+        case .otherIncome: return "ellipsis.circle.fill"
+        // Expense types
+        case .food: return "fork.knife"
+        case .transportation: return "car.fill"
+        case .utilities: return "bolt.fill"
+        case .housing: return "house.fill"
+        case .healthcare: return "cross.case.fill"
+        case .entertainment: return "tv.fill"
+        case .shopping: return "bag.fill"
+        case .education: return "book.fill"
+        case .travel: return "airplane"
+        case .insurance: return "shield.fill"
+        case .personalCare: return "person.fill"
+        case .subscriptions: return "repeat"
+        case .otherExpense: return "ellipsis.circle.fill"
+        }
+    }
+    
+    /// The account class this type belongs to
+    var accountClass: AccountClass {
+        switch self {
+        case .cash, .bank, .investment, .receivable, .prepaidExpense:
+            return .asset
+        case .creditCard, .loan, .payable:
+            return .liability
+        case .retainedEarnings, .openingBalance:
+            return .equity
+        case .salary, .freelance, .interestIncome, .dividendIncome, .rentalIncome, .otherIncome:
+            return .income
+        case .food, .transportation, .utilities, .housing, .healthcare, .entertainment,
+             .shopping, .education, .travel, .insurance, .personalCare, .subscriptions, .otherExpense:
+            return .expense
+        }
+    }
+    
+    /// Get all account types for a specific class
+    static func types(for accountClass: AccountClass) -> [AccountType] {
+        allCases.filter { $0.accountClass == accountClass }
+    }
+}
+
+// MARK: - Account Model
 
 @Model
 final class Account {
@@ -44,34 +277,160 @@ final class Account {
     var name: String
     var accountNumber: String
     var currency: String
-    var typeRawValue: String
+    var accountClassRawValue: String
+    var accountTypeRawValue: String
+    var isActive: Bool
+    var isSystem: Bool
     var createdAt: Date
-    var balance: Decimal
     
-    @Relationship(deleteRule: .cascade, inverse: \Transaction.account)
-    var transactions: [Transaction]? = []
+    @Relationship(deleteRule: .cascade, inverse: \Entry.account)
+    var entries: [Entry]? = []
     
-    @Relationship(deleteRule: .cascade, inverse: \RecurringTransaction.account)
-    var recurringTransactions: [RecurringTransaction]? = []
+    var accountClass: AccountClass {
+        get { AccountClass(rawValue: accountClassRawValue) ?? .asset }
+        set { accountClassRawValue = newValue.rawValue }
+    }
     
     var accountType: AccountType {
-        get { AccountType(rawValue: typeRawValue) ?? .bank }
-        set { typeRawValue = newValue.rawValue }
+        get { AccountType(rawValue: accountTypeRawValue) ?? .bank }
+        set { accountTypeRawValue = newValue.rawValue }
+    }
+    
+    /// Calculate the current balance based on all entries
+    /// Following double-entry rules:
+    /// - Assets/Expenses: Debits increase, Credits decrease
+    /// - Liabilities/Equity/Income: Credits increase, Debits decrease
+    var balance: Decimal {
+        let allEntries = entries ?? []
+        var total: Decimal = 0
+        
+        for entry in allEntries {
+            if accountClass.normalBalance == .debit {
+                // For assets and expenses: debits add, credits subtract
+                total += entry.entryType == .debit ? entry.amount : -entry.amount
+            } else {
+                // For liabilities, equity, and income: credits add, debits subtract
+                total += entry.entryType == .credit ? entry.amount : -entry.amount
+            }
+        }
+        
+        return total
+    }
+    
+    /// Display-friendly balance with appropriate sign
+    var displayBalance: Decimal {
+        balance
+    }
+    
+    /// Returns the display name - uses localized type name
+    var displayName: String {
+        accountType.localizedName
     }
     
     init(
         name: String,
-        accountNumber: String,
-        currency: String,
+        accountNumber: String = "",
+        currency: String = "EUR",
+        accountClass: AccountClass,
         accountType: AccountType,
-        balance: Decimal = 0
+        isActive: Bool = true,
+        isSystem: Bool = false
     ) {
         self.id = UUID()
         self.name = name
         self.accountNumber = accountNumber
         self.currency = currency
-        self.typeRawValue = accountType.rawValue
+        self.accountClassRawValue = accountClass.rawValue
+        self.accountTypeRawValue = accountType.rawValue
+        self.isActive = isActive
+        self.isSystem = isSystem
         self.createdAt = Date()
-        self.balance = balance
+    }
+}
+
+// MARK: - Default Chart of Accounts
+
+struct ChartOfAccounts {
+    /// Creates a default set of accounts for a new user
+    static func createDefaultAccounts(currency: String = "EUR") -> [Account] {
+        var accounts: [Account] = []
+        
+        // System equity account for opening balances
+        accounts.append(Account(
+            name: "Opening Balance Equity",
+            accountNumber: "",
+            currency: currency,
+            accountClass: .equity,
+            accountType: .openingBalance,
+            isSystem: true
+        ))
+        
+        // Default asset accounts
+        accounts.append(Account(
+            name: "Cash",
+            accountNumber: "",
+            currency: currency,
+            accountClass: .asset,
+            accountType: .cash
+        ))
+        
+        accounts.append(Account(
+            name: "Bank Account",
+            accountNumber: "",
+            currency: currency,
+            accountClass: .asset,
+            accountType: .bank
+        ))
+        
+        // Default liability account
+        accounts.append(Account(
+            name: "Credit Card",
+            accountNumber: "",
+            currency: currency,
+            accountClass: .liability,
+            accountType: .creditCard
+        ))
+        
+        // Default income accounts
+        accounts.append(Account(
+            name: "Salary",
+            accountNumber: "",
+            currency: currency,
+            accountClass: .income,
+            accountType: .salary
+        ))
+        
+        accounts.append(Account(
+            name: "Other Income",
+            accountNumber: "",
+            currency: currency,
+            accountClass: .income,
+            accountType: .otherIncome
+        ))
+        
+        // Default expense accounts
+        let expenseTypes: [AccountType] = [
+            .food,
+            .transportation,
+            .utilities,
+            .housing,
+            .healthcare,
+            .entertainment,
+            .shopping,
+            .subscriptions,
+            .otherExpense,
+        ]
+        
+        for type in expenseTypes {
+            accounts.append(Account(
+                name: type.rawValue,
+                accountNumber: "",
+                currency: currency,
+                accountClass: .expense,
+                accountType: type
+            ))
+        }
+        
+        return accounts
     }
 }

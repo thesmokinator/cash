@@ -11,27 +11,56 @@ import SwiftData
 struct AddAccountView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppSettings.self) private var settings
+    @Query(sort: \Account.accountNumber) private var accounts: [Account]
     
     @State private var name: String = ""
     @State private var accountNumber: String = ""
     @State private var selectedCurrency: String = "EUR"
+    @State private var selectedClass: AccountClass = .asset
     @State private var selectedType: AccountType = .bank
     @State private var initialBalance: String = ""
+    @State private var createOpeningBalance: Bool = false
     
     @State private var showingValidationError = false
-    @State private var validationMessage = ""
+    @State private var validationMessage: LocalizedStringKey = ""
+    
+    private var availableTypes: [AccountType] {
+        AccountType.types(for: selectedClass)
+    }
+    
+    private var openingBalanceEquityAccount: Account? {
+        accounts.first { $0.accountType == .openingBalance && $0.isSystem }
+    }
     
     var body: some View {
         NavigationStack {
             Form {
-                Section(String(localized: "Account Information")) {
-                    TextField(String(localized: "Account Name"), text: $name)
-                    TextField(String(localized: "Account Number"), text: $accountNumber)
+                Section("Account Information") {
+                    TextField("Account Name", text: $name)
+                    TextField("Account Number", text: $accountNumber)
+                        .help("Optional number for organizing accounts (e.g., 1000, 2000)")
                 }
                 
-                Section(String(localized: "Account Type")) {
-                    Picker(String(localized: "Type"), selection: $selectedType) {
-                        ForEach(AccountType.allCases) { type in
+                Section("Account Class") {
+                    Picker("Class", selection: $selectedClass) {
+                        ForEach(AccountClass.allCases) { accountClass in
+                            Label(accountClass.localizedName, systemImage: accountClass.iconName)
+                                .tag(accountClass)
+                        }
+                    }
+                    .pickerStyle(.inline)
+                    .labelsHidden()
+                    .onChange(of: selectedClass) {
+                        if let firstType = availableTypes.first {
+                            selectedType = firstType
+                        }
+                    }
+                }
+                
+                Section("Account Type") {
+                    Picker("Type", selection: $selectedType) {
+                        ForEach(availableTypes) { type in
                             Label(type.localizedName, systemImage: type.iconName)
                                 .tag(type)
                         }
@@ -40,8 +69,8 @@ struct AddAccountView: View {
                     .labelsHidden()
                 }
                 
-                Section(String(localized: "Currency")) {
-                    Picker(String(localized: "Currency"), selection: $selectedCurrency) {
+                Section("Currency") {
+                    Picker("Currency", selection: $selectedCurrency) {
                         ForEach(CurrencyList.currencies) { currency in
                             Text(currency.displayName)
                                 .tag(currency.code)
@@ -49,51 +78,61 @@ struct AddAccountView: View {
                     }
                 }
                 
-                Section(String(localized: "Initial Balance")) {
-                    TextField(String(localized: "Balance"), text: $initialBalance)
-                        .help(String(localized: "Enter the starting balance for this account"))
+                if selectedClass == .asset || selectedClass == .liability {
+                    Section("Opening Balance") {
+                        Toggle("Set Opening Balance", isOn: $createOpeningBalance)
+                        
+                        if createOpeningBalance {
+                            TextField("Amount", text: $initialBalance)
+                                .help("Enter the starting balance for this account")
+                        }
+                    }
                 }
             }
             .formStyle(.grouped)
-            .navigationTitle(String(localized: "New Account"))
+            .navigationTitle("New Account")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "Cancel")) {
+                    Button("Cancel") {
                         dismiss()
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(String(localized: "Save")) {
+                    Button("Save") {
                         saveAccount()
                     }
                     .disabled(name.isEmpty)
                 }
             }
-            .alert(String(localized: "Validation Error"), isPresented: $showingValidationError) {
-                Button(String(localized: "OK"), role: .cancel) { }
+            .alert("Validation Error", isPresented: $showingValidationError) {
+                Button("OK", role: .cancel) { }
             } message: {
                 Text(validationMessage)
             }
+            .onAppear {
+                if let firstType = availableTypes.first {
+                    selectedType = firstType
+                }
+            }
+            .id(settings.refreshID)
         }
-        .frame(minWidth: 400, minHeight: 500)
+        .frame(minWidth: 400, minHeight: 550)
     }
     
     private func saveAccount() {
-        // Validate input
         guard !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            validationMessage = String(localized: "Please enter an account name.")
+            validationMessage = "Please enter an account name."
             showingValidationError = true
             return
         }
         
-        // Parse initial balance
         var balance: Decimal = 0
-        if !initialBalance.isEmpty {
-            let cleanedBalance = initialBalance.replacingOccurrences(of: ",", with: ".")
-            if let parsedBalance = Decimal(string: cleanedBalance) {
-                balance = parsedBalance
-            } else {
-                validationMessage = String(localized: "Please enter a valid number for the balance.")
+        if createOpeningBalance && !initialBalance.isEmpty {
+            let parsed = CurrencyFormatter.parse(initialBalance)
+            if parsed > 0 {
+                balance = parsed
+            } else if !initialBalance.isEmpty {
+                validationMessage = "Please enter a valid number for the balance."
                 showingValidationError = true
                 return
             }
@@ -103,11 +142,21 @@ struct AddAccountView: View {
             name: name.trimmingCharacters(in: .whitespacesAndNewlines),
             accountNumber: accountNumber.trimmingCharacters(in: .whitespacesAndNewlines),
             currency: selectedCurrency,
-            accountType: selectedType,
-            balance: balance
+            accountClass: selectedClass,
+            accountType: selectedType
         )
         
         modelContext.insert(account)
+        
+        if createOpeningBalance && balance > 0, let equityAccount = openingBalanceEquityAccount {
+            _ = TransactionBuilder.createOpeningBalance(
+                account: account,
+                amount: balance,
+                openingBalanceEquityAccount: equityAccount,
+                context: modelContext
+            )
+        }
+        
         dismiss()
     }
 }
@@ -115,4 +164,5 @@ struct AddAccountView: View {
 #Preview {
     AddAccountView()
         .modelContainer(for: Account.self, inMemory: true)
+        .environment(AppSettings.shared)
 }
