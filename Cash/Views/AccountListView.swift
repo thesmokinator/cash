@@ -8,16 +8,25 @@
 import SwiftUI
 import SwiftData
 
+enum SidebarSelection: Hashable {
+    case patrimony
+    case account(Account)
+}
+
 struct AccountListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppSettings.self) private var settings
     @Query(sort: \Account.accountNumber) private var accounts: [Account]
     @State private var showingAddAccount = false
-    @State private var selectedAccount: Account?
+    @State private var selection: SidebarSelection? = .patrimony
+    
+    private var hasAccounts: Bool {
+        !accounts.filter { $0.isActive && !$0.isSystem }.isEmpty
+    }
     
     var body: some View {
         NavigationSplitView {
-            List(selection: $selectedAccount) {
+            List(selection: $selection) {
                 if accounts.isEmpty {
                     ContentUnavailableView {
                         Label("No accounts", systemImage: "building.columns")
@@ -25,13 +34,20 @@ struct AccountListView: View {
                         Text("Create your first account to get started.")
                     }
                 } else {
+                    if hasAccounts {
+                        Section {
+                            Label("Net Worth", systemImage: "chart.pie.fill")
+                                .tag(SidebarSelection.patrimony)
+                        }
+                    }
+                    
                     ForEach(AccountClass.allCases.sorted(by: { $0.displayOrder < $1.displayOrder })) { accountClass in
                         let filteredAccounts = accounts.filter { $0.accountClass == accountClass && $0.isActive && !$0.isSystem }
                         if !filteredAccounts.isEmpty {
                             Section(accountClass.localizedPluralName) {
                                 ForEach(filteredAccounts) { account in
                                     AccountRowView(account: account)
-                                        .tag(account)
+                                        .tag(SidebarSelection.account(account))
                                 }
                                 .onDelete { indexSet in
                                     deleteAccounts(from: filteredAccounts, at: indexSet)
@@ -55,9 +71,12 @@ struct AccountListView: View {
             }
             .id(settings.refreshID)
         } detail: {
-            if let account = selectedAccount {
+            switch selection {
+            case .patrimony:
+                NetWorthView()
+            case .account(let account):
                 AccountDetailView(account: account)
-            } else {
+            case nil:
                 ContentUnavailableView {
                     Label("Select an account", systemImage: "building.columns")
                 } description: {

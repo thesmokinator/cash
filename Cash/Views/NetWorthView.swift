@@ -1,0 +1,184 @@
+//
+//  NetWorthView.swift
+//  Cash
+//
+//  Created by Michele Broggi on 26/11/25.
+//
+
+import SwiftUI
+import SwiftData
+
+struct NetWorthView: View {
+    @Environment(AppSettings.self) private var settings
+    @Query(sort: \Account.accountNumber) private var accounts: [Account]
+    
+    private var assetAccounts: [Account] {
+        accounts.filter { $0.accountClass == .asset && $0.isActive && !$0.isSystem }
+    }
+    
+    private var liabilityAccounts: [Account] {
+        accounts.filter { $0.accountClass == .liability && $0.isActive && !$0.isSystem }
+    }
+    
+    private var totalAssets: Decimal {
+        assetAccounts.reduce(0) { $0 + $1.balance }
+    }
+    
+    private var totalLiabilities: Decimal {
+        liabilityAccounts.reduce(0) { $0 + $1.balance }
+    }
+    
+    private var netWorth: Decimal {
+        totalAssets - totalLiabilities
+    }
+    
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                // Net Worth Card
+                VStack(spacing: 8) {
+                    Text("Net Worth")
+                        .font(.headline)
+                        .foregroundStyle(.secondary)
+                    Text(formatCurrency(netWorth))
+                        .font(.system(size: 48, weight: .bold))
+                        .foregroundColor(netWorth >= 0 ? .primary : .red)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 32)
+                .background(.regularMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                
+                // Summary Cards
+                HStack(spacing: 16) {
+                    SummaryCard(
+                        title: "Assets",
+                        amount: totalAssets,
+                        color: .green,
+                        icon: "arrow.up.circle.fill"
+                    )
+                    
+                    SummaryCard(
+                        title: "Liabilities",
+                        amount: totalLiabilities,
+                        color: .red,
+                        icon: "arrow.down.circle.fill"
+                    )
+                }
+                
+                // Assets Section
+                if !assetAccounts.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Assets")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        
+                        ForEach(assetAccounts) { account in
+                            AccountBalanceRow(account: account)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(.regularMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                
+                // Liabilities Section
+                if !liabilityAccounts.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Liabilities")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        
+                        ForEach(liabilityAccounts) { account in
+                            AccountBalanceRow(account: account)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(.regularMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+            }
+            .padding()
+        }
+        .navigationTitle("Net Worth")
+        .id(settings.refreshID)
+    }
+    
+    private func formatCurrency(_ amount: Decimal) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = "EUR"
+        return formatter.string(from: amount as NSDecimalNumber) ?? "€\(amount)"
+    }
+}
+
+struct SummaryCard: View {
+    let title: LocalizedStringKey
+    let amount: Decimal
+    let color: Color
+    let icon: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundColor(color)
+                Text(title)
+                    .foregroundStyle(.secondary)
+            }
+            .font(.subheadline)
+            
+            Text(formatCurrency(amount))
+                .font(.title2)
+                .fontWeight(.semibold)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.regularMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+    
+    private func formatCurrency(_ amount: Decimal) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = "EUR"
+        return formatter.string(from: amount as NSDecimalNumber) ?? "€\(amount)"
+    }
+}
+
+struct AccountBalanceRow: View {
+    let account: Account
+    
+    var body: some View {
+        HStack {
+            Image(systemName: account.accountType.iconName)
+                .foregroundStyle(.secondary)
+                .frame(width: 24)
+            
+            Text(account.displayName)
+            
+            Spacer()
+            
+            Text(formatCurrency(account.balance, currency: account.currency))
+                .fontWeight(.medium)
+        }
+        .padding(.vertical, 4)
+    }
+    
+    private func formatCurrency(_ amount: Decimal, currency: String) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = currency
+        return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
+    }
+}
+
+#Preview {
+    NavigationStack {
+        NetWorthView()
+    }
+    .modelContainer(for: Account.self, inMemory: true)
+    .environment(AppSettings.shared)
+}

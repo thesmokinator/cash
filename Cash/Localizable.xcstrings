@@ -119,13 +119,34 @@
       }
     },
     "Add account" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi conto"
+          }
+        }
+      }
     },
     "Add attachment" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi allegato"
+          }
+        }
+      }
     },
     "Add transaction" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi transazione"
+          }
+        }
+      }
     },
     "Add your first transaction to track your finances." : {
       "extractionState" : "stale",
@@ -309,7 +330,14 @@
       }
     },
     "Chart of accounts" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piano dei conti"
+          }
+        }
+      }
     },
     "Choose an account from the sidebar to view details." : {
       "localizations" : {
@@ -332,7 +360,14 @@
       }
     },
     "Choose your preferences" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli le tue preferenze"
+          }
+        }
+      }
     },
     "Class" : {
       "localizations" : {
@@ -365,7 +400,14 @@
       }
     },
     "Create example accounts" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea conti di esempio"
+          }
+        }
+      }
     },
     "Create your first account to get started." : {
       "localizations" : {
@@ -478,7 +520,14 @@
       }
     },
     "Day of week" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giorno della settimana"
+          }
+        }
+      }
     },
     "days" : {
       "localizations" : {
@@ -511,7 +560,14 @@
       }
     },
     "Default accounts" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conti predefiniti"
+          }
+        }
+      }
     },
     "Default currency" : {
       "localizations" : {
@@ -534,16 +590,44 @@
       }
     },
     "Delete account" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina conto"
+          }
+        }
+      }
     },
     "Delete everything" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina tutto"
+          }
+        }
+      }
     },
     "Delete transaction" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina transazione"
+          }
+        }
+      }
     },
     "Deposit to" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deposita su"
+          }
+        }
+      }
     },
     "Description" : {
       "localizations" : {
@@ -606,10 +690,24 @@
       }
     },
     "Edit account" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica conto"
+          }
+        }
+      }
     },
     "Edit transaction" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica transazione"
+          }
+        }
+      }
     },
     "Education" : {
       "localizations" : {
@@ -622,7 +720,14 @@
       }
     },
     "End date" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data fine"
+          }
+        }
+      }
     },
     "Enter the starting balance for this account" : {
       "localizations" : {
@@ -715,7 +820,14 @@
       }
     },
     "Expense category" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categoria spesa"
+          }
+        }
+      }
     },
     "Expenses" : {
       "localizations" : {
@@ -768,7 +880,14 @@
       }
     },
     "From account" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da conto"
+          }
+        }
+      }
     },
     "Get started" : {
       "localizations" : {
@@ -821,7 +940,14 @@
       }
     },
     "Income category" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categoria entrata"
+          }
+        }
+      }
     },
     "Insurance" : {
       "localizations" : {
@@ -854,7 +980,14 @@
       }
     },
     "Journal entry preview" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima registrazione"
+          }
+        }
+      }
     },
     "Language" : {
       "localizations" : {
@@ -867,19 +1000,54 @@
       }
     },
     "Last 3 months" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 3 mesi"
+          }
+        }
+      }
     },
     "Last 6 months" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 6 mesi"
+          }
+        }
+      }
     },
     "Last 12 months" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 12 mesi"
+          }
+        }
+      }
     },
     "Last 15 days" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 15 giorni"
+          }
+        }
+      }
     },
     "Last month" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mese scorso"
+          }
+        }
+      }
     },
     "Liabilities" : {
       "localizations" : {
@@ -961,11 +1129,35 @@
         }
       }
     },
+    "Net Worth" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patrimonio netto"
+          }
+        }
+      }
+    },
     "New account" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuovo conto"
+          }
+        }
+      }
     },
     "New transaction" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuova transazione"
+          }
+        }
+      }
     },
     "Next" : {
       "localizations" : {
@@ -988,7 +1180,14 @@
       }
     },
     "No accounts" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun conto"
+          }
+        }
+      }
     },
     "No adjustment" : {
       "localizations" : {
@@ -1001,16 +1200,44 @@
       }
     },
     "No transactions" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna transazione"
+          }
+        }
+      }
     },
     "No transactions found for the selected period." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna transazione trovata per il periodo selezionato."
+          }
+        }
+      }
     },
     "Normal: credit" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normale: avere"
+          }
+        }
+      }
     },
     "Normal: debit" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normale: dare"
+          }
+        }
+      }
     },
     "OK" : {
       "localizations" : {
@@ -1023,7 +1250,14 @@
       }
     },
     "On day" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il giorno"
+          }
+        }
+      }
     },
     "on day %lld" : {
       "localizations" : {
@@ -1036,7 +1270,14 @@
       }
     },
     "Opening balance" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo iniziale"
+          }
+        }
+      }
     },
     "Optional number for organizing accounts (e.g., 1000, 2000)" : {
       "localizations" : {
@@ -1069,7 +1310,14 @@
       }
     },
     "Pay from" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paga da"
+          }
+        }
+      }
     },
     "Payable" : {
       "localizations" : {
@@ -1082,7 +1330,14 @@
       }
     },
     "Period" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Periodo"
+          }
+        }
+      }
     },
     "Personal care" : {
       "localizations" : {
@@ -1155,7 +1410,14 @@
       }
     },
     "Preview unavailable" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima non disponibile"
+          }
+        }
+      }
     },
     "Previous Friday" : {
       "localizations" : {
@@ -1188,10 +1450,24 @@
       }
     },
     "Recurring transaction" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transazione ricorrente"
+          }
+        }
+      }
     },
     "Remove" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rimuovi"
+          }
+        }
+      }
     },
     "Rental income" : {
       "localizations" : {
@@ -1204,10 +1480,24 @@
       }
     },
     "Reset all data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimposta tutti i dati"
+          }
+        }
+      }
     },
     "Reset all data?" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimpostare tutti i dati?"
+          }
+        }
+      }
     },
     "Retained earnings" : {
       "localizations" : {
@@ -1250,10 +1540,35 @@
       }
     },
     "Search" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca"
+          }
+        }
+      }
+    },
+    "Search transactions" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca transazioni"
+          }
+        }
+      }
     },
     "Select account" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona conto"
+          }
+        }
+      }
     },
     "Select accounts to see preview" : {
       "localizations" : {
@@ -1266,7 +1581,14 @@
       }
     },
     "Select an account" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona un conto"
+          }
+        }
+      }
     },
     "Select your preferred language, currency, and theme." : {
       "localizations" : {
@@ -1279,7 +1601,14 @@
       }
     },
     "Set opening balance" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imposta saldo iniziale"
+          }
+        }
+      }
     },
     "Settings" : {
       "localizations" : {
@@ -1302,7 +1631,14 @@
       }
     },
     "Start empty" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizia vuoto"
+          }
+        }
+      }
     },
     "Status" : {
       "localizations" : {
@@ -1365,10 +1701,24 @@
       }
     },
     "This month" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo mese"
+          }
+        }
+      }
     },
     "This week" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa settimana"
+          }
+        }
+      }
     },
     "This will delete all accounts and transactions and restart the app." : {
       "localizations" : {
@@ -1401,10 +1751,24 @@
       }
     },
     "To account" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A conto"
+          }
+        }
+      }
     },
     "Today" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oggi"
+          }
+        }
+      }
     },
     "Track your personal finances with ease using double-entry bookkeeping." : {
       "localizations" : {
@@ -1417,7 +1781,14 @@
       }
     },
     "Transaction type" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo transazione"
+          }
+        }
+      }
     },
     "Transfer" : {
       "localizations" : {
@@ -1490,7 +1861,14 @@
       }
     },
     "Validation error" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore di validazione"
+          }
+        }
+      }
     },
     "Version" : {
       "localizations" : {
@@ -1523,7 +1901,14 @@
       }
     },
     "Weekend adjustment" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiustamento weekend"
+          }
+        }
+      }
     },
     "Weekly" : {
       "localizations" : {
