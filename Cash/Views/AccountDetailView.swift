@@ -29,9 +29,19 @@ struct AccountDetailView: View {
                         Text(account.displayName)
                             .font(.title2)
                             .fontWeight(.bold)
-                        Text(account.accountClass.localizedName)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        HStack(spacing: 8) {
+                            Text(account.accountClass.localizedName)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            if !account.accountNumber.isEmpty {
+                                Text("•")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                                Text("#\(account.accountNumber)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                     }
                     
                     Spacer()

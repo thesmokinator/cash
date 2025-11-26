@@ -44,7 +44,6 @@ struct AddTransactionView: View {
     @State private var transactionType: SimpleTransactionType = .expense
     @State private var date: Date = Date()
     @State private var descriptionText: String = ""
-    @State private var reference: String = ""
     @State private var amountText: String = ""
     
     @State private var selectedExpenseAccount: Account?
@@ -71,6 +70,17 @@ struct AddTransactionView: View {
     
     private var amount: Decimal {
         CurrencyFormatter.parse(amountText)
+    }
+    
+    private var currentCurrency: String {
+        switch transactionType {
+        case .expense:
+            return selectedPaymentAccount?.currency ?? "EUR"
+        case .income:
+            return selectedDepositAccount?.currency ?? "EUR"
+        case .transfer:
+            return selectedFromAccount?.currency ?? "EUR"
+        }
     }
     
     private var isValid: Bool {
@@ -101,13 +111,19 @@ struct AddTransactionView: View {
                 
                 Section("Details") {
                     DatePicker("Date", selection: $date, displayedComponents: .date)
-                    TextField("Description", text: $descriptionText)
-                    TextField("Amount", text: $amountText)
-                        .help("Enter the transaction amount")
-                    TextField("Reference (optional)", text: $reference)
+                    HStack {
+                        Text(CurrencyList.symbol(forCode: currentCurrency))
+                            .foregroundStyle(.secondary)
+                        TextField("Amount", text: $amountText)
+                    }
                 }
                 
                 accountsSection
+                
+                Section("Description") {
+                    TextEditor(text: $descriptionText)
+                        .frame(minHeight: 80)
+                }
                 
                 Section {
                     journalPreview
@@ -161,18 +177,18 @@ struct AddTransactionView: View {
             debitAccountName: debitName,
             creditAccountName: creditName,
             amount: amount,
-            currency: "EUR"
+            currency: currentCurrency
         )
     }
     
     private var previewAccounts: (String?, String?) {
         switch transactionType {
         case .expense:
-            return (selectedExpenseAccount?.name, selectedPaymentAccount?.name)
+            return (selectedExpenseAccount?.displayName, selectedPaymentAccount?.displayName)
         case .income:
-            return (selectedDepositAccount?.name, selectedIncomeAccount?.name)
+            return (selectedDepositAccount?.displayName, selectedIncomeAccount?.displayName)
         case .transfer:
-            return (selectedToAccount?.name, selectedFromAccount?.name)
+            return (selectedToAccount?.displayName, selectedFromAccount?.displayName)
         }
     }
     
@@ -213,7 +229,7 @@ struct AddTransactionView: View {
                 amount: amount,
                 expenseAccount: expenseAccount,
                 paymentAccount: paymentAccount,
-                reference: reference,
+                reference: "",
                 context: modelContext
             )
             
@@ -228,7 +244,7 @@ struct AddTransactionView: View {
                 amount: amount,
                 depositAccount: depositAccount,
                 incomeAccount: incomeAccount,
-                reference: reference,
+                reference: "",
                 context: modelContext
             )
             
@@ -243,7 +259,7 @@ struct AddTransactionView: View {
                 amount: amount,
                 fromAccount: fromAccount,
                 toAccount: toAccount,
-                reference: reference,
+                reference: "",
                 context: modelContext
             )
         }

@@ -17,7 +17,6 @@ struct EditTransactionView: View {
     
     @State private var date: Date = Date()
     @State private var descriptionText: String = ""
-    @State private var reference: String = ""
     @State private var amountText: String = ""
     @State private var selectedDebitAccount: Account?
     @State private var selectedCreditAccount: Account?
@@ -33,6 +32,10 @@ struct EditTransactionView: View {
         CurrencyFormatter.parse(amountText)
     }
     
+    private var currentCurrency: String {
+        selectedDebitAccount?.currency ?? selectedCreditAccount?.currency ?? "EUR"
+    }
+    
     private var isValid: Bool {
         guard !amountText.isEmpty, amount > 0 else { return false }
         guard selectedDebitAccount != nil && selectedCreditAccount != nil else { return false }
@@ -44,7 +47,6 @@ struct EditTransactionView: View {
         self.transaction = transaction
         _date = State(initialValue: transaction.date)
         _descriptionText = State(initialValue: transaction.descriptionText)
-        _reference = State(initialValue: transaction.reference)
         _amountText = State(initialValue: "\(transaction.amount)")
         _selectedDebitAccount = State(initialValue: transaction.debitEntry?.account)
         _selectedCreditAccount = State(initialValue: transaction.creditEntry?.account)
@@ -55,9 +57,11 @@ struct EditTransactionView: View {
             Form {
                 Section("Details") {
                     DatePicker("Date", selection: $date, displayedComponents: .date)
-                    TextField("Description", text: $descriptionText)
-                    TextField("Amount", text: $amountText)
-                    TextField("Reference (optional)", text: $reference)
+                    HStack {
+                        Text(CurrencyList.symbol(forCode: currentCurrency))
+                            .foregroundStyle(.secondary)
+                        TextField("Amount", text: $amountText)
+                    }
                 }
                 
                 Section("Debit Account (receives value)") {
@@ -68,12 +72,17 @@ struct EditTransactionView: View {
                     AccountPicker(title: "Credit", accounts: activeAccounts.filter { $0.id != selectedDebitAccount?.id }, selection: $selectedCreditAccount, showClass: true)
                 }
                 
+                Section("Description") {
+                    TextEditor(text: $descriptionText)
+                        .frame(minHeight: 80)
+                }
+                
                 Section {
                     JournalEntryPreview(
-                        debitAccountName: selectedDebitAccount?.name,
-                        creditAccountName: selectedCreditAccount?.name,
+                        debitAccountName: selectedDebitAccount?.displayName,
+                        creditAccountName: selectedCreditAccount?.displayName,
                         amount: amount,
-                        currency: "EUR"
+                        currency: currentCurrency
                     )
                 } header: {
                     Label("Journal Entry Preview", systemImage: "doc.text")
@@ -115,7 +124,6 @@ struct EditTransactionView: View {
         
         transaction.date = date
         transaction.descriptionText = descriptionText.trimmingCharacters(in: .whitespacesAndNewlines)
-        transaction.reference = reference
         
         if let debitEntry = transaction.debitEntry {
             debitEntry.amount = amount

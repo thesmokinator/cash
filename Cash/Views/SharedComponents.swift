@@ -29,23 +29,19 @@ struct EntryPreviewRow: View {
     let accountName: String
     let type: EntryType
     let amount: String
+    let isOutgoing: Bool
     
     var body: some View {
         HStack {
-            Text(type.shortName)
-                .font(.caption)
-                .fontWeight(.bold)
-                .foregroundStyle(type == .debit ? .blue : .green)
-                .frame(width: 24)
-            
             Text(accountName)
                 .font(.caption)
             
             Spacer()
             
-            Text(amount)
+            Text(isOutgoing ? "-\(amount)" : "+\(amount)")
                 .font(.caption)
                 .fontWeight(.medium)
+                .foregroundStyle(isOutgoing ? .red : .green)
         }
         .padding(.vertical, 2)
     }
@@ -64,8 +60,8 @@ struct JournalEntryPreview: View {
             let formattedAmount = CurrencyFormatter.format(amount, currency: currency)
             
             if let debit = debitAccountName, let credit = creditAccountName {
-                EntryPreviewRow(accountName: debit, type: .debit, amount: formattedAmount)
-                EntryPreviewRow(accountName: credit, type: .credit, amount: formattedAmount)
+                EntryPreviewRow(accountName: debit, type: .debit, amount: formattedAmount, isOutgoing: false)
+                EntryPreviewRow(accountName: credit, type: .credit, amount: formattedAmount, isOutgoing: true)
             } else {
                 Text("Select accounts to see preview")
                     .foregroundStyle(.secondary)

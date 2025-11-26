@@ -4,7 +4,19 @@
     "" : {
 
     },
+    "-%@" : {
+
+    },
     "(%@)" : {
+
+    },
+    "#%@" : {
+
+    },
+    "•" : {
+
+    },
+    "+%@" : {
 
     },
     "0" : {
@@ -654,6 +666,7 @@
       }
     },
     "Enter the transaction amount" : {
+      "extractionState" : "stale",
       "localizations" : {
         "it" : {
           "stringUnit" : {
@@ -1109,16 +1122,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Credito"
-          }
-        }
-      }
-    },
-    "Reference (optional)" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Riferimento (opzionale)"
           }
         }
       }
