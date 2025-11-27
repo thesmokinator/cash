@@ -303,6 +303,9 @@
         }
       }
     },
+    "Bank format" : {
+
+    },
     "Cancel" : {
       "localizations" : {
         "it" : {
@@ -863,7 +866,7 @@
     "Export successful" : {
 
     },
-    "Export your data as JSON (full backup) or CSV (for spreadsheets). Import will replace all existing data." : {
+    "Export your data as JSON (full backup) or OFX (standard bank format). Import will replace all existing data." : {
 
     },
     "Failed to decode data" : {
@@ -1065,7 +1068,7 @@
         }
       }
     },
-    "JSON is recommended for full backup and restore. CSV is useful for viewing in spreadsheets." : {
+    "JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps." : {
 
     },
     "Language" : {
@@ -1711,9 +1714,6 @@
           }
         }
       }
-    },
-    "Spreadsheet" : {
-
     },
     "Start empty" : {
       "extractionState" : "stale",

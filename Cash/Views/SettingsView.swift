@@ -75,7 +75,7 @@ struct SettingsView: View {
             } header: {
                 Label("Export / Import", systemImage: "arrow.up.arrow.down.circle.fill")
             } footer: {
-                Text("Export your data as JSON (full backup) or CSV (for spreadsheets). Import will replace all existing data.")
+                Text("Export your data as JSON (full backup) or OFX (standard bank format). Import will replace all existing data.")
             }
             
             Section {
@@ -166,8 +166,8 @@ struct SettingsView: View {
             switch format {
             case .json:
                 data = try DataExporter.exportJSON(accounts: accounts, transactions: transactions)
-            case .csv:
-                data = try DataExporter.exportCSV(transactions: transactions)
+            case .ofx:
+                data = try DataExporter.exportOFX(accounts: accounts, transactions: transactions)
             }
             
             let filename = DataExporter.generateFilename(for: format)
@@ -316,7 +316,7 @@ struct ExportFormatPickerView: View {
             Text("Choose export format")
                 .font(.headline)
             
-            Text("JSON is recommended for full backup and restore. CSV is useful for viewing in spreadsheets.")
+            Text("JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -332,7 +332,7 @@ struct ExportFormatPickerView: View {
                                 .font(.largeTitle)
                             Text(format.localizedName)
                                 .font(.headline)
-                            Text(format == .json ? "Full backup" : "Spreadsheet")
+                            Text(format == .json ? "Full backup" : "Bank format")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
