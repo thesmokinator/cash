@@ -10,6 +10,7 @@ import SwiftData
 
 enum SidebarSelection: Hashable {
     case patrimony
+    case forecast
     case scheduled
     case account(Account)
 }
@@ -42,6 +43,9 @@ struct AccountListView: View {
                         Section {
                             Label("Net Worth", systemImage: "chart.pie.fill")
                                 .tag(SidebarSelection.patrimony)
+                            
+                            Label("Forecast", systemImage: "chart.line.uptrend.xyaxis")
+                                .tag(SidebarSelection.forecast)
                             
                             HStack {
                                 Label("Scheduled", systemImage: "calendar.badge.clock")
@@ -92,6 +96,8 @@ struct AccountListView: View {
             switch selection {
             case .patrimony:
                 NetWorthView()
+            case .forecast:
+                ForecastView()
             case .scheduled:
                 ScheduledTransactionsView()
             case .account(let account):

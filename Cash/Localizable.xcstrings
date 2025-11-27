@@ -298,6 +298,16 @@
         }
       }
     },
+    "Balance Forecast" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previsione saldo"
+          }
+        }
+      }
+    },
     "Balance is calculated from all journal entries. To adjust, create a correcting entry." : {
       "localizations" : {
         "it" : {
@@ -394,6 +404,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scegli le tue preferenze"
+          }
+        }
+      }
+    },
+    "Current Balance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo attuale"
           }
         }
       }
@@ -1027,6 +1047,16 @@
         }
       }
     },
+    "Forecast" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previsione"
+          }
+        }
+      }
+    },
     "Freelance" : {
       "localizations" : {
         "it" : {
@@ -1526,6 +1556,66 @@
         }
       }
     },
+    "Next week" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossima settimana"
+          }
+        }
+      }
+    },
+    "Next 15 days" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimi 15 giorni"
+          }
+        }
+      }
+    },
+    "Next month" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimo mese"
+          }
+        }
+      }
+    },
+    "Next 3 months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimi 3 mesi"
+          }
+        }
+      }
+    },
+    "Next 6 months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimi 6 mesi"
+          }
+        }
+      }
+    },
+    "Next 12 months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimi 12 mesi"
+          }
+        }
+      }
+    },
     "Next: %@" : {
       "localizations" : {
         "it" : {
@@ -1572,6 +1662,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nessun dato da esportare"
+          }
+        }
+      }
+    },
+    "No forecast data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun dato previsionale"
+          }
+        }
+      }
+    },
+    "Add recurring transactions to see balance projections." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi transazioni ricorrenti per vedere le proiezioni del saldo."
+          }
+        }
+      }
+    },
+    "And %lld more transactions..." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E altre %lld transazioni..."
           }
         }
       }
@@ -1722,6 +1842,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cura personale"
+          }
+        }
+      }
+    },
+    "Projected Balance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo previsto"
+          }
+        }
+      }
+    },
+    "Projected Income" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrate previste"
+          }
+        }
+      }
+    },
+    "Projected Expenses" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spese previste"
           }
         }
       }
@@ -2232,6 +2382,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Viaggi"
+          }
+        }
+      }
+    },
+    "Upcoming Transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transazioni future"
           }
         }
       }
