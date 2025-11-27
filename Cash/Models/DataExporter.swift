@@ -12,17 +12,17 @@ import UniformTypeIdentifiers
 // MARK: - Export Format
 
 enum ExportFormat: String, CaseIterable, Identifiable {
-    case json = "json"
-    case csv = "csv"
+    case cashBackup = "cashdata"
+    case ofx = "ofx"
     
     var id: String { rawValue }
     
     var localizedName: String {
         switch self {
-        case .json:
-            return "JSON"
-        case .csv:
-            return "CSV"
+        case .cashBackup:
+            return "Cash Backup"
+        case .ofx:
+            return "OFX"
         }
     }
     
@@ -32,19 +32,19 @@ enum ExportFormat: String, CaseIterable, Identifiable {
     
     var utType: UTType {
         switch self {
-        case .json:
-            return .json
-        case .csv:
-            return .commaSeparatedText
+        case .cashBackup:
+            return .data
+        case .ofx:
+            return .xml
         }
     }
     
     var iconName: String {
         switch self {
-        case .json:
-            return "doc.badge.gearshape"
-        case .csv:
-            return "tablecells"
+        case .cashBackup:
+            return "doc.zipper"
+        case .ofx:
+            return "doc.text"
         }
     }
 }
@@ -171,69 +171,14 @@ struct ExportableData: Codable {
     }
 }
 
-// MARK: - CSV Row for Transactions
-
-struct CSVTransactionRow {
-    let transactionId: UUID
-    let date: Date
-    let description: String
-    let reference: String
-    let entryType: String
-    let amount: Decimal
-    let accountName: String
-    let accountClass: String
-    let accountType: String
-    let currency: String
-    
-    static var headers: [String] {
-        [
-            "Transaction ID",
-            "Date",
-            "Description",
-            "Reference",
-            "Entry Type",
-            "Amount",
-            "Account Name",
-            "Account Class",
-            "Account Type",
-            "Currency"
-        ]
-    }
-    
-    var values: [String] {
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [.withFullDate]
-        
-        return [
-            transactionId.uuidString,
-            dateFormatter.string(from: date),
-            description.escapedForCSV,
-            reference.escapedForCSV,
-            entryType,
-            "\(amount)",
-            accountName.escapedForCSV,
-            accountClass,
-            accountType,
-            currency
-        ]
-    }
-}
-
-private extension String {
-    var escapedForCSV: String {
-        if contains(",") || contains("\"") || contains("\n") {
-            return "\"\(replacingOccurrences(of: "\"", with: "\"\""))\""
-        }
-        return self
-    }
-}
-
 // MARK: - Data Exporter
 
 enum DataExporterError: LocalizedError {
     case noData
     case encodingFailed
     case decodingFailed
+    case compressionFailed
+    case decompressionFailed
     case invalidFormat
     case importFailed(String)
     
@@ -245,6 +190,10 @@ enum DataExporterError: LocalizedError {
             return String(localized: "Failed to encode data")
         case .decodingFailed:
             return String(localized: "Failed to decode data")
+        case .compressionFailed:
+            return String(localized: "Failed to compress data")
+        case .decompressionFailed:
+            return String(localized: "Failed to decompress data")
         case .invalidFormat:
             return String(localized: "Invalid file format")
         case .importFailed(let reason):
@@ -255,70 +204,245 @@ enum DataExporterError: LocalizedError {
 
 struct DataExporter {
     
-    // MARK: - Export JSON
+    // MARK: - Export Cash Backup (JSON + LZFSE)
     
-    static func exportJSON(accounts: [Account], transactions: [Transaction]) throws -> Data {
+    static func exportCashBackup(accounts: [Account], transactions: [Transaction]) throws -> Data {
         let exportData = ExportableData(accounts: accounts, transactions: transactions)
         
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         
-        guard let data = try? encoder.encode(exportData) else {
+        guard let jsonData = try? encoder.encode(exportData) else {
             throw DataExporterError.encodingFailed
         }
         
-        return data
+        guard let compressedData = try? (jsonData as NSData).compressed(using: .lzfse) as Data else {
+            throw DataExporterError.compressionFailed
+        }
+        
+        return compressedData
     }
     
-    // MARK: - Export CSV
+    // MARK: - Export OFX
     
-    static func exportCSV(transactions: [Transaction]) throws -> Data {
-        var rows: [CSVTransactionRow] = []
+    /// Export data in OFX (Open Financial Exchange) format
+    /// Each account is exported as a separate statement within the OFX document
+    static func exportOFX(accounts: [Account], transactions: [Transaction]) throws -> Data {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMddHHmmss"
+        let now = Date()
+        let dtServer = dateFormatter.string(from: now)
+        
+        var ofxContent = """
+        <?xml version="1.0" encoding="UTF-8"?>
+        <?OFX OFXHEADER="200" VERSION="220" SECURITY="NONE" OLDFILEUID="NONE" NEWFILEUID="NONE"?>
+        <OFX>
+        <SIGNONMSGSRSV1>
+        <SONRS>
+        <STATUS>
+        <CODE>0</CODE>
+        <SEVERITY>INFO</SEVERITY>
+        </STATUS>
+        <DTSERVER>\(dtServer)</DTSERVER>
+        <LANGUAGE>ENG</LANGUAGE>
+        </SONRS>
+        </SIGNONMSGSRSV1>
+        <BANKMSGSRSV1>
+        
+        """
+        
+        // Group transactions by account
+        var transactionsByAccount: [UUID: [(transaction: Transaction, entry: Entry)]] = [:]
         
         for transaction in transactions {
             for entry in transaction.entries ?? [] {
                 guard let account = entry.account else { continue }
-                
-                let row = CSVTransactionRow(
-                    transactionId: transaction.id,
-                    date: transaction.date,
-                    description: transaction.descriptionText,
-                    reference: transaction.reference,
-                    entryType: entry.entryTypeRawValue,
-                    amount: entry.amount,
-                    accountName: account.name,
-                    accountClass: account.accountClassRawValue,
-                    accountType: account.accountTypeRawValue,
-                    currency: account.currency
-                )
-                rows.append(row)
+                if transactionsByAccount[account.id] == nil {
+                    transactionsByAccount[account.id] = []
+                }
+                transactionsByAccount[account.id]?.append((transaction, entry))
             }
         }
         
-        var csvString = CSVTransactionRow.headers.joined(separator: ",") + "\n"
-        
-        for row in rows {
-            csvString += row.values.joined(separator: ",") + "\n"
+        // Export only asset and liability accounts (bank accounts, credit cards, etc.)
+        let exportableAccounts = accounts.filter { account in
+            account.accountClass == .asset || account.accountClass == .liability
         }
         
-        guard let data = csvString.data(using: .utf8) else {
+        for account in exportableAccounts {
+            let accountTransactions = transactionsByAccount[account.id] ?? []
+            
+            // Skip accounts with no transactions
+            guard !accountTransactions.isEmpty else { continue }
+            
+            // Sort transactions by date
+            let sortedTransactions = accountTransactions.sorted { $0.transaction.date < $1.transaction.date }
+            
+            // Determine date range
+            let startDate = sortedTransactions.first?.transaction.date ?? now
+            let endDate = sortedTransactions.last?.transaction.date ?? now
+            
+            let dtStart = dateFormatter.string(from: startDate)
+            let dtEnd = dateFormatter.string(from: endDate)
+            
+            // Determine account type for OFX
+            let ofxAccountType = ofxAccountType(for: account)
+            
+            ofxContent += """
+            <STMTTRNRS>
+            <TRNUID>\(UUID().uuidString)</TRNUID>
+            <STATUS>
+            <CODE>0</CODE>
+            <SEVERITY>INFO</SEVERITY>
+            </STATUS>
+            <STMTRS>
+            <CURDEF>\(account.currency)</CURDEF>
+            <BANKACCTFROM>
+            <BANKID>CASH</BANKID>
+            <ACCTID>\(account.id.uuidString)</ACCTID>
+            <ACCTTYPE>\(ofxAccountType)</ACCTTYPE>
+            </BANKACCTFROM>
+            <BANKTRANLIST>
+            <DTSTART>\(dtStart)</DTSTART>
+            <DTEND>\(dtEnd)</DTEND>
+            
+            """
+            
+            // Add transactions for this account
+            for (transaction, entry) in sortedTransactions {
+                let transactionDate = dateFormatter.string(from: transaction.date)
+                
+                // Calculate the signed amount based on entry type and account class
+                let signedAmount = calculateSignedAmount(entry: entry, account: account)
+                let amountString = formatDecimalForOFX(signedAmount)
+                
+                // Determine OFX transaction type
+                let trnType = ofxTransactionType(signedAmount: signedAmount, entry: entry)
+                
+                // Escape special characters in description
+                let escapedDescription = escapeXML(transaction.descriptionText)
+                let escapedMemo = escapeXML(transaction.reference)
+                
+                ofxContent += """
+                <STMTTRN>
+                <TRNTYPE>\(trnType)</TRNTYPE>
+                <DTPOSTED>\(transactionDate)</DTPOSTED>
+                <TRNAMT>\(amountString)</TRNAMT>
+                <FITID>\(entry.id.uuidString)</FITID>
+                <NAME>\(escapedDescription)</NAME>
+                <MEMO>\(escapedMemo)</MEMO>
+                </STMTTRN>
+                
+                """
+            }
+            
+            // Calculate ledger balance
+            let ledgerBalance = account.balance
+            let ledgerBalanceString = formatDecimalForOFX(ledgerBalance)
+            
+            ofxContent += """
+            </BANKTRANLIST>
+            <LEDGERBAL>
+            <BALAMT>\(ledgerBalanceString)</BALAMT>
+            <DTASOF>\(dtServer)</DTASOF>
+            </LEDGERBAL>
+            </STMTRS>
+            </STMTTRNRS>
+            
+            """
+        }
+        
+        ofxContent += """
+        </BANKMSGSRSV1>
+        </OFX>
+        """
+        
+        guard let data = ofxContent.data(using: .utf8) else {
             throw DataExporterError.encodingFailed
         }
         
         return data
     }
     
-    // MARK: - Import JSON
+    // MARK: - OFX Helper Methods
     
-    static func importJSON(from data: Data, into context: ModelContext) throws -> (accountsCount: Int, transactionsCount: Int) {
+    private static func ofxAccountType(for account: Account) -> String {
+        switch account.accountType {
+        case .creditCard:
+            return "CREDITLINE"
+        case .investment:
+            return "MONEYMRKT"
+        case .cash:
+            return "CHECKING"
+        default:
+            if account.accountClass == .liability {
+                return "CREDITLINE"
+            }
+            return "CHECKING"
+        }
+    }
+    
+    private static func calculateSignedAmount(entry: Entry, account: Account) -> Decimal {
+        // For OFX, positive amounts are money coming IN, negative are money going OUT
+        // Assets (debit normal): debit increases (money in), credit decreases (money out)
+        // Liabilities (credit normal): credit increases (debt up), debit decreases (debt down)
+        
+        if account.accountClass.normalBalance == .debit {
+            // Asset accounts: debit = positive (money in), credit = negative (money out)
+            return entry.entryType == .debit ? entry.amount : -entry.amount
+        } else {
+            // Liability accounts: credit = positive (debt increase), debit = negative (debt decrease)
+            return entry.entryType == .credit ? entry.amount : -entry.amount
+        }
+    }
+    
+    private static func ofxTransactionType(signedAmount: Decimal, entry: Entry) -> String {
+        if signedAmount >= 0 {
+            return "CREDIT"
+        } else {
+            return "DEBIT"
+        }
+    }
+    
+    private static func formatDecimalForOFX(_ decimal: Decimal) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        formatter.decimalSeparator = "."
+        formatter.groupingSeparator = ""
+        return formatter.string(from: decimal as NSDecimalNumber) ?? "0.00"
+    }
+    
+    private static func escapeXML(_ string: String) -> String {
+        return string
+            .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+            .replacingOccurrences(of: "'", with: "&apos;")
+    }
+    
+    // MARK: - Import Cash Backup (JSON + LZFSE)
+    
+    static func importCashBackup(from data: Data, into context: ModelContext) throws -> (accountsCount: Int, transactionsCount: Int) {
+        guard let decompressedData = try? (data as NSData).decompressed(using: .lzfse) as Data else {
+            throw DataExporterError.decompressionFailed
+        }
+        
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
-        guard let exportData = try? decoder.decode(ExportableData.self, from: data) else {
+        guard let exportData = try? decoder.decode(ExportableData.self, from: decompressedData) else {
             throw DataExporterError.decodingFailed
         }
         
+        return try importExportableData(exportData, into: context)
+    }
+    
+    // MARK: - Import Helper
+    
+    private static func importExportableData(_ exportData: ExportableData, into context: ModelContext) throws -> (accountsCount: Int, transactionsCount: Int) {
         // Create a mapping from old UUIDs to new accounts
         var accountMapping: [UUID: Account] = [:]
         

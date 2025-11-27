@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		925D092C2ED8AB490039DCA0 /* LICENSE.md in Resources */ = {isa = PBXBuildFile; fileRef = 925D092B2ED8AB490039DCA0 /* LICENSE.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		926E5BC72ED60CD700EA8D22 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		925D092B2ED8AB490039DCA0 /* LICENSE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		926E5BB72ED60CD600EA8D22 /* Cash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cash.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		926E5BC62ED60CD700EA8D22 /* CashTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CashTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		926E5BD02ED60CD700EA8D22 /* CashUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CashUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +80,7 @@
 		926E5BAE2ED60CD500EA8D22 = {
 			isa = PBXGroup;
 			children = (
+				925D092B2ED8AB490039DCA0 /* LICENSE.md */,
 				926E5BB92ED60CD600EA8D22 /* Cash */,
 				926E5BC92ED60CD700EA8D22 /* CashTests */,
 				926E5BD32ED60CD700EA8D22 /* CashUITests */,
@@ -212,6 +218,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				925D092C2ED8AB490039DCA0 /* LICENSE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

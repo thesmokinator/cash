@@ -70,7 +70,7 @@ struct SetupWizardView: View {
                 case .welcome:
                     welcomeStep
                 case .preferences:
-                    preferencesStep(settings: $settings)
+                    preferencesStep(languageBinding: $settings.language, themeBinding: $settings.theme)
                 case .accounts:
                     accountsStep
                 }
@@ -214,7 +214,7 @@ struct SetupWizardView: View {
             }
             .fileImporter(
                 isPresented: $showingImportFilePicker,
-                allowedContentTypes: [.json],
+                allowedContentTypes: [.data],
                 allowsMultipleSelection: false
             ) { result in
                 handleImport(result: result)
@@ -247,8 +247,8 @@ struct SetupWizardView: View {
                 
                 let data = try Data(contentsOf: url)
                 
-                // Import data
-                _ = try DataExporter.importJSON(from: data, into: modelContext)
+                // Import Cash Backup
+                _ = try DataExporter.importCashBackup(from: data, into: modelContext)
                 
                 // Mark setup as complete and close wizard
                 UserDefaults.standard.set(true, forKey: "hasCompletedSetup")
@@ -268,7 +268,7 @@ struct SetupWizardView: View {
     // MARK: - Preferences Step
     
     @ViewBuilder
-    private func preferencesStep(settings: Bindable<AppSettings>) -> some View {
+    private func preferencesStep(languageBinding: Binding<AppLanguage>, themeBinding: Binding<AppTheme>) -> some View {
         VStack(spacing: 20) {
             Text("Choose your preferences")
                 .font(.title)
@@ -281,9 +281,9 @@ struct SetupWizardView: View {
             
             Form {
                 Section(String(localized: "Language")) {
-                    Picker(String(localized: "Language"), selection: settings.language) {
+                    Picker(String(localized: "Language"), selection: languageBinding) {
                         ForEach(AppLanguage.allCases) { language in
-                            Text(language.localizedName)
+                            Text(language.labelKey)
                                 .tag(language)
                         }
                     }
@@ -302,9 +302,9 @@ struct SetupWizardView: View {
                 }
                 
                 Section(String(localized: "Theme")) {
-                    Picker(String(localized: "Theme"), selection: settings.theme) {
+                    Picker(String(localized: "Theme"), selection: themeBinding) {
                         ForEach(AppTheme.allCases) { theme in
-                            Text(theme.localizedName)
+                            Text(theme.labelKey)
                                 .tag(theme)
                         }
                     }

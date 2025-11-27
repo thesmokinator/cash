@@ -34,7 +34,6 @@ struct CashApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .preferredColorScheme(settings.theme.colorScheme)
                 .environment(\.locale, settings.language.locale)
         }
         .modelContainer(sharedModelContainer)

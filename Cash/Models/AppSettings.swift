@@ -16,14 +16,14 @@ enum AppTheme: String, CaseIterable, Identifiable {
     
     var id: String { rawValue }
     
-    var localizedName: String {
+    var labelKey: LocalizedStringKey {
         switch self {
         case .system:
-            return String(localized: "System")
+            return "System"
         case .light:
-            return String(localized: "Light")
+            return "Light"
         case .dark:
-            return String(localized: "Dark")
+            return "Dark"
         }
     }
     
@@ -57,10 +57,10 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     
     var id: String { rawValue }
     
-    var localizedName: String {
+    var labelKey: LocalizedStringKey {
         switch self {
         case .system:
-            return String(localized: "System")
+            return "System"
         case .english:
             return "English"
         case .italian:
@@ -114,6 +114,7 @@ final class AppSettings {
     var theme: AppTheme {
         didSet {
             UserDefaults.standard.set(theme.rawValue, forKey: themeKey)
+            applyTheme()
         }
     }
     
@@ -140,6 +141,22 @@ final class AppSettings {
             self.language = savedLang
         } else {
             self.language = .system
+        }
+        
+        // Apply theme on init
+        applyTheme()
+    }
+    
+    private func applyTheme() {
+        DispatchQueue.main.async {
+            switch self.theme {
+            case .system:
+                NSApp.appearance = nil
+            case .light:
+                NSApp.appearance = NSAppearance(named: .aqua)
+            case .dark:
+                NSApp.appearance = NSAppearance(named: .darkAqua)
+            }
         }
     }
     

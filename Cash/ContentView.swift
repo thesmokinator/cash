@@ -41,17 +41,14 @@ struct ContentView: View {
     var body: some View {
         AccountListView()
             .sheet(isPresented: $showingSettings) {
-                NavigationStack {
-                    SettingsView(appState: appState, dismissSettings: { showingSettings = false })
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button("Done") {
-                                    showingSettings = false
-                                }
+                SettingsView(appState: appState, dismissSettings: { showingSettings = false })
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Done") {
+                                showingSettings = false
                             }
                         }
-                }
-                .frame(minWidth: 450, minHeight: 400)
+                    }
                 .environment(settings)
                 .environment(\.locale, settings.language.locale)
             }
@@ -152,7 +149,7 @@ struct WelcomeSheet: View {
         .frame(width: 450, height: 500)
         .fileImporter(
             isPresented: $showingImportPicker,
-            allowedContentTypes: [.json],
+            allowedContentTypes: [.data],
             allowsMultipleSelection: false
         ) { result in
             handleImport(result: result)
@@ -199,7 +196,7 @@ struct WelcomeSheet: View {
                     
                     await MainActor.run {
                         do {
-                            _ = try DataExporter.importJSON(from: data, into: modelContext)
+                            _ = try DataExporter.importCashBackup(from: data, into: modelContext)
                             AppConfiguration.markSetupCompleted(in: modelContext)
                             appState.isLoading = false
                             appState.showWelcomeSheet = false

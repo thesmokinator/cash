@@ -19,14 +19,24 @@
     "•" : {
 
     },
+    "© 2025 Michele Broggi" : {
+
+    },
     "+%@" : {
 
     },
     "0" : {
 
     },
-    "1.0.0" : {
-
+    "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un'applicazione macOS semplificata per la gestione finanziaria ispirata a Gnucash, sviluppata con SwiftUI e SwiftData."
+          }
+        }
+      }
     },
     "About" : {
       "localizations" : {
@@ -148,30 +158,15 @@
         }
       }
     },
-    "Add your first transaction to track your finances." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi la tua prima transazione per tracciare le tue finanze."
-          }
-        }
-      }
-    },
-    "All data will be permanently deleted and the app will restart." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutti i dati verranno eliminati permanentemente e l'app verrà riavviata."
-          }
-        }
-      }
-    },
     "All data will be permanently deleted." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutti i dati verranno eliminati permanentemente."
+          }
+        }
+      }
     },
     "All transactions" : {
       "localizations" : {
@@ -189,16 +184,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importo"
-          }
-        }
-      }
-    },
-    "Appearance" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aspetto"
           }
         }
       }
@@ -303,6 +288,26 @@
         }
       }
     },
+    "Bank format" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato bancario"
+          }
+        }
+      }
+    },
+    "Build %@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Build %@"
+          }
+        }
+      }
+    },
     "Cancel" : {
       "localizations" : {
         "it" : {
@@ -319,17 +324,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contanti"
-          }
-        }
-      }
-    },
-    "Cash helps you manage your personal finances using double-entry bookkeeping.\n\nEvery transaction has two sides: money comes from somewhere and goes somewhere else. For example, when you receive your salary, money enters your bank account (Asset) from your Salary (Income).\n\nWould you like to create a set of example accounts to get started?" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cash ti aiuta a gestire le tue finanze personali usando la contabilità in partita doppia.\n\nOgni transazione ha due lati: i soldi arrivano da qualche parte e vanno da qualche altra parte. Per esempio, quando ricevi lo stipendio, i soldi entrano nel tuo conto bancario (Attività) dallo Stipendio (Entrata).\n\nVuoi creare un insieme di conti di esempio per iniziare?"
           }
         }
       }
@@ -355,14 +349,11 @@
       }
     },
     "Choose export format" : {
-
-    },
-    "Choose how Cash looks. System follows your macOS appearance settings." : {
       "localizations" : {
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scegli l'aspetto di Cash. Sistema segue le impostazioni di aspetto di macOS."
+            "value" : "Scegli il formato di esportazione"
           }
         }
       }
@@ -387,6 +378,16 @@
         }
       }
     },
+    "Close" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiudi"
+          }
+        }
+      }
+    },
     "Continue" : {
       "localizations" : {
         "it" : {
@@ -403,17 +404,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Av"
-          }
-        }
-      }
-    },
-    "Create example accounts" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Crea conti di esempio"
           }
         }
       }
@@ -484,6 +474,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Giornaliero"
+          }
+        }
+      }
+    },
+    "Danger zone" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zona pericolosa"
           }
         }
       }
@@ -738,6 +738,9 @@
         }
       }
     },
+    "English" : {
+
+    },
     "Enter the starting balance for this account" : {
       "localizations" : {
         "it" : {
@@ -769,10 +772,24 @@
       }
     },
     "Erasing data..." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancellazione dati..."
+          }
+        }
+      }
     },
     "Error" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore"
+          }
+        }
+      }
     },
     "Every" : {
       "localizations" : {
@@ -855,22 +872,70 @@
       }
     },
     "Export / Import" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta / Importa"
+          }
+        }
+      }
     },
     "Export data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta dati"
+          }
+        }
+      }
     },
     "Export successful" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esportazione completata"
+          }
+        }
+      }
     },
-    "Export your data as JSON (full backup) or CSV (for spreadsheets). Import will replace all existing data." : {
+    "Export your data as JSON (full backup) or OFX (standard bank format). Import will replace all existing data." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta i tuoi dati come JSON (backup completo) o OFX (formato bancario standard). L'importazione sostituirà tutti i dati esistenti."
+          }
+        }
+      }
+    },
+    "Failed to compress data" : {
 
     },
     "Failed to decode data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile decodificare i dati"
+          }
+        }
+      }
+    },
+    "Failed to decompress data" : {
 
     },
     "Failed to encode data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile codificare i dati"
+          }
+        }
+      }
     },
     "Food & dining" : {
       "localizations" : {
@@ -923,7 +988,24 @@
       }
     },
     "Full backup" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup completo"
+          }
+        }
+      }
+    },
+    "General" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generali"
+          }
+        }
+      }
     },
     "Get started" : {
       "localizations" : {
@@ -956,41 +1038,110 @@
       }
     },
     "Import data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa dati"
+          }
+        }
+      }
     },
     "Import data?" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importare i dati?"
+          }
+        }
+      }
     },
     "Import error" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore di importazione"
+          }
+        }
+      }
     },
     "Import Error" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore di importazione"
+          }
+        }
+      }
     },
     "Import existing data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa dati esistenti"
+          }
+        }
+      }
     },
     "Import failed: %@" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione fallita: %@"
+          }
+        }
+      }
     },
     "Import successful" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione completata"
+          }
+        }
+      }
     },
     "Imported %lld accounts and %lld transactions." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "Imported %1$lld accounts and %2$lld transactions."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importati %1$lld conti e %2$lld transazioni."
           }
         }
       }
     },
     "Importing data..." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione dati..."
+          }
+        }
+      }
     },
     "Importing will replace all existing data. Make sure to export your current data first if needed." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'importazione sostituirà tutti i dati esistenti. Assicurati di esportare i dati attuali prima se necessario."
+          }
+        }
+      }
     },
     "Inactive accounts are hidden from selection lists" : {
       "localizations" : {
@@ -1043,7 +1194,14 @@
       }
     },
     "Invalid file format" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato file non valido"
+          }
+        }
+      }
     },
     "Investment" : {
       "localizations" : {
@@ -1055,6 +1213,9 @@
         }
       }
     },
+    "Italiano" : {
+
+    },
     "Journal entry preview" : {
       "localizations" : {
         "it" : {
@@ -1065,8 +1226,15 @@
         }
       }
     },
-    "JSON is recommended for full backup and restore. CSV is useful for viewing in spreadsheets." : {
-
+    "JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON è consigliato per backup e ripristino completo. OFX è il formato bancario standard per importare in altre app."
+          }
+        }
+      }
     },
     "Language" : {
       "localizations" : {
@@ -1164,6 +1332,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prestito"
+          }
+        }
+      }
+    },
+    "MIT License" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licenza MIT"
           }
         }
       }
@@ -1279,7 +1457,14 @@
       }
     },
     "No data to export" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun dato da esportare"
+          }
+        }
+      }
     },
     "No transactions" : {
       "localizations" : {
@@ -1631,17 +1816,6 @@
         }
       }
     },
-    "Search transactions" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cerca transazioni"
-          }
-        }
-      }
-    },
     "Select account" : {
       "localizations" : {
         "it" : {
@@ -1692,16 +1866,6 @@
         }
       }
     },
-    "Settings" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impostazioni"
-          }
-        }
-      }
-    },
     "Shopping" : {
       "localizations" : {
         "it" : {
@@ -1712,22 +1876,15 @@
         }
       }
     },
-    "Spreadsheet" : {
-
-    },
-    "Start empty" : {
-      "extractionState" : "stale",
+    "Start fresh" : {
       "localizations" : {
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inizia vuoto"
+            "value" : "Inizia da zero"
           }
         }
       }
-    },
-    "Start fresh" : {
-
     },
     "Status" : {
       "localizations" : {
@@ -1809,19 +1966,15 @@
         }
       }
     },
-    "This will delete all accounts and transactions and restart the app." : {
-      "extractionState" : "stale",
+    "This will delete all accounts and transactions." : {
       "localizations" : {
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Questo eliminerà tutti i conti e le transazioni e riavvierà l'app."
+            "value" : "Questo eliminerà tutti i conti e le transazioni."
           }
         }
       }
-    },
-    "This will delete all accounts and transactions." : {
-
     },
     "This will permanently delete all your accounts and transactions. This action cannot be undone." : {
       "localizations" : {
@@ -1864,7 +2017,14 @@
       }
     },
     "Track your personal finances with double-entry bookkeeping" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestisci le tue finanze personali con la partita doppia"
+          }
+        }
+      }
     },
     "Track your personal finances with ease using double-entry bookkeeping." : {
       "localizations" : {
@@ -1966,12 +2126,12 @@
         }
       }
     },
-    "Version" : {
+    "Version %@" : {
       "localizations" : {
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versione"
+            "value" : "Versione %@"
           }
         }
       }
@@ -2067,7 +2227,14 @@
       }
     },
     "Your data has been exported successfully." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I tuoi dati sono stati esportati con successo."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
