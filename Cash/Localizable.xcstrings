@@ -171,7 +171,14 @@
       }
     },
     "All data will be permanently deleted." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutti i dati verranno eliminati permanentemente."
+          }
+        }
+      }
     },
     "All transactions" : {
       "localizations" : {
@@ -304,7 +311,14 @@
       }
     },
     "Bank format" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato bancario"
+          }
+        }
+      }
     },
     "Cancel" : {
       "localizations" : {
@@ -358,7 +372,14 @@
       }
     },
     "Choose export format" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli il formato di esportazione"
+          }
+        }
+      }
     },
     "Choose how Cash looks. System follows your macOS appearance settings." : {
       "localizations" : {
@@ -772,10 +793,24 @@
       }
     },
     "Erasing data..." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancellazione dati..."
+          }
+        }
+      }
     },
     "Error" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore"
+          }
+        }
+      }
     },
     "Every" : {
       "localizations" : {
@@ -858,22 +893,64 @@
       }
     },
     "Export / Import" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta / Importa"
+          }
+        }
+      }
     },
     "Export data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta dati"
+          }
+        }
+      }
     },
     "Export successful" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esportazione completata"
+          }
+        }
+      }
     },
     "Export your data as JSON (full backup) or OFX (standard bank format). Import will replace all existing data." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta i tuoi dati come JSON (backup completo) o OFX (formato bancario standard). L'importazione sostituirà tutti i dati esistenti."
+          }
+        }
+      }
     },
     "Failed to decode data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile decodificare i dati"
+          }
+        }
+      }
     },
     "Failed to encode data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile codificare i dati"
+          }
+        }
+      }
     },
     "Food & dining" : {
       "localizations" : {
@@ -926,7 +1003,14 @@
       }
     },
     "Full backup" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup completo"
+          }
+        }
+      }
     },
     "Get started" : {
       "localizations" : {
@@ -959,25 +1043,74 @@
       }
     },
     "Import data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa dati"
+          }
+        }
+      }
     },
     "Import data?" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importare i dati?"
+          }
+        }
+      }
     },
     "Import error" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore di importazione"
+          }
+        }
+      }
     },
     "Import Error" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore di importazione"
+          }
+        }
+      }
     },
     "Import existing data" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa dati esistenti"
+          }
+        }
+      }
     },
     "Import failed: %@" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione fallita: %@"
+          }
+        }
+      }
     },
     "Import successful" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione completata"
+          }
+        }
+      }
     },
     "Imported %lld accounts and %lld transactions." : {
       "localizations" : {
@@ -986,14 +1119,34 @@
             "state" : "new",
             "value" : "Imported %1$lld accounts and %2$lld transactions."
           }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importati %1$lld conti e %2$lld transazioni."
+          }
         }
       }
     },
     "Importing data..." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione dati..."
+          }
+        }
+      }
     },
     "Importing will replace all existing data. Make sure to export your current data first if needed." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'importazione sostituirà tutti i dati esistenti. Assicurati di esportare i dati attuali prima se necessario."
+          }
+        }
+      }
     },
     "Inactive accounts are hidden from selection lists" : {
       "localizations" : {
@@ -1046,7 +1199,14 @@
       }
     },
     "Invalid file format" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato file non valido"
+          }
+        }
+      }
     },
     "Investment" : {
       "localizations" : {
@@ -1069,7 +1229,14 @@
       }
     },
     "JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON è consigliato per backup e ripristino completo. OFX è il formato bancario standard per importare in altre app."
+          }
+        }
+      }
     },
     "Language" : {
       "localizations" : {
@@ -1282,7 +1449,14 @@
       }
     },
     "No data to export" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun dato da esportare"
+          }
+        }
+      }
     },
     "No transactions" : {
       "localizations" : {
@@ -1727,7 +1901,14 @@
       }
     },
     "Start fresh" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizia da zero"
+          }
+        }
+      }
     },
     "Status" : {
       "localizations" : {
@@ -1821,7 +2002,14 @@
       }
     },
     "This will delete all accounts and transactions." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo eliminerà tutti i conti e le transazioni."
+          }
+        }
+      }
     },
     "This will permanently delete all your accounts and transactions. This action cannot be undone." : {
       "localizations" : {
@@ -1864,7 +2052,14 @@
       }
     },
     "Track your personal finances with double-entry bookkeeping" : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestisci le tue finanze personali con la partita doppia"
+          }
+        }
+      }
     },
     "Track your personal finances with ease using double-entry bookkeeping." : {
       "localizations" : {
@@ -2067,7 +2262,14 @@
       }
     },
     "Your data has been exported successfully." : {
-
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I tuoi dati sono stati esportati con successo."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
