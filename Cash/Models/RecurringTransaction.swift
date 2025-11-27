@@ -148,13 +148,23 @@ final class RecurrenceRule {
             
         case .monthly:
             if let day = dayOfMonth {
+                // Get the target day in the current month
                 var components = calendar.dateComponents([.year, .month], from: date)
-                components.day = min(day, daysInMonth(for: date))
-                if let targetDate = calendar.date(from: components), targetDate <= date {
-                    components.month = (components.month ?? 1) + interval
-                    nextDate = calendar.date(from: components)
-                } else {
-                    nextDate = calendar.date(from: components)
+                let targetDay = min(day, daysInMonth(for: date))
+                components.day = targetDay
+                
+                if let targetDate = calendar.date(from: components) {
+                    // If target date is in the past or today, go to next interval
+                    if targetDate <= date {
+                        // Move to next month(s)
+                        if let nextMonth = calendar.date(byAdding: .month, value: interval, to: targetDate) {
+                            var nextComponents = calendar.dateComponents([.year, .month], from: nextMonth)
+                            nextComponents.day = min(day, daysInMonth(for: nextMonth))
+                            nextDate = calendar.date(from: nextComponents)
+                        }
+                    } else {
+                        nextDate = targetDate
+                    }
                 }
             } else {
                 nextDate = calendar.date(byAdding: .month, value: interval, to: date)

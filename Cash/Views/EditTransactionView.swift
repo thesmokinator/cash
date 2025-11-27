@@ -93,7 +93,11 @@ struct EditTransactionView: View {
                 }
                 
                 Section("Details") {
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
+                    if isRecurring {
+                        DatePicker("Start date", selection: $date, displayedComponents: .date)
+                    } else {
+                        DatePicker("Date", selection: $date, in: ...Date(), displayedComponents: .date)
+                    }
                     HStack {
                         Text(CurrencyList.symbol(forCode: currentCurrency))
                             .foregroundStyle(.secondary)

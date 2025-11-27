@@ -50,7 +50,7 @@ final class Transaction {
     var descriptionText: String
     var reference: String
     var createdAt: Date
-    var isRecurring: Bool
+    var isRecurring: Bool // Recurring transactions are templates not counted in balances
     
     @Relationship(deleteRule: .cascade, inverse: \Entry.transaction)
     var entries: [Entry]? = []

@@ -32,18 +32,32 @@ struct EntryPreviewRow: View {
     let isOutgoing: Bool
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
+            Image(systemName: isOutgoing ? "arrow.up.circle.fill" : "arrow.down.circle.fill")
+                .foregroundStyle(isOutgoing ? .red : .green)
+                .font(.body)
+            
             Text(accountName)
-                .font(.caption)
+                .font(.subheadline)
             
             Spacer()
             
+            Text(type.shortName.uppercased())
+                .font(.caption2)
+                .fontWeight(.semibold)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(.quaternary)
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+            
             Text(isOutgoing ? "-\(amount)" : "+\(amount)")
-                .font(.caption)
-                .fontWeight(.medium)
+                .font(.subheadline)
+                .fontWeight(.semibold)
                 .foregroundStyle(isOutgoing ? .red : .green)
+                .monospacedDigit()
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 6)
     }
 }
 
@@ -56,16 +70,34 @@ struct JournalEntryPreview: View {
     let currency: String
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 4) {
             let formattedAmount = CurrencyFormatter.format(amount, currency: currency)
             
             if let debit = debitAccountName, let credit = creditAccountName {
-                EntryPreviewRow(accountName: debit, type: .debit, amount: formattedAmount, isOutgoing: false)
-                EntryPreviewRow(accountName: credit, type: .credit, amount: formattedAmount, isOutgoing: true)
+                VStack(spacing: 0) {
+                    EntryPreviewRow(accountName: debit, type: .debit, amount: formattedAmount, isOutgoing: false)
+                    Divider()
+                    EntryPreviewRow(accountName: credit, type: .credit, amount: formattedAmount, isOutgoing: true)
+                }
+                .padding(12)
+                .background(Color.accentColor.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .strokeBorder(Color.accentColor.opacity(0.2), lineWidth: 1)
+                )
             } else {
-                Text("Select accounts to see preview")
-                    .foregroundStyle(.secondary)
-                    .font(.caption)
+                HStack {
+                    Image(systemName: "doc.text")
+                        .foregroundStyle(.secondary)
+                    Text("Select accounts to see preview")
+                        .foregroundStyle(.secondary)
+                }
+                .font(.subheadline)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(.quaternary.opacity(0.5))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
         }
     }

@@ -93,6 +93,13 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     var bundle: Bundle {
         switch self {
         case .system:
+            // Get the user's preferred language that the app supports
+            let preferredLanguages = Bundle.main.preferredLocalizations
+            if let preferred = preferredLanguages.first,
+               let path = Bundle.main.path(forResource: preferred, ofType: "lproj"),
+               let bundle = Bundle(path: path) {
+                return bundle
+            }
             return .main
         case .english, .italian:
             guard let path = Bundle.main.path(forResource: rawValue, ofType: "lproj"),

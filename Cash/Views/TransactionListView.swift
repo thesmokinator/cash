@@ -71,7 +71,7 @@ enum TransactionDateFilter: String, CaseIterable, Identifiable {
 struct TransactionListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppSettings.self) private var settings
-    @Query(sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
+    @Query(filter: #Predicate<Transaction> { $0.isRecurring == false }, sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
     @State private var showingAddTransaction = false
     @State private var transactionToEdit: Transaction?
     @State private var transactionToDelete: Transaction?

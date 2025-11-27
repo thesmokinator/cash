@@ -132,7 +132,11 @@ struct AddTransactionView: View {
                 }
                 
                 Section("Details") {
-                    DatePicker("Date", selection: $date, displayedComponents: .date)
+                    if isRecurring {
+                        DatePicker("Start date", selection: $date, displayedComponents: .date)
+                    } else {
+                        DatePicker("Date", selection: $date, in: ...Date(), displayedComponents: .date)
+                    }
                     HStack {
                         Text(CurrencyList.symbol(forCode: currentCurrency))
                             .foregroundStyle(.secondary)
@@ -227,8 +231,10 @@ struct AddTransactionView: View {
             selectedFromAccount = account
         case .expense:
             selectedExpenseAccount = account
+            transactionType = .expense
         case .income:
             selectedIncomeAccount = account
+            transactionType = .income
         case .equity:
             break
         }

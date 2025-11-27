@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
+import AppKit
 
 // MARK: - App Notifications
 
@@ -37,6 +38,11 @@ struct ContentView: View {
     @State private var appState = AppState()
     @State private var showingSettings = false
     @State private var hasCheckedSetup = false
+    @State private var showingOFXImportPicker = false
+    @State private var showingOFXImportWizard = false
+    @State private var parsedOFXTransactions: [OFXTransaction] = []
+    @State private var showingOFXError = false
+    @State private var ofxErrorMessage = ""
     
     var body: some View {
         AccountListView()
@@ -54,7 +60,26 @@ struct ContentView: View {
             }
             .sheet(isPresented: $appState.showWelcomeSheet) {
                 WelcomeSheet(appState: appState)
+                    .environment(settings)
+                    .environment(\.locale, settings.language.locale)
                     .interactiveDismissDisabled()
+            }
+            .sheet(isPresented: $showingOFXImportWizard) {
+                OFXImportWizard(ofxTransactions: parsedOFXTransactions)
+                    .environment(settings)
+                    .environment(\.locale, settings.language.locale)
+            }
+            .fileImporter(
+                isPresented: $showingOFXImportPicker,
+                allowedContentTypes: [.data],
+                allowsMultipleSelection: false
+            ) { result in
+                handleOFXImport(result: result)
+            }
+            .alert("Error", isPresented: $showingOFXError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(ofxErrorMessage)
             }
             .overlay {
                 if appState.isLoading {
@@ -77,6 +102,38 @@ struct ContentView: View {
                     appState.showWelcomeSheet = true
                 }
             }
+            .onReceive(NotificationCenter.default.publisher(for: .importOFX)) { _ in
+                showingOFXImportPicker = true
+            }
+    }
+    
+    private func handleOFXImport(result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            
+            guard url.startAccessingSecurityScopedResource() else {
+                ofxErrorMessage = String(localized: "Cannot access the selected file")
+                showingOFXError = true
+                return
+            }
+            
+            defer { url.stopAccessingSecurityScopedResource() }
+            
+            do {
+                let data = try Data(contentsOf: url)
+                let transactions = try OFXParser.parse(data: data)
+                parsedOFXTransactions = transactions
+                showingOFXImportWizard = true
+            } catch {
+                ofxErrorMessage = error.localizedDescription
+                showingOFXError = true
+            }
+            
+        case .failure(let error):
+            ofxErrorMessage = error.localizedDescription
+            showingOFXError = true
+        }
     }
 }
 
@@ -85,6 +142,7 @@ struct ContentView: View {
 struct WelcomeSheet: View {
     let appState: AppState
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppSettings.self) private var settings
     @State private var showingImportPicker = false
     @State private var showingError = false
     @State private var errorMessage = ""
@@ -140,13 +198,22 @@ struct WelcomeSheet: View {
                 ) {
                     showingImportPicker = true
                 }
+                
+                WelcomeOptionButton(
+                    title: "Quit",
+                    subtitle: "Exit the application",
+                    icon: "xmark.circle.fill",
+                    color: .red
+                ) {
+                    exit(0)
+                }
             }
             .padding(.horizontal, 20)
             
             Spacer()
         }
         .padding(40)
-        .frame(width: 450, height: 500)
+        .frame(width: 450, height: 560)
         .fileImporter(
             isPresented: $showingImportPicker,
             allowedContentTypes: [.data],
@@ -167,7 +234,7 @@ struct WelcomeSheet: View {
     }
     
     private func setupDemoAccounts() {
-        let defaultAccounts = ChartOfAccounts.createDefaultAccounts(currency: "EUR")
+        let defaultAccounts = ChartOfAccounts.createDefaultAccounts(currency: "EUR", bundle: settings.language.bundle)
         for account in defaultAccounts {
             modelContext.insert(account)
         }
@@ -226,8 +293,8 @@ struct WelcomeSheet: View {
 // MARK: - Welcome Option Button
 
 struct WelcomeOptionButton: View {
-    let title: String
-    let subtitle: String
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey
     let icon: String
     let color: Color
     let action: () -> Void
@@ -291,6 +358,7 @@ struct LoadingOverlayView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: Account.self, inMemory: true)
+        .modelContainer(for: [Account.self, Transaction.self], inMemory: true)
         .environment(AppSettings.shared)
+        .environment(NavigationState())
 }

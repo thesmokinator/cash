@@ -15,6 +15,7 @@ struct RecurrenceConfigView: View {
     @Binding var dayOfWeek: Int
     @Binding var weekendAdjustment: WeekendAdjustment
     @Binding var endDate: Date?
+    var showToggle: Bool = true
     @State private var hasEndDate: Bool = false
     
     private let weekdays = [
@@ -28,7 +29,9 @@ struct RecurrenceConfigView: View {
     ]
     
     var body: some View {
-        Toggle("Recurring transaction", isOn: $isRecurring)
+        if showToggle {
+            Toggle("Recurring transaction", isOn: $isRecurring)
+        }
         
         if isRecurring {
             Picker("Frequency", selection: $frequency) {
