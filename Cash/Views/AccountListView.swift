@@ -16,8 +16,10 @@ enum SidebarSelection: Hashable {
 struct AccountListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppSettings.self) private var settings
+    @Environment(NavigationState.self) private var navigationState
     @Query(sort: \Account.accountNumber) private var accounts: [Account]
     @State private var showingAddAccount = false
+    @State private var showingAddTransaction = false
     @State private var selection: SidebarSelection? = .patrimony
     
     private var hasAccounts: Bool {
@@ -75,13 +77,31 @@ struct AccountListView: View {
             case .patrimony:
                 NetWorthView()
             case .account(let account):
-                AccountDetailView(account: account)
+                AccountDetailView(account: account, showingAddTransaction: $showingAddTransaction)
             case nil:
                 ContentUnavailableView {
                     Label("Select an account", systemImage: "building.columns")
                 } description: {
                     Text("Choose an account from the sidebar to view details.")
                 }
+            }
+        }
+        .onChange(of: selection) { _, newValue in
+            switch newValue {
+            case .account(let account):
+                navigationState.isViewingAccount = true
+                navigationState.currentAccount = account
+            default:
+                navigationState.isViewingAccount = false
+                navigationState.currentAccount = nil
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addNewAccount)) { _ in
+            showingAddAccount = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addNewTransaction)) { _ in
+            if navigationState.isViewingAccount {
+                showingAddTransaction = true
             }
         }
     }

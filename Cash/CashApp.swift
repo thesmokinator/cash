@@ -8,10 +8,26 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Navigation State
+
+@Observable
+class NavigationState {
+    var isViewingAccount: Bool = false
+    var currentAccount: Account? = nil
+}
+
+// MARK: - Cmd+N Notifications
+
+extension Notification.Name {
+    static let addNewAccount = Notification.Name("addNewAccount")
+    static let addNewTransaction = Notification.Name("addNewTransaction")
+}
+
 @main
 struct CashApp: App {
     @State private var settings = AppSettings.shared
     @State private var menuAppState = AppState()
+    @State private var navigationState = NavigationState()
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -35,9 +51,25 @@ struct CashApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.locale, settings.language.locale)
+                .environment(navigationState)
         }
         .modelContainer(sharedModelContainer)
         .environment(settings)
+        .commands {
+            // Replace default New Window command with contextual actions
+            CommandGroup(replacing: .newItem) {
+                Button {
+                    if navigationState.isViewingAccount {
+                        NotificationCenter.default.post(name: .addNewTransaction, object: nil)
+                    } else {
+                        NotificationCenter.default.post(name: .addNewAccount, object: nil)
+                    }
+                } label: {
+                    Text(navigationState.isViewingAccount ? "New transaction" : "New account")
+                }
+                .keyboardShortcut("n", modifiers: .command)
+            }
+        }
         
         Settings {
             SettingsView(appState: menuAppState, dismissSettings: {})

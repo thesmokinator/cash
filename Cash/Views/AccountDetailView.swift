@@ -14,7 +14,7 @@ struct AccountDetailView: View {
     @Environment(AppSettings.self) private var settings
     @State private var showingEditSheet = false
     @State private var showingDeleteConfirmation = false
-    @State private var showingAddTransaction = false
+    @Binding var showingAddTransaction: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -177,9 +177,10 @@ struct DetailRow: View {
         accountClass: .asset,
         accountType: .bank
     )
+    @Previewable @State var showingAddTransaction = false
     
     NavigationStack {
-        AccountDetailView(account: account)
+        AccountDetailView(account: account, showingAddTransaction: $showingAddTransaction)
     }
     .modelContainer(for: Account.self, inMemory: true)
     .environment(AppSettings.shared)
