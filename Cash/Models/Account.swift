@@ -169,41 +169,45 @@ enum AccountType: String, Codable, CaseIterable, Identifiable {
     var id: String { rawValue }
     
     var localizedName: String {
+        localizedName(bundle: .main)
+    }
+    
+    func localizedName(bundle: Bundle) -> String {
         switch self {
         // Asset types
-        case .cash: return String(localized: "Cash")
-        case .bank: return String(localized: "Bank account")
-        case .investment: return String(localized: "Investment")
-        case .receivable: return String(localized: "Receivable")
-        case .prepaidExpense: return String(localized: "Prepaid expense")
+        case .cash: return String(localized: "Cash", bundle: bundle)
+        case .bank: return String(localized: "Bank account", bundle: bundle)
+        case .investment: return String(localized: "Investment", bundle: bundle)
+        case .receivable: return String(localized: "Receivable", bundle: bundle)
+        case .prepaidExpense: return String(localized: "Prepaid expense", bundle: bundle)
         // Liability types
-        case .creditCard: return String(localized: "Credit card")
-        case .loan: return String(localized: "Loan")
-        case .payable: return String(localized: "Payable")
+        case .creditCard: return String(localized: "Credit card", bundle: bundle)
+        case .loan: return String(localized: "Loan", bundle: bundle)
+        case .payable: return String(localized: "Payable", bundle: bundle)
         // Equity types
-        case .retainedEarnings: return String(localized: "Retained earnings")
-        case .openingBalance: return String(localized: "Opening balance")
+        case .retainedEarnings: return String(localized: "Retained earnings", bundle: bundle)
+        case .openingBalance: return String(localized: "Opening balance", bundle: bundle)
         // Income types
-        case .salary: return String(localized: "Salary")
-        case .freelance: return String(localized: "Freelance")
-        case .interestIncome: return String(localized: "Interest income")
-        case .dividendIncome: return String(localized: "Dividend income")
-        case .rentalIncome: return String(localized: "Rental income")
-        case .otherIncome: return String(localized: "Other income")
+        case .salary: return String(localized: "Salary", bundle: bundle)
+        case .freelance: return String(localized: "Freelance", bundle: bundle)
+        case .interestIncome: return String(localized: "Interest income", bundle: bundle)
+        case .dividendIncome: return String(localized: "Dividend income", bundle: bundle)
+        case .rentalIncome: return String(localized: "Rental income", bundle: bundle)
+        case .otherIncome: return String(localized: "Other income", bundle: bundle)
         // Expense types
-        case .food: return String(localized: "Food & dining")
-        case .transportation: return String(localized: "Transportation")
-        case .utilities: return String(localized: "Utilities")
-        case .housing: return String(localized: "Housing")
-        case .healthcare: return String(localized: "Healthcare")
-        case .entertainment: return String(localized: "Entertainment")
-        case .shopping: return String(localized: "Shopping")
-        case .education: return String(localized: "Education")
-        case .travel: return String(localized: "Travel")
-        case .insurance: return String(localized: "Insurance")
-        case .personalCare: return String(localized: "Personal care")
-        case .subscriptions: return String(localized: "Subscriptions")
-        case .otherExpense: return String(localized: "Other expense")
+        case .food: return String(localized: "Food & dining", bundle: bundle)
+        case .transportation: return String(localized: "Transportation", bundle: bundle)
+        case .utilities: return String(localized: "Utilities", bundle: bundle)
+        case .housing: return String(localized: "Housing", bundle: bundle)
+        case .healthcare: return String(localized: "Healthcare", bundle: bundle)
+        case .entertainment: return String(localized: "Entertainment", bundle: bundle)
+        case .shopping: return String(localized: "Shopping", bundle: bundle)
+        case .education: return String(localized: "Education", bundle: bundle)
+        case .travel: return String(localized: "Travel", bundle: bundle)
+        case .insurance: return String(localized: "Insurance", bundle: bundle)
+        case .personalCare: return String(localized: "Personal care", bundle: bundle)
+        case .subscriptions: return String(localized: "Subscriptions", bundle: bundle)
+        case .otherExpense: return String(localized: "Other expense", bundle: bundle)
         }
     }
     
@@ -359,7 +363,7 @@ final class Account {
 struct ChartOfAccounts {
     /// Creates a default set of accounts for a new user
     /// Creates a default set of accounts with localized names
-    static func createDefaultAccounts(currency: String = "EUR") -> [Account] {
+    static func createDefaultAccounts(currency: String = "EUR", bundle: Bundle = .main) -> [Account] {
         let defaultTypes: [AccountType] = [
             .openingBalance,
             .cash,
@@ -380,7 +384,7 @@ struct ChartOfAccounts {
         
         return defaultTypes.map { type in
             Account(
-                name: type.localizedName,
+                name: type.localizedName(bundle: bundle),
                 accountNumber: "",
                 currency: currency,
                 accountClass: type.accountClass,

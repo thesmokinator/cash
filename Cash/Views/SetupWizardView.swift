@@ -82,12 +82,14 @@ struct SetupWizardView: View {
             // Navigation buttons
             HStack {
                 if currentStep != .welcome {
-                    Button(String(localized: "Back")) {
+                    Button {
                         withAnimation {
                             if let previous = WizardStep(rawValue: currentStep.rawValue - 1) {
                                 currentStep = previous
                             }
                         }
+                    } label: {
+                        Text("Back")
                     }
                     .buttonStyle(.bordered)
                 }
@@ -95,17 +97,21 @@ struct SetupWizardView: View {
                 Spacer()
                 
                 if currentStep == .accounts {
-                    Button(String(localized: "Get started")) {
+                    Button {
                         completeSetup()
+                    } label: {
+                        Text("Get started")
                     }
                     .buttonStyle(.borderedProminent)
                 } else if currentStep != .welcome {
-                    Button(String(localized: "Next")) {
+                    Button {
                         withAnimation {
                             if let next = WizardStep(rawValue: currentStep.rawValue + 1) {
                                 currentStep = next
                             }
                         }
+                    } label: {
+                        Text("Next")
                     }
                     .buttonStyle(.borderedProminent)
                 }
@@ -132,25 +138,26 @@ struct SetupWizardView: View {
             !isDefaultAccount(info)
         }
         
+        let bundle = settings.language.bundle
         accountSetupList = [
             // Assets
-            AccountSetupInfo(name: String(localized: "Cash"), accountNumber: "1000", accountClass: .asset, accountType: .cash),
-            AccountSetupInfo(name: String(localized: "Bank account"), accountNumber: "1010", accountClass: .asset, accountType: .bank),
+            AccountSetupInfo(name: String(localized: "Cash", bundle: bundle), accountNumber: "1000", accountClass: .asset, accountType: .cash),
+            AccountSetupInfo(name: String(localized: "Bank account", bundle: bundle), accountNumber: "1010", accountClass: .asset, accountType: .bank),
             // Liabilities
-            AccountSetupInfo(name: String(localized: "Credit card"), accountNumber: "2000", accountClass: .liability, accountType: .creditCard),
+            AccountSetupInfo(name: String(localized: "Credit card", bundle: bundle), accountNumber: "2000", accountClass: .liability, accountType: .creditCard),
             // Income
-            AccountSetupInfo(name: String(localized: "Salary"), accountNumber: "4000", accountClass: .income, accountType: .salary),
-            AccountSetupInfo(name: String(localized: "Other income"), accountNumber: "4900", accountClass: .income, accountType: .otherIncome),
+            AccountSetupInfo(name: String(localized: "Salary", bundle: bundle), accountNumber: "4000", accountClass: .income, accountType: .salary),
+            AccountSetupInfo(name: String(localized: "Other income", bundle: bundle), accountNumber: "4900", accountClass: .income, accountType: .otherIncome),
             // Expenses
-            AccountSetupInfo(name: String(localized: "Food & dining"), accountNumber: "5000", accountClass: .expense, accountType: .food),
-            AccountSetupInfo(name: String(localized: "Transportation"), accountNumber: "5100", accountClass: .expense, accountType: .transportation),
-            AccountSetupInfo(name: String(localized: "Utilities"), accountNumber: "5200", accountClass: .expense, accountType: .utilities),
-            AccountSetupInfo(name: String(localized: "Housing"), accountNumber: "5300", accountClass: .expense, accountType: .housing),
-            AccountSetupInfo(name: String(localized: "Healthcare"), accountNumber: "5400", accountClass: .expense, accountType: .healthcare),
-            AccountSetupInfo(name: String(localized: "Entertainment"), accountNumber: "5500", accountClass: .expense, accountType: .entertainment),
-            AccountSetupInfo(name: String(localized: "Shopping"), accountNumber: "5600", accountClass: .expense, accountType: .shopping),
-            AccountSetupInfo(name: String(localized: "Subscriptions"), accountNumber: "5700", accountClass: .expense, accountType: .subscriptions),
-            AccountSetupInfo(name: String(localized: "Other expense"), accountNumber: "5900", accountClass: .expense, accountType: .otherExpense),
+            AccountSetupInfo(name: String(localized: "Food & dining", bundle: bundle), accountNumber: "5000", accountClass: .expense, accountType: .food),
+            AccountSetupInfo(name: String(localized: "Transportation", bundle: bundle), accountNumber: "5100", accountClass: .expense, accountType: .transportation),
+            AccountSetupInfo(name: String(localized: "Utilities", bundle: bundle), accountNumber: "5200", accountClass: .expense, accountType: .utilities),
+            AccountSetupInfo(name: String(localized: "Housing", bundle: bundle), accountNumber: "5300", accountClass: .expense, accountType: .housing),
+            AccountSetupInfo(name: String(localized: "Healthcare", bundle: bundle), accountNumber: "5400", accountClass: .expense, accountType: .healthcare),
+            AccountSetupInfo(name: String(localized: "Entertainment", bundle: bundle), accountNumber: "5500", accountClass: .expense, accountType: .entertainment),
+            AccountSetupInfo(name: String(localized: "Shopping", bundle: bundle), accountNumber: "5600", accountClass: .expense, accountType: .shopping),
+            AccountSetupInfo(name: String(localized: "Subscriptions", bundle: bundle), accountNumber: "5700", accountClass: .expense, accountType: .subscriptions),
+            AccountSetupInfo(name: String(localized: "Other expense", bundle: bundle), accountNumber: "5900", accountClass: .expense, accountType: .otherExpense),
         ]
         
         // Re-add user accounts
@@ -197,8 +204,12 @@ struct SetupWizardView: View {
                         }
                     }
                 } label: {
-                    Label("Start fresh", systemImage: "sparkles")
-                        .frame(width: 200)
+                    Label {
+                        Text("Start fresh")
+                    } icon: {
+                        Image(systemName: "sparkles")
+                    }
+                    .frame(width: 200)
                 }
                 .buttonStyle(.borderedProminent)
                 .controlSize(.large)
@@ -206,8 +217,12 @@ struct SetupWizardView: View {
                 Button {
                     showingImportFilePicker = true
                 } label: {
-                    Label("Import existing data", systemImage: "square.and.arrow.down")
-                        .frame(width: 200)
+                    Label {
+                        Text("Import existing data")
+                    } icon: {
+                        Image(systemName: "square.and.arrow.down")
+                    }
+                    .frame(width: 200)
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.large)
@@ -280,36 +295,48 @@ struct SetupWizardView: View {
                 .foregroundStyle(.secondary)
             
             Form {
-                Section(String(localized: "Language")) {
-                    Picker(String(localized: "Language"), selection: languageBinding) {
+                Section {
+                    Picker(selection: languageBinding) {
                         ForEach(AppLanguage.allCases) { language in
                             Text(language.labelKey)
                                 .tag(language)
                         }
+                    } label: {
+                        Text("Language")
                     }
                     .pickerStyle(.radioGroup)
                     .labelsHidden()
+                } header: {
+                    Text("Language")
                 }
                 
-                Section(String(localized: "Default currency")) {
-                    Picker(String(localized: "Currency"), selection: $selectedCurrency) {
+                Section {
+                    Picker(selection: $selectedCurrency) {
                         ForEach(CurrencyList.currencies) { currency in
                             Text(currency.displayName)
                                 .tag(currency.code)
                         }
+                    } label: {
+                        Text("Currency")
                     }
                     .labelsHidden()
+                } header: {
+                    Text("Default currency")
                 }
                 
-                Section(String(localized: "Theme")) {
-                    Picker(String(localized: "Theme"), selection: themeBinding) {
+                Section {
+                    Picker(selection: themeBinding) {
                         ForEach(AppTheme.allCases) { theme in
                             Text(theme.labelKey)
                                 .tag(theme)
                         }
+                    } label: {
+                        Text("Theme")
                     }
                     .pickerStyle(.radioGroup)
                     .labelsHidden()
+                } header: {
+                    Text("Theme")
                 }
             }
             .formStyle(.grouped)
@@ -397,8 +424,12 @@ struct SetupWizardView: View {
             newAccountType = AccountType.types(for: accountClass).first ?? .bank
             showingAddAccount = true
         } label: {
-            Label(String(localized: "Add account"), systemImage: "plus.circle")
-                .foregroundStyle(Color.accentColor)
+            Label {
+                Text("Add account")
+            } icon: {
+                Image(systemName: "plus.circle")
+            }
+            .foregroundStyle(Color.accentColor)
         }
         .buttonStyle(.plain)
     }
@@ -444,31 +475,35 @@ struct SetupWizardView: View {
     
     private var addAccountSheet: some View {
         VStack(spacing: 20) {
-            Text(String(localized: "New account"))
+            Text("New account")
                 .font(.headline)
             
             Form {
-                TextField(String(localized: "Account name"), text: $newAccountName)
+                TextField("Account name", text: $newAccountName)
                 
-                Picker(String(localized: "Type"), selection: $newAccountType) {
+                Picker(selection: $newAccountType) {
                     ForEach(AccountType.types(for: addAccountForClass)) { type in
                         Label(type.localizedName, systemImage: type.iconName)
                             .tag(type)
                     }
+                } label: {
+                    Text("Type")
                 }
             }
             .formStyle(.grouped)
             .frame(height: 150)
             
             HStack {
-                Button(String(localized: "Cancel")) {
+                Button {
                     showingAddAccount = false
+                } label: {
+                    Text("Cancel")
                 }
                 .buttonStyle(.bordered)
                 
                 Spacer()
                 
-                Button(String(localized: "Add")) {
+                Button {
                     let newAccount = AccountSetupInfo(
                         name: newAccountName,
                         accountNumber: nextAccountNumber(for: addAccountForClass),
@@ -477,6 +512,8 @@ struct SetupWizardView: View {
                     )
                     accountSetupList.append(newAccount)
                     showingAddAccount = false
+                } label: {
+                    Text("Add")
                 }
                 .buttonStyle(.borderedProminent)
                 .disabled(newAccountName.trimmingCharacters(in: .whitespaces).isEmpty)

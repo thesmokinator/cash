@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
+import AppKit
 
 // MARK: - App Notifications
 
@@ -141,6 +142,7 @@ struct ContentView: View {
 struct WelcomeSheet: View {
     let appState: AppState
     @Environment(\.modelContext) private var modelContext
+    @Environment(AppSettings.self) private var settings
     @State private var showingImportPicker = false
     @State private var showingError = false
     @State private var errorMessage = ""
@@ -171,8 +173,8 @@ struct WelcomeSheet: View {
             // Options
             VStack(spacing: 16) {
                 WelcomeOptionButton(
-                    title: String(localized: "Start Fresh"),
-                    subtitle: String(localized: "Create a new empty account structure"),
+                    title: "Start Fresh",
+                    subtitle: "Create a new empty account structure",
                     icon: "plus.circle.fill",
                     color: .blue
                 ) {
@@ -180,8 +182,8 @@ struct WelcomeSheet: View {
                 }
                 
                 WelcomeOptionButton(
-                    title: String(localized: "Use Demo Data"),
-                    subtitle: String(localized: "Set up example accounts to explore the app"),
+                    title: "Use Demo Data",
+                    subtitle: "Set up example accounts to explore the app",
                     icon: "sparkles",
                     color: .orange
                 ) {
@@ -189,12 +191,21 @@ struct WelcomeSheet: View {
                 }
                 
                 WelcomeOptionButton(
-                    title: String(localized: "Import Backup"),
-                    subtitle: String(localized: "Restore from a previous JSON export"),
+                    title: "Import Backup",
+                    subtitle: "Restore from a previous JSON export",
                     icon: "square.and.arrow.down.fill",
                     color: .green
                 ) {
                     showingImportPicker = true
+                }
+                
+                WelcomeOptionButton(
+                    title: "Quit",
+                    subtitle: "Exit the application",
+                    icon: "xmark.circle.fill",
+                    color: .red
+                ) {
+                    exit(0)
                 }
             }
             .padding(.horizontal, 20)
@@ -202,7 +213,7 @@ struct WelcomeSheet: View {
             Spacer()
         }
         .padding(40)
-        .frame(width: 450, height: 500)
+        .frame(width: 450, height: 560)
         .fileImporter(
             isPresented: $showingImportPicker,
             allowedContentTypes: [.data],
@@ -223,7 +234,7 @@ struct WelcomeSheet: View {
     }
     
     private func setupDemoAccounts() {
-        let defaultAccounts = ChartOfAccounts.createDefaultAccounts(currency: "EUR")
+        let defaultAccounts = ChartOfAccounts.createDefaultAccounts(currency: "EUR", bundle: settings.language.bundle)
         for account in defaultAccounts {
             modelContext.insert(account)
         }
@@ -282,8 +293,8 @@ struct WelcomeSheet: View {
 // MARK: - Welcome Option Button
 
 struct WelcomeOptionButton: View {
-    let title: String
-    let subtitle: String
+    let title: LocalizedStringKey
+    let subtitle: LocalizedStringKey
     let icon: String
     let color: Color
     let action: () -> Void
