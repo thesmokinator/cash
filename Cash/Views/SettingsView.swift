@@ -109,7 +109,7 @@ struct SettingsView: View {
         }
         .fileImporter(
             isPresented: $showingImportFilePicker,
-            allowedContentTypes: [.json],
+            allowedContentTypes: [.data],
             allowsMultipleSelection: false
         ) { result in
             handleImport(result: result)
@@ -194,8 +194,8 @@ struct SettingsView: View {
             let data: Data
             
             switch format {
-            case .json:
-                data = try DataExporter.exportJSON(accounts: accounts, transactions: transactions)
+            case .cashBackup:
+                data = try DataExporter.exportCashBackup(accounts: accounts, transactions: transactions)
             case .ofx:
                 data = try DataExporter.exportOFX(accounts: accounts, transactions: transactions)
             }
@@ -250,7 +250,8 @@ struct SettingsView: View {
                         deleteAllData()
                         
                         do {
-                            let result = try DataExporter.importJSON(from: data, into: modelContext)
+                            let result = try DataExporter.importCashBackup(from: data, into: modelContext)
+                            
                             importResult = result
                             appState.isLoading = false
                             showingImportSuccess = true
@@ -523,7 +524,7 @@ struct ExportFormatPickerView: View {
                                 .font(.largeTitle)
                             Text(format.localizedName)
                                 .font(.headline)
-                            Text(format == .json ? "Full backup" : "Bank format")
+                            Text(format == .cashBackup ? "Full backup" : "Bank format")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }

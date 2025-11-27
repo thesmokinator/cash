@@ -12,15 +12,15 @@ import UniformTypeIdentifiers
 // MARK: - Export Format
 
 enum ExportFormat: String, CaseIterable, Identifiable {
-    case json = "json"
+    case cashBackup = "cashdata"
     case ofx = "ofx"
     
     var id: String { rawValue }
     
     var localizedName: String {
         switch self {
-        case .json:
-            return "JSON"
+        case .cashBackup:
+            return "Cash Backup"
         case .ofx:
             return "OFX"
         }
@@ -32,8 +32,8 @@ enum ExportFormat: String, CaseIterable, Identifiable {
     
     var utType: UTType {
         switch self {
-        case .json:
-            return .json
+        case .cashBackup:
+            return .data
         case .ofx:
             return .xml
         }
@@ -41,8 +41,8 @@ enum ExportFormat: String, CaseIterable, Identifiable {
     
     var iconName: String {
         switch self {
-        case .json:
-            return "doc.badge.gearshape"
+        case .cashBackup:
+            return "doc.zipper"
         case .ofx:
             return "doc.text"
         }
@@ -177,6 +177,8 @@ enum DataExporterError: LocalizedError {
     case noData
     case encodingFailed
     case decodingFailed
+    case compressionFailed
+    case decompressionFailed
     case invalidFormat
     case importFailed(String)
     
@@ -188,6 +190,10 @@ enum DataExporterError: LocalizedError {
             return String(localized: "Failed to encode data")
         case .decodingFailed:
             return String(localized: "Failed to decode data")
+        case .compressionFailed:
+            return String(localized: "Failed to compress data")
+        case .decompressionFailed:
+            return String(localized: "Failed to decompress data")
         case .invalidFormat:
             return String(localized: "Invalid file format")
         case .importFailed(let reason):
@@ -198,20 +204,23 @@ enum DataExporterError: LocalizedError {
 
 struct DataExporter {
     
-    // MARK: - Export JSON
+    // MARK: - Export Cash Backup (JSON + LZFSE)
     
-    static func exportJSON(accounts: [Account], transactions: [Transaction]) throws -> Data {
+    static func exportCashBackup(accounts: [Account], transactions: [Transaction]) throws -> Data {
         let exportData = ExportableData(accounts: accounts, transactions: transactions)
         
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         
-        guard let data = try? encoder.encode(exportData) else {
+        guard let jsonData = try? encoder.encode(exportData) else {
             throw DataExporterError.encodingFailed
         }
         
-        return data
+        guard let compressedData = try? (jsonData as NSData).compressed(using: .lzfse) as Data else {
+            throw DataExporterError.compressionFailed
+        }
+        
+        return compressedData
     }
     
     // MARK: - Export OFX
@@ -414,16 +423,26 @@ struct DataExporter {
             .replacingOccurrences(of: "'", with: "&apos;")
     }
     
-    // MARK: - Import JSON
+    // MARK: - Import Cash Backup (JSON + LZFSE)
     
-    static func importJSON(from data: Data, into context: ModelContext) throws -> (accountsCount: Int, transactionsCount: Int) {
+    static func importCashBackup(from data: Data, into context: ModelContext) throws -> (accountsCount: Int, transactionsCount: Int) {
+        guard let decompressedData = try? (data as NSData).decompressed(using: .lzfse) as Data else {
+            throw DataExporterError.decompressionFailed
+        }
+        
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
-        guard let exportData = try? decoder.decode(ExportableData.self, from: data) else {
+        guard let exportData = try? decoder.decode(ExportableData.self, from: decompressedData) else {
             throw DataExporterError.decodingFailed
         }
         
+        return try importExportableData(exportData, into: context)
+    }
+    
+    // MARK: - Import Helper
+    
+    private static func importExportableData(_ exportData: ExportableData, into context: ModelContext) throws -> (accountsCount: Int, transactionsCount: Int) {
         // Create a mapping from old UUIDs to new accounts
         var accountMapping: [UUID: Account] = [:]
         

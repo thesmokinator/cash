@@ -738,6 +738,9 @@
         }
       }
     },
+    "English" : {
+
+    },
     "Enter the starting balance for this account" : {
       "localizations" : {
         "it" : {
@@ -757,9 +760,6 @@
           }
         }
       }
-    },
-    "English" : {
-
     },
     "Equity" : {
       "localizations" : {
@@ -911,6 +911,9 @@
         }
       }
     },
+    "Failed to compress data" : {
+
+    },
     "Failed to decode data" : {
       "localizations" : {
         "it" : {
@@ -920,6 +923,9 @@
           }
         }
       }
+    },
+    "Failed to decompress data" : {
+
     },
     "Failed to encode data" : {
       "localizations" : {
@@ -1197,9 +1203,6 @@
         }
       }
     },
-    "Italiano" : {
-
-    },
     "Investment" : {
       "localizations" : {
         "it" : {
@@ -1209,6 +1212,9 @@
           }
         }
       }
+    },
+    "Italiano" : {
+
     },
     "Journal entry preview" : {
       "localizations" : {

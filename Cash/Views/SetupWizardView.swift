@@ -214,7 +214,7 @@ struct SetupWizardView: View {
             }
             .fileImporter(
                 isPresented: $showingImportFilePicker,
-                allowedContentTypes: [.json],
+                allowedContentTypes: [.data],
                 allowsMultipleSelection: false
             ) { result in
                 handleImport(result: result)
@@ -247,8 +247,8 @@ struct SetupWizardView: View {
                 
                 let data = try Data(contentsOf: url)
                 
-                // Import data
-                _ = try DataExporter.importJSON(from: data, into: modelContext)
+                // Import Cash Backup
+                _ = try DataExporter.importCashBackup(from: data, into: modelContext)
                 
                 // Mark setup as complete and close wizard
                 UserDefaults.standard.set(true, forKey: "hasCompletedSetup")

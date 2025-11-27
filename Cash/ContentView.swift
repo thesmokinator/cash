@@ -149,7 +149,7 @@ struct WelcomeSheet: View {
         .frame(width: 450, height: 500)
         .fileImporter(
             isPresented: $showingImportPicker,
-            allowedContentTypes: [.json],
+            allowedContentTypes: [.data],
             allowsMultipleSelection: false
         ) { result in
             handleImport(result: result)
@@ -196,7 +196,7 @@ struct WelcomeSheet: View {
                     
                     await MainActor.run {
                         do {
-                            _ = try DataExporter.importJSON(from: data, into: modelContext)
+                            _ = try DataExporter.importCashBackup(from: data, into: modelContext)
                             AppConfiguration.markSetupCompleted(in: modelContext)
                             appState.isLoading = false
                             appState.showWelcomeSheet = false
