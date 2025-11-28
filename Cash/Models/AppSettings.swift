@@ -86,6 +86,7 @@ final class AppSettings {
     
     private let themeKey = "appTheme"
     private let languageKey = "appLanguage"
+    private let privacyModeKey = "privacyMode"
     
     var theme: AppTheme {
         didSet {
@@ -99,6 +100,12 @@ final class AppSettings {
             UserDefaults.standard.set(language.rawValue, forKey: languageKey)
             applyLanguage()
             needsRestart = true
+        }
+    }
+    
+    var privacyMode: Bool {
+        didSet {
+            UserDefaults.standard.set(privacyMode, forKey: privacyModeKey)
         }
     }
     
@@ -121,6 +128,8 @@ final class AppSettings {
         } else {
             self.language = .system
         }
+        
+        self.privacyMode = UserDefaults.standard.bool(forKey: privacyModeKey)
         
         // Apply theme and language on init
         applyTheme()

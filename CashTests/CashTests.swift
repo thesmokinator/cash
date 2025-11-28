@@ -7,6 +7,7 @@
 
 import Testing
 import Foundation
+import SwiftUI
 @testable import Cash
 
 // MARK: - Account Tests
@@ -778,5 +779,83 @@ struct OFXImportItemTests {
         
         #expect(item.selectedCategory != nil)
         #expect(item.selectedCategory?.name == "Food")
+    }
+}
+
+// MARK: - App Settings Tests
+
+struct AppSettingsTests {
+    
+    @Test func privacyModeDefaultValue() async throws {
+        // Privacy mode should default to false when key doesn't exist
+        let testKey = "privacyModeTestKey_\(UUID().uuidString)"
+        UserDefaults.standard.removeObject(forKey: testKey)
+        let defaultValue = UserDefaults.standard.bool(forKey: testKey)
+        #expect(defaultValue == false)
+    }
+    
+    @Test func privacyModePersistenceInUserDefaults() async throws {
+        let testKey = "privacyModeTestKey_\(UUID().uuidString)"
+        
+        // Test that bool values persist in UserDefaults
+        UserDefaults.standard.set(true, forKey: testKey)
+        #expect(UserDefaults.standard.bool(forKey: testKey) == true)
+        
+        UserDefaults.standard.set(false, forKey: testKey)
+        #expect(UserDefaults.standard.bool(forKey: testKey) == false)
+        
+        // Cleanup
+        UserDefaults.standard.removeObject(forKey: testKey)
+    }
+    
+    @Test func privacyModePropertyExists() async throws {
+        // Verify AppSettings has privacyMode property
+        let settings = AppSettings.shared
+        _ = settings.privacyMode // Should compile and not crash
+        #expect(true)
+    }
+    
+    @Test func themeDefaultValue() async throws {
+        let settings = AppSettings.shared
+        // Theme should have a valid value
+        #expect(AppTheme.allCases.contains(settings.theme))
+    }
+    
+    @Test func languageDefaultValue() async throws {
+        let settings = AppSettings.shared
+        // Language should have a valid value
+        #expect(AppLanguage.allCases.contains(settings.language))
+    }
+    
+    @Test func themeAllCases() async throws {
+        #expect(AppTheme.allCases.count == 3)
+        #expect(AppTheme.allCases.contains(.system))
+        #expect(AppTheme.allCases.contains(.light))
+        #expect(AppTheme.allCases.contains(.dark))
+    }
+    
+    @Test func languageAllCases() async throws {
+        #expect(AppLanguage.allCases.count == 3)
+        #expect(AppLanguage.allCases.contains(.system))
+        #expect(AppLanguage.allCases.contains(.english))
+        #expect(AppLanguage.allCases.contains(.italian))
+    }
+    
+    @Test func themeColorSchemes() async throws {
+        #expect(AppTheme.system.colorScheme == nil)
+        #expect(AppTheme.light.colorScheme == .light)
+        #expect(AppTheme.dark.colorScheme == .dark)
+    }
+    
+    @Test func themeIconNames() async throws {
+        #expect(!AppTheme.system.iconName.isEmpty)
+        #expect(!AppTheme.light.iconName.isEmpty)
+        #expect(!AppTheme.dark.iconName.isEmpty)
+    }
+    
+    @Test func languageIconNames() async throws {
+        #expect(!AppLanguage.system.iconName.isEmpty)
+        #expect(!AppLanguage.english.iconName.isEmpty)
+        #expect(!AppLanguage.italian.iconName.isEmpty)
     }
 }

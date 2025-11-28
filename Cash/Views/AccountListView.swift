@@ -87,7 +87,19 @@ struct AccountListView: View {
             .navigationTitle("Chart of accounts")
             .navigationSplitViewColumnWidth(min: 280, ideal: 320)
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItemGroup(placement: .primaryAction) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            settings.privacyMode.toggle()
+                        }
+                    } label: {
+                        Label(
+                            settings.privacyMode ? "Show amounts" : "Hide amounts",
+                            systemImage: settings.privacyMode ? "eye.slash.fill" : "eye.fill"
+                        )
+                    }
+                    .help(settings.privacyMode ? "Show amounts" : "Hide amounts")
+                    
                     Button(action: { showingAddAccount = true }) {
                         Label("Add account", systemImage: "plus")
                     }
@@ -156,6 +168,7 @@ struct AccountListView: View {
 }
 
 struct AccountRowView: View {
+    @Environment(AppSettings.self) private var settings
     let account: Account
     
     var body: some View {
@@ -178,10 +191,13 @@ struct AccountRowView: View {
             
             Spacer()
             
-            Text(formatBalance(account.balance, currency: account.currency))
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(balanceColor(for: account))
+            PrivacyAmountView(
+                amount: formatBalance(account.balance, currency: account.currency),
+                isPrivate: settings.privacyMode,
+                font: .subheadline,
+                fontWeight: .medium,
+                color: balanceColor(for: account)
+            )
         }
         .padding(.vertical, 4)
     }

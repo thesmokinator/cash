@@ -47,10 +47,13 @@ struct AccountDetailView: View {
                     Spacer()
                     
                     VStack(alignment: .trailing, spacing: 2) {
-                        Text(formatBalance(account.balance, currency: account.currency))
-                            .font(.title)
-                            .fontWeight(.semibold)
-                            .foregroundColor(balanceColor)
+                        PrivacyAmountView(
+                            amount: formatBalance(account.balance, currency: account.currency),
+                            isPrivate: settings.privacyMode,
+                            font: .title,
+                            fontWeight: .semibold,
+                            color: balanceColor
+                        )
                         Text(account.accountClass.normalBalance == .debit ? "Normal: debit" : "Normal: credit")
                             .font(.caption2)
                             .foregroundStyle(.secondary)

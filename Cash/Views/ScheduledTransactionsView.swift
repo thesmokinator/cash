@@ -175,6 +175,7 @@ struct ScheduledTransactionsView: View {
 }
 
 struct ScheduledTransactionRow: View {
+    @Environment(AppSettings.self) private var settings
     let transaction: Transaction
     
     var body: some View {
@@ -216,9 +217,12 @@ struct ScheduledTransactionRow: View {
             
             Spacer()
             
-            Text(formatAmount(transaction.amount))
-                .font(.subheadline)
-                .fontWeight(.semibold)
+            PrivacyAmountView(
+                amount: formatAmount(transaction.amount),
+                isPrivate: settings.privacyMode,
+                font: .subheadline,
+                fontWeight: .semibold
+            )
         }
         .padding(.vertical, 4)
     }

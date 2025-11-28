@@ -40,9 +40,12 @@ struct NetWorthView: View {
                     Text("Net Worth")
                         .font(.headline)
                         .foregroundStyle(.secondary)
-                    Text(formatCurrency(netWorth))
-                        .font(.system(size: 48, weight: .bold))
-                        .foregroundColor(netWorth >= 0 ? .primary : .red)
+                    PrivacyAmountView(
+                        amount: formatCurrency(netWorth),
+                        isPrivate: settings.privacyMode,
+                        font: .system(size: 48, weight: .bold),
+                        color: netWorth >= 0 ? .primary : .red
+                    )
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 32)
@@ -55,14 +58,16 @@ struct NetWorthView: View {
                         title: "Assets",
                         amount: totalAssets,
                         color: .green,
-                        icon: "arrow.up.circle.fill"
+                        icon: "arrow.up.circle.fill",
+                        privacyMode: settings.privacyMode
                     )
                     
                     SummaryCard(
                         title: "Liabilities",
                         amount: totalLiabilities,
                         color: .red,
-                        icon: "arrow.down.circle.fill"
+                        icon: "arrow.down.circle.fill",
+                        privacyMode: settings.privacyMode
                     )
                 }
                 
@@ -74,7 +79,7 @@ struct NetWorthView: View {
                             .fontWeight(.semibold)
                         
                         ForEach(assetAccounts) { account in
-                            AccountBalanceRow(account: account)
+                            AccountBalanceRow(account: account, privacyMode: settings.privacyMode)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -91,7 +96,7 @@ struct NetWorthView: View {
                             .fontWeight(.semibold)
                         
                         ForEach(liabilityAccounts) { account in
-                            AccountBalanceRow(account: account)
+                            AccountBalanceRow(account: account, privacyMode: settings.privacyMode)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -119,6 +124,7 @@ struct SummaryCard: View {
     let amount: Decimal
     let color: Color
     let icon: String
+    var privacyMode: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -130,9 +136,12 @@ struct SummaryCard: View {
             }
             .font(.subheadline)
             
-            Text(formatCurrency(amount))
-                .font(.title2)
-                .fontWeight(.semibold)
+            PrivacyAmountView(
+                amount: formatCurrency(amount),
+                isPrivate: privacyMode,
+                font: .title2,
+                fontWeight: .semibold
+            )
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
@@ -150,6 +159,7 @@ struct SummaryCard: View {
 
 struct AccountBalanceRow: View {
     let account: Account
+    var privacyMode: Bool = false
     
     var body: some View {
         HStack {
@@ -161,8 +171,11 @@ struct AccountBalanceRow: View {
             
             Spacer()
             
-            Text(formatCurrency(account.balance, currency: account.currency))
-                .fontWeight(.medium)
+            PrivacyAmountView(
+                amount: formatCurrency(account.balance, currency: account.currency),
+                isPrivate: privacyMode,
+                fontWeight: .medium
+            )
         }
         .padding(.vertical, 4)
     }

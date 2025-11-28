@@ -170,6 +170,7 @@ struct ForecastView: View {
                                 AxisValueLabel {
                                     if let doubleValue = value.as(Double.self) {
                                         Text(formatCurrencyCompact(Decimal(doubleValue)))
+                                            .privacyBlur(settings.privacyMode)
                                     }
                                 }
                             }
@@ -200,14 +201,16 @@ struct ForecastView: View {
                         title: "Current Balance",
                         amount: currentBalance,
                         color: currentBalance >= 0 ? .blue : .red,
-                        icon: "banknote"
+                        icon: "banknote",
+                        privacyMode: settings.privacyMode
                     )
                     
                     ForecastSummaryCard(
                         title: "Projected Balance",
                         amount: projectedEndBalance,
                         color: projectedEndBalance >= 0 ? .green : .red,
-                        icon: "chart.line.uptrend.xyaxis"
+                        icon: "chart.line.uptrend.xyaxis",
+                        privacyMode: settings.privacyMode
                     )
                 }
                 
@@ -216,14 +219,16 @@ struct ForecastView: View {
                         title: "Projected Income",
                         amount: totalProjectedIncome,
                         color: .green,
-                        icon: "arrow.down.circle.fill"
+                        icon: "arrow.down.circle.fill",
+                        privacyMode: settings.privacyMode
                     )
                     
                     ForecastSummaryCard(
                         title: "Projected Expenses",
                         amount: totalProjectedExpenses,
                         color: .red,
-                        icon: "arrow.up.circle.fill"
+                        icon: "arrow.up.circle.fill",
+                        privacyMode: settings.privacyMode
                     )
                 }
                 
@@ -234,7 +239,7 @@ struct ForecastView: View {
                             .font(.headline)
                         
                         ForEach(projectedTransactions.prefix(20)) { transaction in
-                            ProjectedTransactionRow(transaction: transaction)
+                            ProjectedTransactionRow(transaction: transaction, privacyMode: settings.privacyMode)
                         }
                         
                         if projectedTransactions.count > 20 {
@@ -386,6 +391,7 @@ struct ForecastSummaryCard: View {
     let amount: Decimal
     let color: Color
     let icon: String
+    var privacyMode: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -397,10 +403,13 @@ struct ForecastSummaryCard: View {
             }
             .font(.subheadline)
             
-            Text(formatCurrency(amount))
-                .font(.title3)
-                .fontWeight(.semibold)
-                .foregroundColor(amount < 0 ? .red : .primary)
+            PrivacyAmountView(
+                amount: formatCurrency(amount),
+                isPrivate: privacyMode,
+                font: .title3,
+                fontWeight: .semibold,
+                color: amount < 0 ? .red : .primary
+            )
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
@@ -420,6 +429,7 @@ struct ForecastSummaryCard: View {
 
 struct ProjectedTransactionRow: View {
     let transaction: ProjectedTransaction
+    var privacyMode: Bool = false
     
     var body: some View {
         HStack(spacing: 12) {
@@ -439,10 +449,13 @@ struct ProjectedTransactionRow: View {
             
             Spacer()
             
-            Text(formatAmount(transaction.amount, isExpense: transaction.isExpense))
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(transaction.isExpense ? .red : .green)
+            PrivacyAmountView(
+                amount: formatAmount(transaction.amount, isExpense: transaction.isExpense),
+                isPrivate: privacyMode,
+                font: .subheadline,
+                fontWeight: .medium,
+                color: transaction.isExpense ? .red : .green
+            )
         }
         .padding(.vertical, 4)
     }

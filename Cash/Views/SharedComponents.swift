@@ -155,3 +155,49 @@ struct AppUtilities {
         NSApplication.shared.terminate(nil)
     }
 }
+
+// MARK: - Privacy Amount View
+
+struct PrivacyAmountView: View {
+    let amount: String
+    let isPrivate: Bool
+    var font: Font = .body
+    var fontWeight: Font.Weight = .regular
+    var color: Color = .primary
+    
+    var body: some View {
+        Text(amount)
+            .font(font)
+            .fontWeight(fontWeight)
+            .foregroundColor(isPrivate ? .clear : color)
+            .background(
+                Group {
+                    if isPrivate {
+                        Text(amount)
+                            .font(font)
+                            .fontWeight(fontWeight)
+                            .foregroundColor(.secondary)
+                            .blur(radius: 8)
+                    }
+                }
+            )
+    }
+}
+
+// MARK: - Privacy View Modifier
+
+struct PrivacyBlurModifier: ViewModifier {
+    let isPrivate: Bool
+    
+    func body(content: Content) -> some View {
+        content
+            .blur(radius: isPrivate ? 8 : 0)
+            .opacity(isPrivate ? 0.6 : 1)
+    }
+}
+
+extension View {
+    func privacyBlur(_ isPrivate: Bool) -> some View {
+        modifier(PrivacyBlurModifier(isPrivate: isPrivate))
+    }
+}

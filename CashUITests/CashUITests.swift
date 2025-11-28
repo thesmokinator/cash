@@ -329,3 +329,77 @@ final class ImportOFXUITests: XCTestCase {
         }
     }
 }
+
+// MARK: - Privacy Mode UI Tests
+
+final class PrivacyModeUITests: XCTestCase {
+    
+    var app: XCUIApplication!
+    
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        app = XCUIApplication()
+        app.launch()
+    }
+    
+    override func tearDownWithError() throws {
+        app = nil
+    }
+    
+    @MainActor
+    func testPrivacyToggleButtonExists() throws {
+        // The privacy toggle button should exist in the toolbar
+        // It uses eye.fill or eye.slash.fill icons
+        let eyeButton = app.buttons["Hide amounts"]
+        let eyeSlashButton = app.buttons["Show amounts"]
+        
+        // One of these should exist depending on current state
+        let buttonExists = eyeButton.waitForExistence(timeout: 5) || eyeSlashButton.waitForExistence(timeout: 1)
+        XCTAssertTrue(buttonExists, "Privacy toggle button should exist in toolbar")
+    }
+    
+    @MainActor
+    func testPrivacyToggleChangesIcon() throws {
+        // Find the current privacy button state
+        let hideButton = app.buttons["Hide amounts"]
+        let showButton = app.buttons["Show amounts"]
+        
+        if hideButton.waitForExistence(timeout: 5) {
+            // Currently showing amounts, click to hide
+            hideButton.click()
+            
+            // Now the "Show amounts" button should appear
+            XCTAssertTrue(showButton.waitForExistence(timeout: 2), "Button should change to 'Show amounts' after click")
+            
+            // Toggle back
+            showButton.click()
+            XCTAssertTrue(hideButton.waitForExistence(timeout: 2), "Button should change back to 'Hide amounts'")
+        } else if showButton.waitForExistence(timeout: 1) {
+            // Currently hiding amounts, click to show
+            showButton.click()
+            
+            // Now the "Hide amounts" button should appear
+            XCTAssertTrue(hideButton.waitForExistence(timeout: 2), "Button should change to 'Hide amounts' after click")
+            
+            // Toggle back
+            hideButton.click()
+            XCTAssertTrue(showButton.waitForExistence(timeout: 2), "Button should change back to 'Show amounts'")
+        } else {
+            XCTFail("Neither privacy button found")
+        }
+    }
+    
+    @MainActor
+    func testPrivacyToggleIsNextToAddButton() throws {
+        // Privacy toggle should be near the add account button
+        let addButton = app.buttons["Add account"]
+        XCTAssertTrue(addButton.waitForExistence(timeout: 5), "Add account button should exist")
+        
+        // One of the privacy buttons should exist
+        let hideButton = app.buttons["Hide amounts"]
+        let showButton = app.buttons["Show amounts"]
+        let privacyButtonExists = hideButton.exists || showButton.exists
+        
+        XCTAssertTrue(privacyButtonExists, "Privacy toggle should exist alongside add button")
+    }
+}

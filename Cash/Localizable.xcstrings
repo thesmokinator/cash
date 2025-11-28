@@ -1096,6 +1096,9 @@
         }
       }
     },
+    "Hide amounts" : {
+
+    },
     "Housing" : {
       "localizations" : {
         "it" : {
@@ -2225,6 +2228,9 @@
           }
         }
       }
+    },
+    "Show amounts" : {
+
     },
     "Skip" : {
       "localizations" : {
