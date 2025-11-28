@@ -23,6 +23,16 @@
         }
       }
     },
+    "%@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$@"
+          }
+        }
+      }
+    },
     "%lld" : {
 
     },
@@ -111,6 +121,46 @@
     "0" : {
 
     },
+    "1 Month" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 mese"
+          }
+        }
+      }
+    },
+    "1 Year" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 anno"
+          }
+        }
+      }
+    },
+    "3 Months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 mesi"
+          }
+        }
+      }
+    },
+    "6 Months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "6 mesi"
+          }
+        }
+      }
+    },
     "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
 
     },
@@ -192,12 +242,42 @@
         }
       }
     },
+    "Add recurring transactions to analyze your financial stability" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi transazioni ricorrenti per analizzare la tua stabilità finanziaria"
+          }
+        }
+      }
+    },
     "Add recurring transactions to see balance projections." : {
       "localizations" : {
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aggiungi transazioni ricorrenti per vedere le proiezioni del saldo."
+          }
+        }
+      }
+    },
+    "Adequate" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adeguato"
+          }
+        }
+      }
+    },
+    "Adequate, but limited flexibility" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adeguato, ma flessibilità limitata"
           }
         }
       }
@@ -218,6 +298,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tutte le transazioni"
+          }
+        }
+      }
+    },
+    "Alphabetical" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alfabetico"
           }
         }
       }
@@ -302,6 +392,26 @@
         }
       }
     },
+    "At Risk" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Rischio"
+          }
+        }
+      }
+    },
+    "At risk: expenses exceed income" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A rischio: le spese superano le entrate"
+          }
+        }
+      }
+    },
     "Attachments" : {
 
     },
@@ -364,6 +474,306 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Formato bancario"
+          }
+        }
+      }
+    },
+    "By Category" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per Categoria"
+          }
+        }
+      }
+    },
+    "Balance History" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storico Saldo"
+          }
+        }
+      }
+    },
+    "All Time" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutto"
+          }
+        }
+      }
+    },
+    "No balance history" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuno storico saldo"
+          }
+        }
+      }
+    },
+    "Add transactions to see your balance history" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi transazioni per vedere lo storico del saldo"
+          }
+        }
+      }
+    },
+    "Net Worth Over Time" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patrimonio Netto nel Tempo"
+          }
+        }
+      }
+    },
+    "Current Balance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo Attuale"
+          }
+        }
+      }
+    },
+    "Change" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variazione"
+          }
+        }
+      }
+    },
+    "Minimum" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimo"
+          }
+        }
+      }
+    },
+    "Maximum" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Massimo"
+          }
+        }
+      }
+    },
+    "Long Term Projection" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proiezione Lungo Termine"
+          }
+        }
+      }
+    },
+    "Last 3 Months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 3 Mesi"
+          }
+        }
+      }
+    },
+    "Last 6 Months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 6 Mesi"
+          }
+        }
+      }
+    },
+    "Last Year" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimo Anno"
+          }
+        }
+      }
+    },
+    "2 Years" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2 Anni"
+          }
+        }
+      }
+    },
+    "5 Years" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5 Anni"
+          }
+        }
+      }
+    },
+    "Trend based on" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trend basato su"
+          }
+        }
+      }
+    },
+    "Project for" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proietta per"
+          }
+        }
+      }
+    },
+    "Not enough data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dati insufficienti"
+          }
+        }
+      }
+    },
+    "Add more transactions to generate projections" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi più transazioni per generare proiezioni"
+          }
+        }
+      }
+    },
+    "Balance Projection" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proiezione Saldo"
+          }
+        }
+      }
+    },
+    "Historical" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Storico"
+          }
+        }
+      }
+    },
+    "Projected" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proiettato"
+          }
+        }
+      }
+    },
+    "Today" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oggi"
+          }
+        }
+      }
+    },
+    "Projected Balance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo Proiettato"
+          }
+        }
+      }
+    },
+    "Trend Analysis" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Analisi Trend"
+          }
+        }
+      }
+    },
+    "Monthly Trend" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trend Mensile"
+          }
+        }
+      }
+    },
+    "/ month" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "/ mese"
+          }
+        }
+      }
+    },
+    "Projected Change" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variazione Proiettata"
+          }
+        }
+      }
+    },
+    "Projections are based on historical trends and do not account for changes in income, expenses, or market conditions." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le proiezioni sono basate sui trend storici e non tengono conto di variazioni di entrate, spese o condizioni di mercato."
           }
         }
       }
@@ -536,6 +946,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Valuta"
+          }
+        }
+      }
+    },
+    "Current" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attuale"
           }
         }
       }
@@ -901,6 +1321,26 @@
         }
       }
     },
+    "Excellent" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eccellente"
+          }
+        }
+      }
+    },
+    "Excellent financial stability" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eccellente stabilità finanziaria"
+          }
+        }
+      }
+    },
     "Execute" : {
       "localizations" : {
         "it" : {
@@ -961,6 +1401,16 @@
         }
       }
     },
+    "Expenses by Category" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spese per categoria"
+          }
+        }
+      }
+    },
     "Export / Import" : {
 
     },
@@ -1002,6 +1452,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impossibile codificare i dati"
+          }
+        }
+      }
+    },
+    "Fixed Expenses" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spese Fisse"
+          }
+        }
+      }
+    },
+    "Fixed Income" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrate Fisse"
+          }
+        }
+      }
+    },
+    "Fixed Income vs Expenses" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrate vs Spese Fisse"
           }
         }
       }
@@ -1086,6 +1566,26 @@
         }
       }
     },
+    "Good" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buono"
+          }
+        }
+      }
+    },
+    "Good stability with savings margin" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buona stabilità con margine di risparmio"
+          }
+        }
+      }
+    },
     "Healthcare" : {
       "localizations" : {
         "it" : {
@@ -1098,6 +1598,16 @@
     },
     "Hide amounts" : {
 
+    },
+    "Highest first" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maggiori prima"
+          }
+        }
+      }
     },
     "Housing" : {
       "localizations" : {
@@ -1456,6 +1966,16 @@
         }
       }
     },
+    "Lowest first" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minori prima"
+          }
+        }
+      }
+    },
     "MIT License" : {
       "localizations" : {
         "it" : {
@@ -1486,12 +2006,42 @@
         }
       }
     },
+    "monthly" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mensile"
+          }
+        }
+      }
+    },
     "Monthly" : {
       "localizations" : {
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mensile"
+          }
+        }
+      }
+    },
+    "Monthly Deficit" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deficit Mensile"
+          }
+        }
+      }
+    },
+    "Monthly Surplus" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Surplus Mensile"
           }
         }
       }
@@ -1659,6 +2209,26 @@
         }
       }
     },
+    "No Data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun Dato"
+          }
+        }
+      }
+    },
+    "No data to compare" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun dato da confrontare"
+          }
+        }
+      }
+    },
     "No data to export" : {
       "localizations" : {
         "it" : {
@@ -1669,12 +2239,42 @@
         }
       }
     },
+    "No expenses" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna spesa"
+          }
+        }
+      }
+    },
+    "No expenses recorded in this period" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna spesa registrata in questo periodo"
+          }
+        }
+      }
+    },
     "No forecast data" : {
       "localizations" : {
         "it" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nessun dato previsionale"
+          }
+        }
+      }
+    },
+    "No recurring transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna transazione ricorrente"
           }
         }
       }
@@ -1734,6 +2334,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Normale: dare"
+          }
+        }
+      }
+    },
+    "Not enough expense data for year-over-year comparison" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dati insufficienti per il confronto anno su anno"
           }
         }
       }
@@ -1924,6 +2534,16 @@
         }
       }
     },
+    "Previous Year" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anno Precedente"
+          }
+        }
+      }
+    },
     "Projected Balance" : {
       "localizations" : {
         "it" : {
@@ -1960,6 +2580,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esci"
+          }
+        }
+      }
+    },
+    "ratio" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rapporto"
           }
         }
       }
@@ -2020,6 +2650,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reddito da affitto"
+          }
+        }
+      }
+    },
+    "Reports" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Report"
           }
         }
       }
@@ -2381,6 +3021,27 @@
         }
       }
     },
+    "Total" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Totale"
+          }
+        }
+      }
+    },
+    "Total Expenses Variation" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Variazione Spese Totali"
+          }
+        }
+      }
+    },
     "Track your personal finances with double-entry bookkeeping" : {
       "localizations" : {
         "it" : {
@@ -2467,6 +3128,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tipo"
+          }
+        }
+      }
+    },
+    "Understanding the Ratio" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capire il Rapporto"
           }
         }
       }
@@ -2587,6 +3258,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "anno"
+          }
+        }
+      }
+    },
+    "Year over Year" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confronto Annuale"
           }
         }
       }
