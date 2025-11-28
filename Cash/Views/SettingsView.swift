@@ -423,7 +423,7 @@ struct AboutSettingsTab: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 
-                Text("Build \(buildNumber)")
+                Text(buildNumber)
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }
