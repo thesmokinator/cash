@@ -71,7 +71,6 @@ struct CashApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.locale, settings.language.locale)
                 .environment(navigationState)
         }
         .modelContainer(sharedModelContainer)
@@ -104,7 +103,6 @@ struct CashApp: App {
         Settings {
             SettingsView(appState: menuAppState, dismissSettings: {})
                 .environment(settings)
-                .environment(\.locale, settings.language.locale)
                 .modelContainer(sharedModelContainer)
                 .overlay {
                     if menuAppState.isLoading {

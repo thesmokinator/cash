@@ -106,7 +106,7 @@ struct JournalEntryPreview: View {
 // MARK: - Account Picker
 
 struct AccountPicker: View {
-    let title: LocalizedStringKey
+    let title: String
     let accounts: [Account]
     @Binding var selection: Account?
     var showClass: Bool = false

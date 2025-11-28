@@ -44,20 +44,6 @@ struct AccountListView: View {
                             Label("Net Worth", systemImage: "chart.pie.fill")
                                 .tag(SidebarSelection.patrimony)
                             
-                            HStack {
-                                Label("Scheduled", systemImage: "calendar.badge.clock")
-                                Spacer()
-                                if !scheduledTransactions.isEmpty {
-                                    Text("\(scheduledTransactions.count)")
-                                        .font(.caption)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 2)
-                                        .background(.quaternary)
-                                        .clipShape(Capsule())
-                                }
-                            }
-                            .tag(SidebarSelection.scheduled)
-                            
                             Label("Forecast", systemImage: "chart.line.uptrend.xyaxis")
                                 .tag(SidebarSelection.forecast)
                         }
@@ -69,6 +55,23 @@ struct AccountListView: View {
                             .sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
                         if !filteredAccounts.isEmpty {
                             Section(accountClass.localizedPluralName) {
+                                // Add Scheduled as first item in Expenses section
+                                if accountClass == .expense {
+                                    HStack {
+                                        Label("Scheduled", systemImage: "calendar.badge.clock")
+                                        Spacer()
+                                        if !scheduledTransactions.isEmpty {
+                                            Text("\(scheduledTransactions.count)")
+                                                .font(.caption)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 2)
+                                                .background(.quaternary)
+                                                .clipShape(Capsule())
+                                        }
+                                    }
+                                    .tag(SidebarSelection.scheduled)
+                                }
+                                
                                 ForEach(filteredAccounts) { account in
                                     AccountRowView(account: account)
                                         .tag(SidebarSelection.account(account))
@@ -95,20 +98,22 @@ struct AccountListView: View {
             }
             .id(settings.refreshID)
         } detail: {
-            switch selection {
-            case .patrimony:
-                NetWorthView()
-            case .forecast:
-                ForecastView()
-            case .scheduled:
-                ScheduledTransactionsView()
-            case .account(let account):
-                AccountDetailView(account: account, showingAddTransaction: $showingAddTransaction)
-            case nil:
-                ContentUnavailableView {
-                    Label("Select an account", systemImage: "building.columns")
-                } description: {
-                    Text("Choose an account from the sidebar to view details.")
+            Group {
+                switch selection {
+                case .patrimony:
+                    NetWorthView()
+                case .forecast:
+                    ForecastView()
+                case .scheduled:
+                    ScheduledTransactionsView()
+                case .account(let account):
+                    AccountDetailView(account: account, showingAddTransaction: $showingAddTransaction)
+                case nil:
+                    ContentUnavailableView {
+                        Label("Select an account", systemImage: "building.columns")
+                    } description: {
+                        Text("Choose an account from the sidebar to view details")
+                    }
                 }
             }
         }

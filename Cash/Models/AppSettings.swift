@@ -78,37 +78,6 @@ enum AppLanguage: String, CaseIterable, Identifiable {
             return "flag.fill"
         }
     }
-    
-    var locale: Locale {
-        switch self {
-        case .system:
-            return .current
-        case .english:
-            return Locale(identifier: "en")
-        case .italian:
-            return Locale(identifier: "it")
-        }
-    }
-    
-    var bundle: Bundle {
-        switch self {
-        case .system:
-            // Get the user's preferred language that the app supports
-            let preferredLanguages = Bundle.main.preferredLocalizations
-            if let preferred = preferredLanguages.first,
-               let path = Bundle.main.path(forResource: preferred, ofType: "lproj"),
-               let bundle = Bundle(path: path) {
-                return bundle
-            }
-            return .main
-        case .english, .italian:
-            guard let path = Bundle.main.path(forResource: rawValue, ofType: "lproj"),
-                  let bundle = Bundle(path: path) else {
-                return .main
-            }
-            return bundle
-        }
-    }
 }
 
 @Observable
@@ -128,11 +97,14 @@ final class AppSettings {
     var language: AppLanguage {
         didSet {
             UserDefaults.standard.set(language.rawValue, forKey: languageKey)
-            refreshID = UUID()
+            applyLanguage()
+            needsRestart = true
         }
     }
     
-    // Used to force UI refresh when language changes
+    var needsRestart: Bool = false
+    
+    // Used to force UI refresh when settings change
     var refreshID = UUID()
     
     private init() {
@@ -150,8 +122,9 @@ final class AppSettings {
             self.language = .system
         }
         
-        // Apply theme on init
+        // Apply theme and language on init
         applyTheme()
+        applyLanguage()
     }
     
     private func applyTheme() {
@@ -165,6 +138,18 @@ final class AppSettings {
                 NSApp.appearance = NSAppearance(named: .darkAqua)
             }
         }
+    }
+    
+    private func applyLanguage() {
+        switch language {
+        case .system:
+            UserDefaults.standard.removeObject(forKey: "AppleLanguages")
+        case .english:
+            UserDefaults.standard.set(["en"], forKey: "AppleLanguages")
+        case .italian:
+            UserDefaults.standard.set(["it"], forKey: "AppleLanguages")
+        }
+        UserDefaults.standard.synchronize()
     }
     
     func restartApp() {

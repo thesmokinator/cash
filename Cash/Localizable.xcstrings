@@ -13,6 +13,16 @@
     "#%@" : {
 
     },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
     "%lld" : {
 
     },
@@ -102,14 +112,7 @@
 
     },
     "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un'applicazione macOS semplificata per la gestione finanziaria ispirata a Gnucash, sviluppata con SwiftUI e SwiftData."
-          }
-        }
-      }
+
     },
     "About" : {
       "localizations" : {
@@ -122,24 +125,10 @@
       }
     },
     "Account class" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Classe conto"
-          }
-        }
-      }
+
     },
     "Account information" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Informazioni conto"
-          }
-        }
-      }
+
     },
     "Account name" : {
       "localizations" : {
@@ -152,24 +141,10 @@
       }
     },
     "Account number" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Numero conto"
-          }
-        }
-      }
+
     },
     "Account type" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tipo conto"
-          }
-        }
-      }
+
     },
     "Accounts" : {
       "localizations" : {
@@ -182,14 +157,7 @@
       }
     },
     "Active" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Attivo"
-          }
-        }
-      }
+
     },
     "Add" : {
       "localizations" : {
@@ -201,15 +169,8 @@
         }
       }
     },
-    "Add a recurring transaction to see it here." : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi una transazione ricorrente per vederla qui."
-          }
-        }
-      }
+    "Add a recurring transaction to see it here" : {
+
     },
     "Add account" : {
       "localizations" : {
@@ -237,26 +198,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aggiungi transazioni ricorrenti per vedere le proiezioni del saldo."
-          }
-        }
-      }
-    },
-    "Add scheduled transaction" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi transazione programmata"
-          }
-        }
-      }
-    },
-    "Add transaction" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi transazione"
           }
         }
       }
@@ -362,14 +303,7 @@
       }
     },
     "Attachments" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Allegati"
-          }
-        }
-      }
+
     },
     "Back" : {
       "localizations" : {
@@ -402,14 +336,7 @@
       }
     },
     "Balance is calculated from all journal entries. To adjust, create a correcting entry." : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il saldo è calcolato da tutte le registrazioni. Per modificarlo, crea una registrazione di rettifica."
-          }
-        }
-      }
+
     },
     "Bank account" : {
       "localizations" : {
@@ -482,24 +409,10 @@
       }
     },
     "Chart of accounts" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piano dei conti"
-          }
-        }
-      }
+
     },
-    "Choose an account from the sidebar to view details." : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleziona un conto dalla barra laterale per vedere i dettagli."
-          }
-        }
-      }
+    "Choose an account from the sidebar to view details" : {
+
     },
     "Choose export format" : {
       "localizations" : {
@@ -602,14 +515,7 @@
       }
     },
     "Credit account (gives value)" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conto avere (cede valore)"
-          }
-        }
-      }
+
     },
     "Credit card" : {
       "localizations" : {
@@ -632,14 +538,7 @@
       }
     },
     "Current balance" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saldo attuale"
-          }
-        }
-      }
+
     },
     "Current Balance" : {
       "localizations" : {
@@ -662,14 +561,7 @@
       }
     },
     "Danger zone" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zona pericolosa"
-          }
-        }
-      }
+
     },
     "Dark" : {
       "localizations" : {
@@ -742,14 +634,7 @@
       }
     },
     "Debit account (receives value)" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conto dare (riceve valore)"
-          }
-        }
-      }
+
     },
     "Default accounts" : {
       "localizations" : {
@@ -817,16 +702,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Elimina transazione"
-          }
-        }
-      }
-    },
-    "Deposit to" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deposita su"
           }
         }
       }
@@ -902,24 +777,10 @@
       }
     },
     "Edit scheduled transaction" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifica transazione programmata"
-          }
-        }
-      }
+
     },
     "Edit transaction" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifica transazione"
-          }
-        }
-      }
+
     },
     "Education" : {
       "localizations" : {
@@ -945,14 +806,7 @@
 
     },
     "Enter the starting balance for this account" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inserisci il saldo iniziale per questo conto"
-          }
-        }
-      }
+
     },
     "Entertainment" : {
       "localizations" : {
@@ -1094,16 +948,6 @@
         }
       }
     },
-    "Expense category" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Categoria spesa"
-          }
-        }
-      }
-    },
     "Expenses" : {
       "localizations" : {
         "it" : {
@@ -1115,24 +959,10 @@
       }
     },
     "Export / Import" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esporta / Importa"
-          }
-        }
-      }
+
     },
     "Export data" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esporta dati"
-          }
-        }
-      }
+
     },
     "Export successful" : {
       "localizations" : {
@@ -1145,14 +975,7 @@
       }
     },
     "Export your data as JSON (full backup) or OFX (standard bank format). Import will replace all existing data." : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esporta i tuoi dati come JSON (backup completo) o OFX (formato bancario standard). L'importazione sostituirà tutti i dati esistenti."
-          }
-        }
-      }
+
     },
     "Failed to compress data" : {
 
@@ -1226,16 +1049,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Venerdì"
-          }
-        }
-      }
-    },
-    "From account" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Da conto"
           }
         }
       }
@@ -1324,14 +1137,7 @@
       }
     },
     "Import data" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importa dati"
-          }
-        }
-      }
+
     },
     "Import data?" : {
       "localizations" : {
@@ -1384,14 +1190,7 @@
       }
     },
     "Import OFX" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importa OFX"
-          }
-        }
-      }
+
     },
     "Import OFX..." : {
       "localizations" : {
@@ -1470,14 +1269,7 @@
       }
     },
     "Inactive accounts are hidden from selection lists" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I conti inattivi sono nascosti dalle liste di selezione"
-          }
-        }
-      }
+
     },
     "Income" : {
       "localizations" : {
@@ -1485,16 +1277,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Entrata"
-          }
-        }
-      }
-    },
-    "Income category" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Categoria entrata"
           }
         }
       }
@@ -1553,14 +1335,7 @@
 
     },
     "Journal entry preview" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anteprima registrazione"
-          }
-        }
-      }
+
     },
     "JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps." : {
       "localizations" : {
@@ -1631,6 +1406,9 @@
           }
         }
       }
+    },
+    "Later" : {
+
     },
     "Liabilities" : {
       "localizations" : {
@@ -1743,14 +1521,7 @@
       }
     },
     "New scheduled transaction" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nuova transazione programmata"
-          }
-        }
-      }
+
     },
     "New transaction" : {
       "localizations" : {
@@ -1902,6 +1673,9 @@
         }
       }
     },
+    "No results" : {
+
+    },
     "No scheduled transactions" : {
       "localizations" : {
         "it" : {
@@ -1922,15 +1696,8 @@
         }
       }
     },
-    "No transactions found for the selected period." : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nessuna transazione trovata per il periodo selezionato."
-          }
-        }
-      }
+    "No transactions found for the selected period" : {
+
     },
     "No transactions found in the file" : {
       "localizations" : {
@@ -1941,6 +1708,9 @@
           }
         }
       }
+    },
+    "No transactions match your search" : {
+
     },
     "Normal: credit" : {
       "localizations" : {
@@ -2003,14 +1773,7 @@
       }
     },
     "Optional number for organizing accounts (e.g., 1000, 2000)" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Numero opzionale per organizzare i conti (es. 1000, 2000)"
-          }
-        }
-      }
+
     },
     "Other expense" : {
       "localizations" : {
@@ -2034,16 +1797,6 @@
     },
     "Parse error: %@" : {
 
-    },
-    "Pay from" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paga da"
-          }
-        }
-      }
     },
     "Payable" : {
       "localizations" : {
@@ -2245,16 +1998,6 @@
         }
       }
     },
-    "Recurring transactions that will be executed on their scheduled dates" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transazioni ricorrenti che verranno eseguite nelle date programmate"
-          }
-        }
-      }
-    },
     "Remove" : {
       "localizations" : {
         "it" : {
@@ -2276,14 +2019,7 @@
       }
     },
     "Reset all data" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reimposta tutti i dati"
-          }
-        }
-      }
+
     },
     "Reset all data?" : {
       "localizations" : {
@@ -2294,6 +2030,12 @@
           }
         }
       }
+    },
+    "Restart now" : {
+
+    },
+    "Restart required" : {
+
     },
     "Restore from a previous JSON export" : {
       "localizations" : {
@@ -2375,16 +2117,6 @@
         }
       }
     },
-    "Scheduled Transactions" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transazioni programmate"
-          }
-        }
-      }
-    },
     "Search" : {
       "localizations" : {
         "it" : {
@@ -2396,14 +2128,7 @@
       }
     },
     "Select account" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleziona conto"
-          }
-        }
-      }
+
     },
     "Select Account" : {
       "localizations" : {
@@ -2476,14 +2201,7 @@
       }
     },
     "Set opening balance" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Imposta saldo iniziale"
-          }
-        }
-      }
+
     },
     "Set up example accounts to explore the app" : {
       "localizations" : {
@@ -2535,25 +2253,8 @@
         }
       }
     },
-    "Start Fresh" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inizia da zero"
-          }
-        }
-      }
-    },
     "Status" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stato"
-          }
-        }
-      }
+
     },
     "Subscriptions" : {
       "localizations" : {
@@ -2584,6 +2285,9 @@
           }
         }
       }
+    },
+    "The app needs to restart to apply language changes." : {
+
     },
     "Theme" : {
       "localizations" : {
@@ -2636,14 +2340,7 @@
       }
     },
     "This will delete all accounts and transactions." : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Questo eliminerà tutti i conti e le transazioni."
-          }
-        }
-      }
+
     },
     "This will permanently delete all your accounts and transactions. This action cannot be undone." : {
       "localizations" : {
@@ -2661,16 +2358,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Giovedì"
-          }
-        }
-      }
-    },
-    "To account" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A conto"
           }
         }
       }
@@ -2821,16 +2508,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Errore di validazione"
-          }
-        }
-      }
-    },
-    "Version %@" : {
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versione %@"
           }
         }
       }

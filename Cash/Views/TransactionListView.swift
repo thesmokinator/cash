@@ -122,11 +122,7 @@ struct TransactionListView: View {
                         ContentUnavailableView {
                             Label("No transactions", systemImage: "arrow.left.arrow.right")
                         } description: {
-                            Text("No transactions found for the selected period.")
-                        } actions: {
-                            Button("Add transaction") {
-                                showingAddTransaction = true
-                            }
+                            Text("No transactions found for the selected period")
                         }
                         Spacer()
                     }
@@ -211,6 +207,7 @@ struct TransactionListView: View {
 struct TransactionFilterBar: View {
     @Binding var dateFilter: TransactionDateFilter
     @Binding var searchText: String
+    var showDateFilter: Bool = true
     var onAddTransaction: (() -> Void)?
     
     var body: some View {
@@ -234,13 +231,15 @@ struct TransactionFilterBar: View {
             .background(Color(nsColor: .controlBackgroundColor))
             .clipShape(RoundedRectangle(cornerRadius: 8))
             
-            Picker("Period", selection: $dateFilter) {
-                ForEach(TransactionDateFilter.allCases) { filter in
-                    Text(filter.localizedName).tag(filter)
+            if showDateFilter {
+                Picker("Period", selection: $dateFilter) {
+                    ForEach(TransactionDateFilter.allCases) { filter in
+                        Text(filter.localizedName).tag(filter)
+                    }
                 }
+                .labelsHidden()
+                .fixedSize()
             }
-            .labelsHidden()
-            .fixedSize()
             
             if let onAdd = onAddTransaction {
                 Button(action: onAdd) {

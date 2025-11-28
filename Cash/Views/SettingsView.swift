@@ -346,6 +346,7 @@ struct SettingsView: View {
 
 struct GeneralSettingsTab: View {
     @Environment(AppSettings.self) private var settings
+    @State private var showingRestartAlert = false
     
     var body: some View {
         @Bindable var settings = settings
@@ -364,8 +365,24 @@ struct GeneralSettingsTab: View {
                 }
             }
             .pickerStyle(.menu)
+            .onChange(of: settings.language) {
+                if settings.needsRestart {
+                    showingRestartAlert = true
+                }
+            }
         }
         .formStyle(.grouped)
+        .alert("Restart required", isPresented: $showingRestartAlert) {
+            Button("Later") {
+                settings.needsRestart = false
+            }
+            Button("Restart now") {
+                settings.needsRestart = false
+                AppSettings.shared.restartApp()
+            }
+        } message: {
+            Text("The app needs to restart to apply language changes.")
+        }
     }
 }
 
@@ -524,7 +541,7 @@ struct AboutSettingsTab: View {
                 .fontWeight(.semibold)
             
             VStack(spacing: 2) {
-                Text("Version \(appVersion)")
+                Text("\("Version") \(appVersion)")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 
