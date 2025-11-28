@@ -46,27 +46,32 @@ struct AccountListView: View {
                             
                             Label("Forecast", systemImage: "chart.line.uptrend.xyaxis")
                                 .tag(SidebarSelection.forecast)
-                            
-                            HStack {
-                                Label("Scheduled", systemImage: "calendar.badge.clock")
-                                Spacer()
-                                if !scheduledTransactions.isEmpty {
-                                    Text("\(scheduledTransactions.count)")
-                                        .font(.caption)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 2)
-                                        .background(.quaternary)
-                                        .clipShape(Capsule())
-                                }
-                            }
-                            .tag(SidebarSelection.scheduled)
                         }
                     }
                     
                     ForEach(AccountClass.allCases.sorted(by: { $0.displayOrder < $1.displayOrder })) { accountClass in
-                        let filteredAccounts = accounts.filter { $0.accountClass == accountClass && $0.isActive && !$0.isSystem }
+                        let filteredAccounts = accounts
+                            .filter { $0.accountClass == accountClass && $0.isActive && !$0.isSystem }
+                            .sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
                         if !filteredAccounts.isEmpty {
                             Section(accountClass.localizedPluralName) {
+                                // Add Scheduled as first item in Expenses section
+                                if accountClass == .expense {
+                                    HStack {
+                                        Label("Scheduled", systemImage: "calendar.badge.clock")
+                                        Spacer()
+                                        if !scheduledTransactions.isEmpty {
+                                            Text("\(scheduledTransactions.count)")
+                                                .font(.caption)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 2)
+                                                .background(.quaternary)
+                                                .clipShape(Capsule())
+                                        }
+                                    }
+                                    .tag(SidebarSelection.scheduled)
+                                }
+                                
                                 ForEach(filteredAccounts) { account in
                                     AccountRowView(account: account)
                                         .tag(SidebarSelection.account(account))
@@ -93,20 +98,22 @@ struct AccountListView: View {
             }
             .id(settings.refreshID)
         } detail: {
-            switch selection {
-            case .patrimony:
-                NetWorthView()
-            case .forecast:
-                ForecastView()
-            case .scheduled:
-                ScheduledTransactionsView()
-            case .account(let account):
-                AccountDetailView(account: account, showingAddTransaction: $showingAddTransaction)
-            case nil:
-                ContentUnavailableView {
-                    Label("Select an account", systemImage: "building.columns")
-                } description: {
-                    Text("Choose an account from the sidebar to view details.")
+            Group {
+                switch selection {
+                case .patrimony:
+                    NetWorthView()
+                case .forecast:
+                    ForecastView()
+                case .scheduled:
+                    ScheduledTransactionsView()
+                case .account(let account):
+                    AccountDetailView(account: account, showingAddTransaction: $showingAddTransaction)
+                case nil:
+                    ContentUnavailableView {
+                        Label("Select an account", systemImage: "building.columns")
+                    } description: {
+                        Text("Choose an account from the sidebar to view details")
+                    }
                 }
             }
         }
@@ -114,9 +121,15 @@ struct AccountListView: View {
             switch newValue {
             case .account(let account):
                 navigationState.isViewingAccount = true
+                navigationState.isViewingScheduled = false
                 navigationState.currentAccount = account
+            case .scheduled:
+                navigationState.isViewingAccount = false
+                navigationState.isViewingScheduled = true
+                navigationState.currentAccount = nil
             default:
                 navigationState.isViewingAccount = false
+                navigationState.isViewingScheduled = false
                 navigationState.currentAccount = nil
             }
         }

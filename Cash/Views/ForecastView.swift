@@ -84,6 +84,9 @@ struct ForecastView: View {
     @Query(filter: #Predicate<Transaction> { $0.isRecurring == true }) private var recurringTransactions: [Transaction]
     
     @State private var selectedPeriod: ForecastPeriod = .nextMonth
+    @State private var isCalculating = false
+    @State private var projectedTransactions: [ProjectedTransaction] = []
+    @State private var balanceHistory: [BalancePoint] = []
     
     private var assetAccounts: [Account] {
         accounts.filter { $0.accountClass == .asset && $0.isActive && !$0.isSystem }
@@ -97,14 +100,6 @@ struct ForecastView: View {
         let totalAssets = assetAccounts.reduce(Decimal.zero) { $0 + $1.balance }
         let totalLiabilities = liabilityAccounts.reduce(Decimal.zero) { $0 + $1.balance }
         return totalAssets - totalLiabilities
-    }
-    
-    private var projectedTransactions: [ProjectedTransaction] {
-        generateProjectedTransactions(until: selectedPeriod.endDate)
-    }
-    
-    private var balanceHistory: [BalancePoint] {
-        generateBalanceHistory(transactions: projectedTransactions)
     }
     
     private var projectedEndBalance: Decimal {
@@ -133,6 +128,22 @@ struct ForecastView: View {
                 .pickerStyle(.segmented)
                 .labelsHidden()
                 .padding(.horizontal)
+                .disabled(isCalculating)
+                .onChange(of: selectedPeriod) { _, newPeriod in
+                    calculateForecast(for: newPeriod)
+                }
+                
+                if isCalculating {
+                    VStack(spacing: 16) {
+                        ProgressView()
+                            .scaleEffect(1.2)
+                            .progressViewStyle(.circular)
+                        Text("Calculating forecast...")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 400)
+                } else {
                 
                 // Balance Chart
                 VStack(alignment: .leading, spacing: 12) {
@@ -237,16 +248,51 @@ struct ForecastView: View {
                     .background(.regularMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
+                } // end else !isCalculating
             }
             .padding()
         }
         .navigationTitle("Forecast")
         .id(settings.refreshID)
+        .task {
+            calculateForecast(for: selectedPeriod)
+        }
     }
     
-    // MARK: - Generate Projected Transactions
+    // MARK: - Calculate Forecast (Async)
     
-    private func generateProjectedTransactions(until endDate: Date) -> [ProjectedTransaction] {
+    private func calculateForecast(for period: ForecastPeriod) {
+        isCalculating = true
+        
+        // Capture necessary data for background computation
+        let transactions = recurringTransactions
+        let balance = currentBalance
+        let endDate = period.endDate
+        
+        Task.detached(priority: .userInitiated) {
+            let projected = await generateProjectedTransactionsAsync(
+                recurringTransactions: transactions,
+                until: endDate
+            )
+            let history = await generateBalanceHistoryAsync(
+                transactions: projected,
+                startingBalance: balance
+            )
+            
+            await MainActor.run {
+                projectedTransactions = projected
+                balanceHistory = history
+                isCalculating = false
+            }
+        }
+    }
+    
+    // MARK: - Generate Projected Transactions (Async)
+    
+    private func generateProjectedTransactionsAsync(
+        recurringTransactions: [Transaction],
+        until endDate: Date
+    ) async -> [ProjectedTransaction] {
         var projections: [ProjectedTransaction] = []
         let startDate = Date()
         
@@ -288,11 +334,14 @@ struct ForecastView: View {
         return projections.sorted { $0.date < $1.date }
     }
     
-    // MARK: - Generate Balance History
+    // MARK: - Generate Balance History (Async)
     
-    private func generateBalanceHistory(transactions: [ProjectedTransaction]) -> [BalancePoint] {
+    private func generateBalanceHistoryAsync(
+        transactions: [ProjectedTransaction],
+        startingBalance: Decimal
+    ) async -> [BalancePoint] {
         var points: [BalancePoint] = []
-        var runningBalance = currentBalance
+        var runningBalance = startingBalance
         
         // Start point (today)
         points.append(BalancePoint(date: Date(), balance: runningBalance))

@@ -135,16 +135,28 @@ final class RecurrenceRule {
     
     // MARK: - Next Occurrence Calculation
     
-    func calculateNextOccurrence(from date: Date = Date()) -> Date? {
+    /// Calculate the next occurrence date
+    /// - Parameters:
+    ///   - date: The reference date to calculate from
+    ///   - includeDate: If true, the reference date itself can be returned if it matches the pattern
+    func calculateNextOccurrence(from date: Date = Date(), includeDate: Bool = false) -> Date? {
         let calendar = Calendar.current
         var nextDate: Date?
         
         switch frequency {
         case .daily:
-            nextDate = calendar.date(byAdding: .day, value: interval, to: date)
+            if includeDate {
+                nextDate = date
+            } else {
+                nextDate = calendar.date(byAdding: .day, value: interval, to: date)
+            }
             
         case .weekly:
-            nextDate = calendar.date(byAdding: .weekOfYear, value: interval, to: date)
+            if includeDate {
+                nextDate = date
+            } else {
+                nextDate = calendar.date(byAdding: .weekOfYear, value: interval, to: date)
+            }
             
         case .monthly:
             if let day = dayOfMonth {
@@ -154,9 +166,15 @@ final class RecurrenceRule {
                 components.day = targetDay
                 
                 if let targetDate = calendar.date(from: components) {
-                    // If target date is in the past or today, go to next interval
-                    if targetDate <= date {
-                        // Move to next month(s)
+                    // Compare dates without time
+                    let dateOnly = calendar.startOfDay(for: date)
+                    let targetOnly = calendar.startOfDay(for: targetDate)
+                    
+                    if includeDate && targetOnly >= dateOnly {
+                        // Include the target date if it's on or after the reference date
+                        nextDate = targetDate
+                    } else if targetOnly <= dateOnly {
+                        // Target date is in the past or today, go to next interval
                         if let nextMonth = calendar.date(byAdding: .month, value: interval, to: targetDate) {
                             var nextComponents = calendar.dateComponents([.year, .month], from: nextMonth)
                             nextComponents.day = min(day, daysInMonth(for: nextMonth))
@@ -167,7 +185,11 @@ final class RecurrenceRule {
                     }
                 }
             } else {
-                nextDate = calendar.date(byAdding: .month, value: interval, to: date)
+                if includeDate {
+                    nextDate = date
+                } else {
+                    nextDate = calendar.date(byAdding: .month, value: interval, to: date)
+                }
             }
             
         case .yearly:
@@ -175,14 +197,27 @@ final class RecurrenceRule {
                 var components = calendar.dateComponents([.year], from: date)
                 components.month = month
                 components.day = day
-                if let targetDate = calendar.date(from: components), targetDate <= date {
-                    components.year = (components.year ?? 2024) + interval
-                    nextDate = calendar.date(from: components)
-                } else {
-                    nextDate = calendar.date(from: components)
+                
+                if let targetDate = calendar.date(from: components) {
+                    // Compare dates without time
+                    let dateOnly = calendar.startOfDay(for: date)
+                    let targetOnly = calendar.startOfDay(for: targetDate)
+                    
+                    if includeDate && targetOnly >= dateOnly {
+                        nextDate = targetDate
+                    } else if targetOnly <= dateOnly {
+                        components.year = (components.year ?? 2024) + interval
+                        nextDate = calendar.date(from: components)
+                    } else {
+                        nextDate = targetDate
+                    }
                 }
             } else {
-                nextDate = calendar.date(byAdding: .year, value: interval, to: date)
+                if includeDate {
+                    nextDate = date
+                } else {
+                    nextDate = calendar.date(byAdding: .year, value: interval, to: date)
+                }
             }
         }
         

@@ -13,6 +13,7 @@ import SwiftData
 @Observable
 class NavigationState {
     var isViewingAccount: Bool = false
+    var isViewingScheduled: Bool = false
     var currentAccount: Account? = nil
 }
 
@@ -21,6 +22,7 @@ class NavigationState {
 extension Notification.Name {
     static let addNewAccount = Notification.Name("addNewAccount")
     static let addNewTransaction = Notification.Name("addNewTransaction")
+    static let addNewScheduledTransaction = Notification.Name("addNewScheduledTransaction")
     static let importOFX = Notification.Name("importOFX")
 }
 
@@ -39,10 +41,30 @@ struct CashApp: App {
             RecurrenceRule.self,
             AppConfiguration.self,
         ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
+        
+        #if ENABLE_ICLOUD
+        let cloudManager = CloudKitManager.shared
+        
+        // Try CloudKit if enabled and available
+        if cloudManager.isEnabled && cloudManager.isAvailable {
+            do {
+                let cloudConfig = ModelConfiguration(
+                    schema: schema,
+                    isStoredInMemoryOnly: false,
+                    cloudKitDatabase: .private(cloudManager.containerIdentifier)
+                )
+                return try ModelContainer(for: schema, configurations: [cloudConfig])
+            } catch {
+                // CloudKit failed, fall back to local storage
+                print("CloudKit initialization failed: \(error). Falling back to local storage.")
+            }
+        }
+        #endif
+        
+        // Local storage (default)
+        let localConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            return try ModelContainer(for: schema, configurations: [localConfig])
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
@@ -51,7 +73,6 @@ struct CashApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environment(\.locale, settings.language.locale)
                 .environment(navigationState)
         }
         .modelContainer(sharedModelContainer)
@@ -62,11 +83,19 @@ struct CashApp: App {
                 Button {
                     if navigationState.isViewingAccount {
                         NotificationCenter.default.post(name: .addNewTransaction, object: nil)
+                    } else if navigationState.isViewingScheduled {
+                        NotificationCenter.default.post(name: .addNewScheduledTransaction, object: nil)
                     } else {
                         NotificationCenter.default.post(name: .addNewAccount, object: nil)
                     }
                 } label: {
-                    Text(navigationState.isViewingAccount ? "New transaction" : "New account")
+                    if navigationState.isViewingAccount {
+                        Text("New transaction")
+                    } else if navigationState.isViewingScheduled {
+                        Text("New scheduled transaction")
+                    } else {
+                        Text("New account")
+                    }
                 }
                 .keyboardShortcut("n", modifiers: .command)
             }
@@ -84,7 +113,6 @@ struct CashApp: App {
         Settings {
             SettingsView(appState: menuAppState, dismissSettings: {})
                 .environment(settings)
-                .environment(\.locale, settings.language.locale)
                 .modelContainer(sharedModelContainer)
                 .overlay {
                     if menuAppState.isLoading {

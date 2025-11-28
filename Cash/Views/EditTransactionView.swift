@@ -215,7 +215,7 @@ struct EditTransactionView: View {
                 existingRule.dayOfWeek = recurrenceDayOfWeek
                 existingRule.weekendAdjustment = recurrenceWeekendAdjustment
                 existingRule.endDate = recurrenceEndDate
-                existingRule.nextOccurrence = existingRule.calculateNextOccurrence(from: date)
+                existingRule.nextOccurrence = existingRule.calculateNextOccurrence(from: date, includeDate: true)
             } else {
                 // Create new rule
                 let rule = RecurrenceRule(
@@ -227,7 +227,7 @@ struct EditTransactionView: View {
                     startDate: date,
                     endDate: recurrenceEndDate
                 )
-                rule.nextOccurrence = rule.calculateNextOccurrence(from: date)
+                rule.nextOccurrence = rule.calculateNextOccurrence(from: date, includeDate: true)
                 rule.transaction = transaction
                 modelContext.insert(rule)
             }

@@ -322,7 +322,7 @@ struct AddTransactionView: View {
                     startDate: date,
                     endDate: recurrenceEndDate
                 )
-                rule.nextOccurrence = rule.calculateNextOccurrence(from: date)
+                rule.nextOccurrence = rule.calculateNextOccurrence(from: date, includeDate: true)
                 rule.transaction = transaction
                 modelContext.insert(rule)
             }

@@ -36,14 +36,14 @@ struct AddAccountView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(String(localized: "Account information")) {
-                    TextField(String(localized: "Account name"), text: $name)
-                    TextField(String(localized: "Account number"), text: $accountNumber)
+                Section("Account information") {
+                    TextField("Account name", text: $name)
+                    TextField("Account number", text: $accountNumber)
                         .help("Optional number for organizing accounts (e.g., 1000, 2000)")
                 }
                 
-                Section(String(localized: "Account class")) {
-                    Picker(String(localized: "Class"), selection: $selectedClass) {
+                Section("Account class") {
+                    Picker("Class", selection: $selectedClass) {
                         ForEach(AccountClass.allCases) { accountClass in
                             Label(accountClass.localizedName, systemImage: accountClass.iconName)
                                 .tag(accountClass)
@@ -58,8 +58,8 @@ struct AddAccountView: View {
                     }
                 }
                 
-                Section(String(localized: "Account type")) {
-                    Picker(String(localized: "Type"), selection: $selectedType) {
+                Section("Account type") {
+                    Picker("Type", selection: $selectedType) {
                         ForEach(availableTypes) { type in
                             Label(type.localizedName, systemImage: type.iconName)
                                 .tag(type)

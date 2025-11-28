@@ -56,18 +56,15 @@ struct ContentView: View {
                         }
                     }
                 .environment(settings)
-                .environment(\.locale, settings.language.locale)
             }
             .sheet(isPresented: $appState.showWelcomeSheet) {
                 WelcomeSheet(appState: appState)
                     .environment(settings)
-                    .environment(\.locale, settings.language.locale)
                     .interactiveDismissDisabled()
             }
             .sheet(isPresented: $showingOFXImportWizard) {
                 OFXImportWizard(ofxTransactions: parsedOFXTransactions)
                     .environment(settings)
-                    .environment(\.locale, settings.language.locale)
             }
             .fileImporter(
                 isPresented: $showingOFXImportPicker,
@@ -173,7 +170,7 @@ struct WelcomeSheet: View {
             // Options
             VStack(spacing: 16) {
                 WelcomeOptionButton(
-                    title: "Start Fresh",
+                    title: "Start fresh",
                     subtitle: "Create a new empty account structure",
                     icon: "plus.circle.fill",
                     color: .blue
@@ -234,7 +231,7 @@ struct WelcomeSheet: View {
     }
     
     private func setupDemoAccounts() {
-        let defaultAccounts = ChartOfAccounts.createDefaultAccounts(currency: "EUR", bundle: settings.language.bundle)
+        let defaultAccounts = ChartOfAccounts.createDefaultAccounts(currency: "EUR")
         for account in defaultAccounts {
             modelContext.insert(account)
         }

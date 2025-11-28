@@ -4,8 +4,9 @@ A simplified macOS financial management application inspired by Gnucash, built w
 
 ## Screenshots
 
-![Screenshot 1](AppStore/Screenshots/001.png)
-![Screenshot 2](AppStore/Screenshots/002.png)
+![Main Screenshot](AppStore/Screenshots/001.png)
+
+See all screenshots [here](SCREENSHOT.md).
 
 ## Getting Started
 
@@ -28,6 +29,30 @@ open Cash.xcodeproj
 ```
 
 3. Build and run the project (⌘R)
+
+## Build Configuration
+
+### iCloud Sync (Optional)
+
+iCloud sync is disabled by default. To enable it:
+
+1. In Xcode, select the **Cash** target
+2. Go to **Build Settings** → **Swift Compiler - Custom Flags**
+3. Add `ENABLE_ICLOUD` to **Active Compilation Conditions** for the desired configuration (Debug/Release)
+
+Or via command line:
+```bash
+xcodebuild -scheme Cash -configuration Release \
+  SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) ENABLE_ICLOUD' \
+  build
+```
+
+**Requirements for iCloud:**
+- Apple Developer account with CloudKit enabled
+- Configure the iCloud container identifier in `Cash.entitlements`
+- Sign the app with a valid provisioning profile
+
+When iCloud is enabled, a new "iCloud" tab appears in Settings where users can enable/disable sync.
 
 ## Development
 
@@ -54,7 +79,7 @@ To add a new language, edit `Localizable.xcstrings` in Xcode.
 
 ## Data Persistence
 
-All data is stored locally using SwiftData.
+All data is stored locally using SwiftData. When iCloud sync is enabled (build flag + user preference), data syncs across devices via CloudKit.
 
 ## Contributing
 

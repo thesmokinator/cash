@@ -16,45 +16,37 @@ struct ScheduledTransactionsView: View {
     @State private var transactionToEdit: Transaction?
     @State private var transactionToDelete: Transaction?
     @State private var transactionToExecute: Transaction?
+    @State private var searchText: String = ""
+    @State private var dummyDateFilter: TransactionDateFilter = .thisMonth
+    
+    private var filteredTransactions: [Transaction] {
+        if searchText.isEmpty {
+            return scheduledTransactions
+        }
+        return scheduledTransactions.filter { $0.descriptionText.localizedCaseInsensitiveContains(searchText) }
+    }
     
     var body: some View {
         VStack(spacing: 0) {
-            // Header
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Scheduled Transactions")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    Text("Recurring transactions that will be executed on their scheduled dates")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                Button(action: { showingAddScheduled = true }) {
-                    Label("Add", systemImage: "plus")
-                }
-            }
-            .padding()
-            .background(.regularMaterial)
-            
-            Divider()
-            
-            if scheduledTransactions.isEmpty {
+            TransactionFilterBar(
+                dateFilter: $dummyDateFilter,
+                searchText: $searchText,
+                showDateFilter: false,
+                onAddTransaction: { showingAddScheduled = true }
+            )
+                        
+            if filteredTransactions.isEmpty {
                 VStack {
                     ContentUnavailableView {
-                        Label("No scheduled transactions", systemImage: "calendar.badge.clock")
+                        Label(scheduledTransactions.isEmpty ? "No scheduled transactions" : "No results", systemImage: scheduledTransactions.isEmpty ? "calendar.badge.clock" : "magnifyingglass")
                     } description: {
-                        Text("Add a recurring transaction to see it here.")
-                    } actions: {
-                        Button("Add scheduled transaction") {
-                            showingAddScheduled = true
-                        }
+                        Text(scheduledTransactions.isEmpty ? "Add a recurring transaction to see it here" : "No transactions match your search")
                     }
                     Spacer()
                 }
             } else {
                 List {
-                    ForEach(scheduledTransactions) { transaction in
+                    ForEach(filteredTransactions) { transaction in
                         ScheduledTransactionRow(transaction: transaction)
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -106,6 +98,9 @@ struct ScheduledTransactionsView: View {
         }
         .sheet(item: $transactionToEdit) { transaction in
             EditScheduledTransactionView(transaction: transaction)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .addNewScheduledTransaction)) { _ in
+            showingAddScheduled = true
         }
         .confirmationDialog(
             "Execute transaction",
@@ -503,7 +498,7 @@ struct AddScheduledTransactionView: View {
             startDate: recurrenceStartDate,
             endDate: recurrenceEndDate
         )
-        rule.nextOccurrence = rule.calculateNextOccurrence(from: recurrenceStartDate)
+        rule.nextOccurrence = rule.calculateNextOccurrence(from: recurrenceStartDate, includeDate: true)
         rule.transaction = transaction
         modelContext.insert(rule)
         
@@ -601,7 +596,7 @@ struct EditScheduledTransactionView: View {
             rule.weekendAdjustment = recurrenceWeekendAdjustment
             rule.startDate = recurrenceStartDate
             rule.endDate = recurrenceEndDate
-            rule.nextOccurrence = rule.calculateNextOccurrence(from: Date())
+            rule.nextOccurrence = rule.calculateNextOccurrence(from: recurrenceStartDate, includeDate: true)
         }
         
         dismiss()

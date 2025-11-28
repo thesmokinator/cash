@@ -1,2917 +1,2620 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "": {},
-    "-%@": {},
-    "(%@)": {},
-    "#%@": {},
-    "%lld": {},
-    "%lld categorized": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld categorizzate"
-          }
-        }
-      }
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
     },
-    "%lld of %lld": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$lld di %2$lld"
-          }
-        }
-      }
+    "-%@" : {
+
     },
-    "%lld transactions found": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld transazioni trovate"
-          }
-        }
-      }
+    "(%@)" : {
+
     },
-    "%lld transactions imported": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld transazioni importate"
-          }
-        }
-      }
+    "#%@" : {
+
     },
-    "%lld transactions skipped": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld transazioni saltate"
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
           }
         }
       }
     },
-    "%lld transactions will be imported": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld transazioni saranno importate"
-          }
-        }
-      }
+    "%lld" : {
+
     },
-    "%lld uncategorized": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld non categorizzate"
+    "%lld categorized" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld categorizzate"
           }
         }
       }
     },
-    "•": {},
-    "© 2025 Michele Broggi": {},
-    "→": {},
-    "+%@": {},
-    "0": {},
-    "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Un'applicazione macOS semplificata per la gestione finanziaria ispirata a Gnucash, sviluppata con SwiftUI e SwiftData."
+    "%lld of %lld" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld di %2$lld"
           }
         }
       }
     },
-    "About": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Informazioni"
+    "%lld transactions found" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld transazioni trovate"
           }
         }
       }
     },
-    "Account class": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Classe conto"
+    "%lld transactions imported" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld transazioni importate"
           }
         }
       }
     },
-    "Account information": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Informazioni conto"
+    "%lld transactions skipped" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld transazioni saltate"
           }
         }
       }
     },
-    "Account name": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nome conto"
+    "%lld transactions will be imported" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld transazioni saranno importate"
           }
         }
       }
     },
-    "Account number": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numero conto"
+    "%lld uncategorized" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld non categorizzate"
           }
         }
       }
     },
-    "Account type": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tipo conto"
-          }
-        }
-      }
+    "•" : {
+
     },
-    "Accounts": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conti"
-          }
-        }
-      }
+    "© 2025 Michele Broggi" : {
+
     },
-    "Active": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Attivo"
-          }
-        }
-      }
+    "→" : {
+
     },
-    "Add": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi"
-          }
-        }
-      }
+    "+%@" : {
+
     },
-    "Add a recurring transaction to see it here.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi una transazione ricorrente per vederla qui."
-          }
-        }
-      }
+    "0" : {
+
     },
-    "Add account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi conto"
-          }
-        }
-      }
+    "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
+
     },
-    "Add attachment": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi allegato"
+    "About" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Informazioni"
           }
         }
       }
     },
-    "Add recurring transactions to see balance projections.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi transazioni ricorrenti per vedere le proiezioni del saldo."
-          }
-        }
-      }
+    "Account class" : {
+
     },
-    "Add scheduled transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi transazione programmata"
-          }
-        }
-      }
+    "Account information" : {
+
     },
-    "Add transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi transazione"
+    "Account name" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nome conto"
           }
         }
       }
     },
-    "All data will be permanently deleted.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tutti i dati verranno eliminati permanentemente."
-          }
-        }
-      }
+    "Account number" : {
+
     },
-    "All transactions": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tutte le transazioni"
-          }
-        }
-      }
+    "Account type" : {
+
     },
-    "Amount": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importo"
+    "Accounts" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conti"
           }
         }
       }
     },
-    "And %lld more transactions...": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "E altre %lld transazioni..."
-          }
-        }
-      }
+    "Active" : {
+
     },
-    "Are you absolutely sure?": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sei assolutamente sicuro?"
+    "Add" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi"
           }
         }
       }
     },
-    "Are you sure you want to delete this account? This action cannot be undone.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sei sicuro di voler eliminare questo conto? Questa azione non può essere annullata."
-          }
-        }
-      }
+    "Add a recurring transaction to see it here" : {
+
     },
-    "Are you sure you want to delete this scheduled transaction?": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sei sicuro di voler eliminare questa transazione programmata?"
+    "Add account" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi conto"
           }
         }
       }
     },
-    "Are you sure you want to delete this transaction?": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sei sicuro di voler eliminare questa transazione?"
+    "Add attachment" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi allegato"
           }
         }
       }
     },
-    "Asset": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Attività"
+    "Add recurring transactions to see balance projections." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi transazioni ricorrenti per vedere le proiezioni del saldo."
           }
         }
       }
     },
-    "Assets": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Attività"
+    "All data will be permanently deleted." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutti i dati verranno eliminati permanentemente."
           }
         }
       }
     },
-    "Attachments": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Allegati"
+    "All transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutte le transazioni"
           }
         }
       }
     },
-    "Back": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Indietro"
+    "Amount" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importo"
           }
         }
       }
     },
-    "Balance": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saldo"
+    "And %lld more transactions..." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E altre %lld transazioni..."
           }
         }
       }
     },
-    "Balance Forecast": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Previsione saldo"
+    "Are you absolutely sure?" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sei assolutamente sicuro?"
           }
         }
       }
     },
-    "Balance is calculated from all journal entries. To adjust, create a correcting entry.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il saldo è calcolato da tutte le registrazioni. Per modificarlo, crea una registrazione di rettifica."
+    "Are you sure you want to delete this account? This action cannot be undone." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sei sicuro di voler eliminare questo conto? Questa azione non può essere annullata."
           }
         }
       }
     },
-    "Bank account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conto bancario"
+    "Are you sure you want to delete this scheduled transaction?" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sei sicuro di voler eliminare questa transazione programmata?"
           }
         }
       }
     },
-    "Bank Account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conto bancario"
+    "Are you sure you want to delete this transaction?" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sei sicuro di voler eliminare questa transazione?"
           }
         }
       }
     },
-    "Bank format": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Formato bancario"
+    "Asset" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attività"
           }
         }
       }
     },
-    "Build %@": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Build %@"
+    "Assets" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attività"
           }
         }
       }
     },
-    "Cancel": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Annulla"
-          }
-        }
-      }
+    "Attachments" : {
+
     },
-    "Cannot access the selected file": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossibile accedere al file selezionato"
+    "Back" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Indietro"
           }
         }
       }
     },
-    "Cash": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contanti"
+    "Balance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo"
           }
         }
       }
     },
-    "Categorize Transactions": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Categorizza transazioni"
+    "Balance Forecast" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previsione saldo"
           }
         }
       }
     },
-    "Chart of accounts": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Piano dei conti"
-          }
-        }
-      }
+    "Balance is calculated from all journal entries. To adjust, create a correcting entry." : {
+
     },
-    "Choose an account from the sidebar to view details.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona un conto dalla barra laterale per vedere i dettagli."
+    "Bank account" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conto bancario"
           }
         }
       }
     },
-    "Choose export format": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scegli il formato di esportazione"
+    "Bank Account" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conto bancario"
           }
         }
       }
     },
-    "Choose your preferences": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scegli le tue preferenze"
+    "Bank format" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato bancario"
           }
         }
       }
     },
-    "Class": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Classe"
-          }
-        }
-      }
+    "Calculating forecast..." : {
+
     },
-    "Close": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chiudi"
+    "Cancel" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annulla"
           }
         }
       }
     },
-    "Complete": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Completato"
+    "Cannot access the selected file" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile accedere al file selezionato"
           }
         }
       }
     },
-    "Continue": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continua"
+    "Cash" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contanti"
           }
         }
       }
     },
-    "Cr": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Av"
+    "Categorize Transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categorizza transazioni"
           }
         }
       }
     },
-    "Create a new empty account structure": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Crea una nuova struttura di conti vuota"
-          }
-        }
-      }
+    "Chart of accounts" : {
+
     },
-    "Create your first account to get started.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Crea il tuo primo conto per iniziare."
-          }
-        }
-      }
+    "Choose an account from the sidebar to view details" : {
+
     },
-    "Credit": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avere"
+    "Choose export format" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli il formato di esportazione"
           }
         }
       }
     },
-    "Credit account (gives value)": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conto avere (cede valore)"
+    "Choose your preferences" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli le tue preferenze"
           }
         }
       }
     },
-    "Credit card": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Carta di credito"
+    "Class" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Classe"
           }
         }
       }
     },
-    "Currency": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Valuta"
+    "Close" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiudi"
           }
         }
       }
     },
-    "Current balance": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saldo attuale"
+    "Complete" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completato"
           }
         }
       }
     },
-    "Current Balance": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saldo attuale"
+    "Continue" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continua"
           }
         }
       }
     },
-    "Daily": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giornaliero"
+    "Cr" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Av"
           }
         }
       }
     },
-    "Danger zone": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zona pericolosa"
+    "Create a new empty account structure" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea una nuova struttura di conti vuota"
           }
         }
       }
     },
-    "Dark": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scuro"
+    "Create your first account to get started." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crea il tuo primo conto per iniziare."
           }
         }
       }
     },
-    "Data": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dati"
+    "Credit" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avere"
           }
         }
       }
     },
-    "Date": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Data"
-          }
-        }
-      }
+    "Credit account (gives value)" : {
+
     },
-    "day": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "giorno"
+    "Credit card" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carta di credito"
           }
         }
       }
     },
-    "Day of week": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giorno della settimana"
+    "Currency" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valuta"
           }
         }
       }
     },
-    "days": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "giorni"
-          }
-        }
-      }
+    "Current balance" : {
+
     },
-    "Debit": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dare"
+    "Current Balance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo attuale"
           }
         }
       }
     },
-    "Debit account (receives value)": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conto dare (riceve valore)"
+    "Daily" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giornaliero"
           }
         }
       }
     },
-    "Default accounts": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Conti predefiniti"
-          }
-        }
-      }
+    "Danger zone" : {
+
     },
-    "Default currency": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Valuta predefinita"
+    "Dark" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scuro"
           }
         }
       }
     },
-    "Delete": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina"
+    "Data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dati"
           }
         }
       }
     },
-    "Delete account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina conto"
+    "Date" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data"
           }
         }
       }
     },
-    "Delete everything": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina tutto"
+    "day" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "giorno"
           }
         }
       }
     },
-    "Delete scheduled transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina transazione programmata"
+    "Day of week" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giorno della settimana"
           }
         }
       }
     },
-    "Delete transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elimina transazione"
+    "days" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "giorni"
           }
         }
       }
     },
-    "Deposit to": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deposita su"
+    "Debit" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dare"
           }
         }
       }
     },
-    "Description": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Descrizione"
-          }
-        }
-      }
+    "Debit account (receives value)" : {
+
     },
-    "Details": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dettagli"
+    "Default accounts" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conti predefiniti"
           }
         }
       }
     },
-    "Dividend income": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dividendi"
+    "Default currency" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valuta predefinita"
           }
         }
       }
     },
-    "Done": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fatto"
+    "Delete" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina"
           }
         }
       }
     },
-    "Dr": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Da"
+    "Delete account" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina conto"
           }
         }
       }
     },
-    "Edit": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modifica"
+    "Delete everything" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina tutto"
           }
         }
       }
     },
-    "Edit account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modifica conto"
+    "Delete scheduled transaction" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina transazione programmata"
           }
         }
       }
     },
-    "Edit scheduled transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modifica transazione programmata"
+    "Delete transaction" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elimina transazione"
           }
         }
       }
     },
-    "Edit transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Modifica transazione"
+    "Description" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descrizione"
           }
         }
       }
     },
-    "Education": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Istruzione"
+    "Details" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dettagli"
           }
         }
       }
     },
-    "End date": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Data fine"
+    "Dividend income" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dividendi"
           }
         }
       }
     },
-    "English": {},
-    "Enter the starting balance for this account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inserisci il saldo iniziale per questo conto"
+    "Done" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fatto"
           }
         }
       }
     },
-    "Entertainment": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Intrattenimento"
+    "Dr" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da"
           }
         }
       }
     },
-    "Equity": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Patrimonio netto"
+    "Edit" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica"
           }
         }
       }
     },
-    "Erasing data...": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancellazione dati..."
+    "Edit account" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modifica conto"
           }
         }
       }
     },
-    "Error": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Errore"
-          }
-        }
-      }
+    "Edit scheduled transaction" : {
+
     },
-    "Every": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ogni"
+    "Edit transaction" : {
+
+    },
+    "Education" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Istruzione"
           }
         }
       }
     },
-    "Every %lld days": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ogni %lld giorni"
+    "End date" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data fine"
           }
         }
       }
+    },
+    "English" : {
+
     },
-    "Every %lld months": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ogni %lld mesi"
+    "Enter the starting balance for this account" : {
+
+    },
+    "Entertainment" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intrattenimento"
           }
         }
       }
     },
-    "Every %lld weeks": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ogni %lld settimane"
+    "Equity" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patrimonio netto"
           }
         }
       }
     },
-    "Every %lld years": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ogni %lld anni"
+    "Erasing data..." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancellazione dati..."
           }
         }
       }
     },
-    "Execute": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esegui"
+    "Error" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore"
           }
         }
       }
     },
-    "Execute now": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esegui ora"
+    "Every" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni"
           }
         }
       }
     },
-    "Execute transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esegui transazione"
+    "Every %lld days" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni %lld giorni"
           }
         }
       }
     },
-    "Expense": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Spesa"
+    "Every %lld months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni %lld mesi"
           }
         }
       }
     },
-    "Expense category": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Categoria spesa"
+    "Every %lld weeks" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni %lld settimane"
           }
         }
       }
     },
-    "Expenses": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Spese"
+    "Every %lld years" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni %lld anni"
           }
         }
       }
     },
-    "Export / Import": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esporta / Importa"
+    "Execute" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esegui"
           }
         }
       }
     },
-    "Export data": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esporta dati"
+    "Execute now" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esegui ora"
           }
         }
       }
     },
-    "Export successful": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esportazione completata"
+    "Execute transaction" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esegui transazione"
           }
         }
       }
     },
-    "Export your data as JSON (full backup) or OFX (standard bank format). Import will replace all existing data.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esporta i tuoi dati come JSON (backup completo) o OFX (formato bancario standard). L'importazione sostituirà tutti i dati esistenti."
+    "Exit the application" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiudi l'applicazione"
           }
         }
       }
     },
-    "Failed to compress data": {},
-    "Failed to decode data": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossibile decodificare i dati"
+    "Expense" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spesa"
           }
         }
       }
     },
-    "Failed to decompress data": {},
-    "Failed to encode data": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossibile codificare i dati"
+    "Expenses" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spese"
           }
         }
       }
+    },
+    "Export / Import" : {
+
+    },
+    "Export data" : {
+
     },
-    "Food & dining": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cibo e ristorazione"
+    "Export successful" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esportazione completata"
           }
         }
       }
     },
-    "Forecast": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Previsione"
+    "Export your data as JSON (full backup) or OFX (standard bank format). Import will replace all existing data." : {
+
+    },
+    "Failed to compress data" : {
+
+    },
+    "Failed to decode data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile decodificare i dati"
           }
         }
       }
+    },
+    "Failed to decompress data" : {
+
     },
-    "Freelance": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lavoro freelance"
+    "Failed to encode data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile codificare i dati"
           }
         }
       }
     },
-    "Frequency": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Frequenza"
+    "Food & dining" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cibo e ristorazione"
           }
         }
       }
     },
-    "Friday": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Venerdì"
+    "Forecast" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previsione"
           }
         }
       }
     },
-    "From account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Da conto"
+    "Freelance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lavoro freelance"
           }
         }
       }
     },
-    "Full backup": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Backup completo"
+    "Frequency" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frequenza"
           }
         }
       }
     },
-    "General": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generali"
+    "Friday" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Venerdì"
           }
         }
       }
     },
-    "Get started": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inizia"
+    "Full backup" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Backup completo"
           }
         }
       }
     },
-    "Healthcare": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salute"
+    "General" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generali"
           }
         }
       }
     },
-    "Housing": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abitazione"
+    "Get started" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizia"
           }
         }
       }
     },
-    "Import %lld Transactions": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importa %lld transazioni"
+    "Healthcare" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salute"
           }
         }
       }
     },
-    "Import Backup": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importa backup"
+    "Housing" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abitazione"
           }
         }
       }
     },
-    "Import Complete!": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importazione completata!"
+    "iCloud not available in this build" : {
+
+    },
+    "Import %lld Transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa %lld transazioni"
           }
         }
       }
     },
-    "Import data": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importa dati"
+    "Import Backup" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa backup"
           }
         }
       }
     },
-    "Import data?": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importare i dati?"
+    "Import Complete!" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione completata!"
           }
         }
       }
     },
-    "Import error": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Errore di importazione"
+    "Import data" : {
+
+    },
+    "Import data?" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importare i dati?"
           }
         }
       }
     },
-    "Import Error": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Errore di importazione"
+    "Import error" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore di importazione"
           }
         }
       }
     },
-    "Import existing data": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importa dati esistenti"
+    "Import Error" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore di importazione"
           }
         }
       }
     },
-    "Import failed: %@": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importazione fallita: %@"
+    "Import existing data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa dati esistenti"
           }
         }
       }
     },
-    "Import OFX": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importa OFX"
+    "Import failed: %@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione fallita: %@"
           }
         }
       }
+    },
+    "Import OFX" : {
+
     },
-    "Import OFX...": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importa OFX..."
+    "Import OFX..." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa OFX..."
           }
         }
       }
     },
-    "Import successful": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importazione completata"
+    "Import successful" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione completata"
           }
         }
       }
     },
-    "Imported %lld accounts and %lld transactions.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imported %1$lld accounts and %2$lld transactions."
+    "Imported %lld accounts and %lld transactions." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imported %1$lld accounts and %2$lld transactions."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importati %1$lld conti e %2$lld transazioni."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importati %1$lld conti e %2$lld transazioni."
           }
         }
       }
     },
-    "Importing data...": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importazione dati..."
+    "Importing data..." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione dati..."
           }
         }
       }
     },
-    "Importing transactions...": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importazione transazioni..."
+    "Importing transactions..." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione transazioni..."
           }
         }
       }
     },
-    "Importing will replace all existing data. Make sure to export your current data first if needed.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'importazione sostituirà tutti i dati esistenti. Assicurati di esportare i dati attuali prima se necessario."
+    "Importing will replace all existing data. Make sure to export your current data first if needed." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'importazione sostituirà tutti i dati esistenti. Assicurati di esportare i dati attuali prima se necessario."
           }
         }
       }
     },
-    "Importing...": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importazione..."
+    "Importing..." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importazione..."
           }
         }
       }
     },
-    "Inactive accounts are hidden from selection lists": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "I conti inattivi sono nascosti dalle liste di selezione"
-          }
-        }
-      }
+    "Inactive accounts are hidden from selection lists" : {
+
     },
-    "Income": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entrata"
+    "Income" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrata"
           }
         }
       }
     },
-    "Income category": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Categoria entrata"
+    "Insurance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assicurazione"
           }
         }
       }
     },
-    "Insurance": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Assicurazione"
+    "Interest income" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interessi attivi"
           }
         }
       }
     },
-    "Interest income": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interessi attivi"
+    "Invalid file format" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato file non valido"
           }
         }
       }
     },
-    "Invalid file format": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Formato file non valido"
+    "Invalid OFX file format" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato file OFX non valido"
           }
         }
       }
     },
-    "Invalid OFX file format": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Formato file OFX non valido"
+    "Investment" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Investimento"
           }
         }
       }
     },
-    "Investment": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Investimento"
-          }
-        }
-      }
+    "Italiano" : {
+
     },
-    "Italiano": {},
-    "Journal entry preview": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Anteprima registrazione"
-          }
-        }
-      }
+    "Journal entry preview" : {
+
     },
-    "JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "JSON è consigliato per backup e ripristino completo. OFX è il formato bancario standard per importare in altre app."
+    "JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON è consigliato per backup e ripristino completo. OFX è il formato bancario standard per importare in altre app."
           }
         }
       }
     },
-    "Language": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lingua"
+    "Language" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lingua"
           }
         }
       }
     },
-    "Last 3 months": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ultimi 3 mesi"
+    "Last 3 months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 3 mesi"
           }
         }
       }
     },
-    "Last 6 months": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ultimi 6 mesi"
+    "Last 6 months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 6 mesi"
           }
         }
       }
     },
-    "Last 12 months": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ultimi 12 mesi"
+    "Last 12 months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 12 mesi"
           }
         }
       }
     },
-    "Last 15 days": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ultimi 15 giorni"
+    "Last 15 days" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimi 15 giorni"
           }
         }
       }
     },
-    "Last month": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mese scorso"
+    "Last month" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mese scorso"
           }
         }
       }
     },
-    "Liabilities": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passività"
-          }
-        }
-      }
+    "Later" : {
+
     },
-    "Liability": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Passività"
+    "Liabilities" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passività"
           }
         }
       }
     },
-    "Light": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chiaro"
+    "Liability" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passività"
           }
         }
       }
     },
-    "Loan": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prestito"
+    "Light" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiaro"
           }
         }
       }
     },
-    "MIT License": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Licenza MIT"
+    "Loan" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prestito"
           }
         }
       }
     },
-    "Monday": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lunedì"
+    "MIT License" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Licenza MIT"
           }
         }
       }
     },
-    "month": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "mese"
+    "Monday" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunedì"
           }
         }
       }
     },
-    "Monthly": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mensile"
+    "month" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mese"
           }
         }
       }
     },
-    "months": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "mesi"
+    "Monthly" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensile"
           }
         }
       }
     },
-    "Net Worth": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Patrimonio netto"
+    "months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mesi"
           }
         }
       }
     },
-    "New account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nuovo conto"
+    "Net Worth" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patrimonio netto"
           }
         }
       }
     },
-    "New scheduled transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nuova transazione programmata"
+    "New account" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuovo conto"
           }
         }
       }
     },
-    "New transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nuova transazione"
-          }
-        }
-      }
+    "New scheduled transaction" : {
+
     },
-    "Next": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avanti"
+    "New transaction" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuova transazione"
           }
         }
       }
     },
-    "Next 3 months": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prossimi 3 mesi"
+    "Next" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avanti"
           }
         }
       }
     },
-    "Next 6 months": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prossimi 6 mesi"
+    "Next 3 months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimi 3 mesi"
           }
         }
       }
     },
-    "Next 12 months": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prossimi 12 mesi"
+    "Next 6 months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimi 6 mesi"
           }
         }
       }
     },
-    "Next 15 days": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prossimi 15 giorni"
+    "Next 12 months" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimi 12 mesi"
           }
         }
       }
     },
-    "Next Monday": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lunedì successivo"
+    "Next 15 days" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimi 15 giorni"
           }
         }
       }
     },
-    "Next month": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prossimo mese"
+    "Next Monday" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lunedì successivo"
           }
         }
       }
     },
-    "Next week": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prossima settimana"
+    "Next month" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossimo mese"
           }
         }
       }
     },
-    "Next: %@": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prossima: %@"
+    "Next week" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossima settimana"
           }
         }
       }
     },
-    "No accounts": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun conto"
+    "Next: %@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prossima: %@"
           }
         }
       }
     },
-    "No adjustment": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun aggiustamento"
+    "No accounts" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun conto"
           }
         }
       }
     },
-    "No category": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessuna categoria"
+    "No adjustment" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun aggiustamento"
           }
         }
       }
     },
-    "No data to export": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun dato da esportare"
+    "No category" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna categoria"
           }
         }
       }
     },
-    "No forecast data": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessun dato previsionale"
+    "No data to export" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun dato da esportare"
           }
         }
       }
     },
-    "No scheduled transactions": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessuna transazione programmata"
+    "No forecast data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessun dato previsionale"
           }
         }
       }
     },
-    "No transactions": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessuna transazione"
-          }
-        }
-      }
+    "No results" : {
+
     },
-    "No transactions found for the selected period.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessuna transazione trovata per il periodo selezionato."
+    "No scheduled transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna transazione programmata"
           }
         }
       }
     },
-    "No transactions found in the file": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nessuna transazione trovata nel file"
+    "No transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna transazione"
           }
         }
       }
     },
-    "Normal: credit": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Normale: avere"
-          }
-        }
-      }
+    "No transactions found for the selected period" : {
+
     },
-    "Normal: debit": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Normale: dare"
+    "No transactions found in the file" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna transazione trovata nel file"
           }
         }
       }
     },
-    "OK": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
-          }
-        }
-      }
+    "No transactions match your search" : {
+
     },
-    "On day": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il giorno"
+    "Normal: credit" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normale: avere"
           }
         }
       }
     },
-    "on day %lld": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "il giorno %lld"
+    "Normal: debit" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normale: dare"
           }
         }
       }
     },
-    "Opening balance": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saldo iniziale"
+    "OK" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         }
       }
     },
-    "Optional number for organizing accounts (e.g., 1000, 2000)": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Numero opzionale per organizzare i conti (es. 1000, 2000)"
+    "On day" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il giorno"
           }
         }
       }
     },
-    "Other expense": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Altra spesa"
+    "on day %lld" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "il giorno %lld"
           }
         }
       }
     },
-    "Other income": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Altra entrata"
+    "Opening balance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo iniziale"
           }
         }
       }
     },
-    "Parse error: %@": {},
-    "Pay from": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paga da"
-          }
-        }
-      }
+    "Optional number for organizing accounts (e.g., 1000, 2000)" : {
+
     },
-    "Payable": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Debito"
+    "Other expense" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altra spesa"
           }
         }
       }
     },
-    "Period": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Periodo"
+    "Other income" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altra entrata"
           }
         }
       }
     },
-    "Personal care": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cura personale"
-          }
-        }
-      }
+    "Parse error: %@" : {
+
     },
-    "Please enter a valid number for the balance.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inserisci un numero valido per il saldo."
+    "Payable" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Debito"
           }
         }
       }
     },
-    "Please enter a valid positive amount.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inserisci un importo positivo valido."
+    "Period" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Periodo"
           }
         }
       }
     },
-    "Please enter an account name.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inserisci un nome per il conto."
+    "Personal care" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cura personale"
           }
         }
       }
     },
-    "Please select both accounts.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona entrambi i conti."
+    "Please enter a valid number for the balance." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci un numero valido per il saldo."
           }
         }
       }
     },
-    "Prepaid expense": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Spesa anticipata"
+    "Please enter a valid positive amount." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci un importo positivo valido."
           }
         }
       }
     },
-    "Press ESC to quit": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Premi ESC per uscire"
+    "Please enter an account name." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci un nome per il conto."
           }
         }
       }
     },
-    "Preview unavailable": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Anteprima non disponibile"
+    "Please select both accounts." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona entrambi i conti."
           }
         }
       }
     },
-    "Previous": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Precedente"
+    "Prepaid expense" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spesa anticipata"
           }
         }
       }
     },
-    "Previous Friday": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Venerdì precedente"
+    "Press ESC to quit" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premi ESC per uscire"
           }
         }
       }
     },
-    "Projected Balance": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saldo previsto"
+    "Preview unavailable" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anteprima non disponibile"
           }
         }
       }
     },
-    "Projected Expenses": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Spese previste"
+    "Previous" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precedente"
           }
         }
       }
     },
-    "Projected Income": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entrate previste"
+    "Previous Friday" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Venerdì precedente"
           }
         }
       }
     },
-    "Ready to import": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pronto per importare"
+    "Projected Balance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo previsto"
           }
         }
       }
     },
-    "Receivable": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Credito"
+    "Projected Expenses" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spese previste"
           }
         }
       }
     },
-    "Recurrence": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ricorrenza"
+    "Projected Income" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrate previste"
           }
         }
       }
     },
-    "Recurring transaction": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transazione ricorrente"
+    "Quit" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esci"
           }
         }
       }
     },
-    "Recurring transactions that will be executed on their scheduled dates": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transazioni ricorrenti che verranno eseguite nelle date programmate"
+    "Ready to import" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pronto per importare"
           }
         }
       }
     },
-    "Remove": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rimuovi"
+    "Receivable" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credito"
           }
         }
       }
     },
-    "Rental income": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reddito da affitto"
+    "Recurrence" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ricorrenza"
           }
         }
       }
     },
-    "Reset all data": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reimposta tutti i dati"
+    "Recurring transaction" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transazione ricorrente"
           }
         }
       }
     },
-    "Reset all data?": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reimpostare tutti i dati?"
+    "Remove" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rimuovi"
           }
         }
       }
     },
-    "Restore from a previous JSON export": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ripristina da un'esportazione JSON precedente"
+    "Rental income" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reddito da affitto"
           }
         }
       }
     },
-    "Retained earnings": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Utili non distribuiti"
-          }
-        }
-      }
+    "Reset all data" : {
+
     },
-    "Review": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Revisione"
+    "Reset all data?" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reimpostare tutti i dati?"
           }
         }
       }
     },
-    "Review All": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vedi tutti"
-          }
-        }
-      }
+    "Restart now" : {
+
     },
-    "Salary": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stipendio"
-          }
-        }
-      }
+    "Restart required" : {
+
     },
-    "Saturday": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sabato"
+    "Restore from a previous JSON export" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripristina da un'esportazione JSON precedente"
           }
         }
       }
     },
-    "Save": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salva"
+    "Retained earnings" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utili non distribuiti"
           }
         }
       }
     },
-    "Scheduled": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Programmati"
+    "Review" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisione"
           }
         }
       }
     },
-    "Scheduled Transactions": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transazioni programmate"
+    "Review All" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vedi tutti"
           }
         }
       }
     },
-    "Search": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cerca"
+    "Salary" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stipendio"
           }
         }
       }
     },
-    "Select account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona conto"
+    "Saturday" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabato"
           }
         }
       }
     },
-    "Select Account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona conto"
+    "Save" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salva"
           }
         }
       }
     },
-    "Select accounts to see preview": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona i conti per vedere l'anteprima"
+    "Scheduled" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Programmati"
           }
         }
       }
     },
-    "Select an account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona un conto"
+    "Search" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerca"
           }
         }
       }
     },
-    "Select expense category": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona categoria spesa"
-          }
-        }
-      }
+    "Select account" : {
+
     },
-    "Select income category": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona categoria entrata"
+    "Select Account" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona conto"
           }
         }
       }
     },
-    "Select the bank account for these transactions": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona il conto bancario per queste transazioni"
+    "Select accounts to see preview" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona i conti per vedere l'anteprima"
           }
         }
       }
     },
-    "Select your preferred language, currency, and theme.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seleziona la lingua, la valuta e il tema preferiti."
+    "Select an account" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona un conto"
           }
         }
       }
     },
-    "Set opening balance": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Imposta saldo iniziale"
+    "Select expense category" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona categoria spesa"
           }
         }
       }
     },
-    "Set up example accounts to explore the app": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Configura conti di esempio per esplorare l'app"
+    "Select income category" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona categoria entrata"
           }
         }
       }
     },
-    "Shopping": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shopping"
+    "Select the bank account for these transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona il conto bancario per queste transazioni"
           }
         }
       }
     },
-    "Skip": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salta"
+    "Select your preferred language, currency, and theme." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona la lingua, la valuta e il tema preferiti."
           }
         }
       }
     },
-    "Start date": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Data inizio"
-          }
-        }
-      }
+    "Set opening balance" : {
+
     },
-    "Start fresh": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inizia da zero"
+    "Set up example accounts to explore the app" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configura conti di esempio per esplorare l'app"
           }
         }
       }
     },
-    "Start Fresh": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inizia da zero"
+    "Shopping" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shopping"
           }
         }
       }
     },
-    "Status": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stato"
+    "Skip" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salta"
           }
         }
       }
     },
-    "Subscriptions": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abbonamenti"
+    "Start date" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data inizio"
           }
         }
       }
     },
-    "Sunday": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Domenica"
+    "Start fresh" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizia da zero"
           }
         }
       }
     },
-    "System": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sistema"
-          }
-        }
-      }
+    "Status" : {
+
     },
-    "Theme": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tema"
+    "Subscriptions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbonamenti"
           }
         }
       }
     },
-    "These accounts will be created. Set opening balances for your asset and liability accounts.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questi conti verranno creati. Imposta i saldi iniziali per i tuoi conti attività e passività."
+    "Sunday" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Domenica"
           }
         }
       }
     },
-    "This month": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questo mese"
+    "System" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
           }
         }
       }
     },
-    "This week": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questa settimana"
-          }
-        }
-      }
+    "The app needs to restart to apply language changes." : {
+
     },
-    "This will create an actual transaction and update your balances.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questo creerà una transazione reale e aggiornerà i tuoi saldi."
+    "Theme" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tema"
           }
         }
       }
     },
-    "This will delete all accounts and transactions.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questo eliminerà tutti i conti e le transazioni."
+    "These accounts will be created. Set opening balances for your asset and liability accounts." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questi conti verranno creati. Imposta i saldi iniziali per i tuoi conti attività e passività."
           }
         }
       }
     },
-    "This will permanently delete all your accounts and transactions. This action cannot be undone.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Questo eliminerà permanentemente tutti i tuoi conti e transazioni. Questa azione non può essere annullata."
+    "This month" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo mese"
           }
         }
       }
     },
-    "Thursday": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giovedì"
+    "This week" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa settimana"
           }
         }
       }
     },
-    "To account": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A conto"
+    "This will create an actual transaction and update your balances." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo creerà una transazione reale e aggiornerà i tuoi saldi."
           }
         }
       }
     },
-    "Today": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oggi"
-          }
-        }
-      }
+    "This will delete all accounts and transactions." : {
+
     },
-    "Track your personal finances with double-entry bookkeeping": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gestisci le tue finanze personali con la partita doppia"
+    "This will permanently delete all your accounts and transactions. This action cannot be undone." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo eliminerà permanentemente tutti i tuoi conti e transazioni. Questa azione non può essere annullata."
           }
         }
       }
     },
-    "Track your personal finances with ease using double-entry bookkeeping.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Gestisci le tue finanze personali con facilità usando la partita doppia."
+    "Thursday" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giovedì"
           }
         }
       }
     },
-    "Transaction %lld of %lld": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transazione %1$lld di %2$lld"
+    "Today" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oggi"
           }
         }
       }
     },
-    "Transaction type": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tipo transazione"
+    "Track your personal finances with double-entry bookkeeping" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestisci le tue finanze personali con la partita doppia"
           }
         }
       }
     },
-    "Transfer": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trasferimento"
+    "Track your personal finances with ease using double-entry bookkeeping." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gestisci le tue finanze personali con facilità usando la partita doppia."
           }
         }
       }
     },
-    "Transportation": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trasporti"
+    "Transaction %lld of %lld" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transazione %1$lld di %2$lld"
           }
         }
       }
     },
-    "Travel": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Viaggi"
+    "Transaction type" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo transazione"
           }
         }
       }
     },
-    "Tuesday": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Martedì"
+    "Transfer" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trasferimento"
           }
         }
       }
     },
-    "Type": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tipo"
+    "Transportation" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trasporti"
           }
         }
       }
     },
-    "Until": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fino a"
+    "Travel" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viaggi"
           }
         }
       }
     },
-    "Upcoming Transactions": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Transazioni future"
+    "Tuesday" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Martedì"
           }
         }
       }
     },
-    "Use Demo Data": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Usa dati demo"
+    "Type" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tipo"
           }
         }
       }
     },
-    "Utilities": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Utenze"
+    "Until" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fino a"
           }
         }
       }
     },
-    "Validation error": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Errore di validazione"
+    "Upcoming Transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transazioni future"
           }
         }
       }
     },
-    "Version %@": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Versione %@"
+    "Use Demo Data" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa dati demo"
           }
         }
       }
     },
-    "Wednesday": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mercoledì"
+    "Utilities" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utenze"
           }
         }
       }
     },
-    "week": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "settimana"
+    "Validation error" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Errore di validazione"
           }
         }
       }
     },
-    "Weekend adjustment": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiustamento weekend"
+    "Wednesday" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mercoledì"
           }
         }
       }
     },
-    "Weekly": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Settimanale"
+    "week" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "settimana"
           }
         }
       }
     },
-    "weeks": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "settimane"
+    "Weekend adjustment" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiustamento weekend"
           }
         }
       }
     },
-    "Welcome to Cash": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Benvenuto in Cash"
+    "Weekly" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settimanale"
           }
         }
       }
     },
-    "year": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "anno"
+    "weeks" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "settimane"
           }
         }
       }
     },
-    "Yearly": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Annuale"
+    "Welcome to Cash" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benvenuto in Cash"
           }
         }
       }
     },
-    "years": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "anni"
+    "year" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "anno"
           }
         }
       }
     },
-    "Your data has been exported successfully.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "I tuoi dati sono stati esportati con successo."
+    "Yearly" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annuale"
           }
         }
       }
     },
-    "Quit": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esci"
+    "years" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "anni"
           }
         }
       }
     },
-    "Exit the application": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chiudi l'applicazione"
+    "Your data has been exported successfully." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I tuoi dati sono stati esportati con successo."
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
