@@ -1196,3 +1196,165 @@ struct TrendBasePeriodTests {
         }
     }
 }
+
+// MARK: - Budget Tests
+
+struct BudgetTests {
+    
+    @Test func budgetCreation() async throws {
+        let budget = Budget(
+            startDate: Date(),
+            periodType: .monthly,
+            rolloverEnabled: false
+        )
+        
+        #expect(budget.periodType == .monthly)
+        #expect(budget.rolloverEnabled == false)
+        #expect(budget.isActive == true)
+    }
+    
+    @Test func budgetPeriodTypeLocalizedNames() async throws {
+        for periodType in BudgetPeriodType.allCases {
+            #expect(!periodType.localizedName.isEmpty)
+            #expect(!periodType.iconName.isEmpty)
+        }
+    }
+    
+    @Test func budgetEndDateCalculationMonthly() async throws {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = 2025
+        components.month = 1
+        components.day = 1
+        let startDate = calendar.date(from: components)!
+        
+        let endDate = Budget.calculateEndDate(from: startDate, periodType: .monthly)
+        
+        let endComponents = calendar.dateComponents([.year, .month, .day], from: endDate)
+        #expect(endComponents.year == 2025)
+        #expect(endComponents.month == 1)
+        #expect(endComponents.day == 31)
+    }
+    
+    @Test func budgetEndDateCalculationWeekly() async throws {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = 2025
+        components.month = 1
+        components.day = 1
+        let startDate = calendar.date(from: components)!
+        
+        let endDate = Budget.calculateEndDate(from: startDate, periodType: .weekly)
+        
+        let daysDiff = calendar.dateComponents([.day], from: startDate, to: endDate).day
+        #expect(daysDiff == 6)
+    }
+    
+    @Test func budgetTotalsWithNoEnvelopes() async throws {
+        let budget = Budget(
+            startDate: Date(),
+            periodType: .monthly
+        )
+        
+        #expect(budget.totalBudgeted == 0)
+        #expect(budget.totalSpent == 0)
+        #expect(budget.totalAvailable == 0)
+        #expect(budget.percentageUsed == 0)
+        #expect(budget.isOverBudget == false)
+    }
+    
+    @Test func budgetDisplayName() async throws {
+        let budget = Budget(
+            name: "Test Budget",
+            startDate: Date(),
+            periodType: .monthly
+        )
+        
+        #expect(budget.displayName == "Test Budget")
+        
+        let unnamedBudget = Budget(
+            startDate: Date(),
+            periodType: .monthly
+        )
+        
+        #expect(!unnamedBudget.displayName.isEmpty)
+    }
+}
+
+// MARK: - Envelope Tests
+
+struct EnvelopeTests {
+    
+    @Test func envelopeCreation() async throws {
+        let envelope = Envelope(
+            name: "Groceries",
+            budgetedAmount: 300
+        )
+        
+        #expect(envelope.name == "Groceries")
+        #expect(envelope.budgetedAmount == 300)
+        #expect(envelope.rolloverAmount == 0)
+    }
+    
+    @Test func envelopeEffectiveBudget() async throws {
+        let envelope = Envelope(
+            budgetedAmount: 300
+        )
+        envelope.rolloverAmount = 50
+        
+        #expect(envelope.effectiveBudget == 350)
+    }
+    
+    @Test func envelopeDisplayName() async throws {
+        let envelope = Envelope(
+            name: "Custom Name",
+            budgetedAmount: 100
+        )
+        
+        #expect(envelope.displayName == "Custom Name")
+        
+        let unnamedEnvelope = Envelope(
+            budgetedAmount: 100
+        )
+        
+        #expect(!unnamedEnvelope.displayName.isEmpty)
+    }
+    
+    @Test func envelopeStatusColors() async throws {
+        #expect(EnvelopeStatus.healthy.color == "green")
+        #expect(EnvelopeStatus.warning.color == "orange")
+        #expect(EnvelopeStatus.exceeded.color == "red")
+    }
+    
+    @Test func envelopeIconName() async throws {
+        let envelope = Envelope(
+            budgetedAmount: 100
+        )
+        
+        #expect(envelope.iconName == "envelope.fill")
+    }
+}
+
+// MARK: - Envelope Transfer Tests
+
+struct EnvelopeTransferTests {
+    
+    @Test func transferValidation() async throws {
+        let from = Envelope(budgetedAmount: 100)
+        let to = Envelope(budgetedAmount: 50)
+        
+        // Valid transfer
+        let validTransfer = EnvelopeTransfer(fromEnvelope: from, toEnvelope: to, amount: 50)
+        // Note: isValid depends on availableAmount which requires budget relationship
+        // So we just test that the struct is created correctly
+        #expect(validTransfer.amount == 50)
+        
+        // Invalid transfer (zero amount)
+        let zeroTransfer = EnvelopeTransfer(fromEnvelope: from, toEnvelope: to, amount: 0)
+        #expect(zeroTransfer.isValid == false)
+        
+        // Invalid transfer (negative amount)
+        let negativeTransfer = EnvelopeTransfer(fromEnvelope: from, toEnvelope: to, amount: -10)
+        #expect(negativeTransfer.isValid == false)
+    }
+}

@@ -193,7 +193,7 @@ struct LongTermProjectionReportView: View {
     
     // Generate projection points
     private var projectionData: [ProjectionDataPoint] {
-        guard let trend = trendData, let lastHistorical = historicalData.last else { return [] }
+        guard let trend = trendData, !historicalData.isEmpty else { return [] }
         
         var projectedPoints: [ProjectionDataPoint] = []
         let calendar = Calendar.current

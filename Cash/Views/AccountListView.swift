@@ -11,6 +11,7 @@ import SwiftData
 enum SidebarSelection: Hashable {
     case patrimony
     case forecast
+    case budget
     case reports
     case scheduled
     case account(Account)
@@ -47,6 +48,9 @@ struct AccountListView: View {
                             
                             Label("Forecast", systemImage: "chart.line.uptrend.xyaxis")
                                 .tag(SidebarSelection.forecast)
+                            
+                            Label("Budget", systemImage: "envelope.fill")
+                                .tag(SidebarSelection.budget)
                             
                             Label("Reports", systemImage: "chart.bar.fill")
                                 .tag(SidebarSelection.reports)
@@ -120,6 +124,8 @@ struct AccountListView: View {
                     NetWorthView()
                 case .forecast:
                     ForecastView()
+                case .budget:
+                    BudgetView()
                 case .reports:
                     ReportsView()
                 case .scheduled:

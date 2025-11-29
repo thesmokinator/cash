@@ -40,6 +40,8 @@ struct CashApp: App {
             Attachment.self,
             RecurrenceRule.self,
             AppConfiguration.self,
+            Budget.self,
+            Envelope.self,
         ])
         
         #if ENABLE_ICLOUD
