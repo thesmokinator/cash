@@ -96,56 +96,8 @@ struct YearOverYearReportView: View {
     private var expenseAccounts: [Account]
     
     @State private var selectedPeriod: ComparisonPeriod = .month
-    
-    private var categoryComparisons: [CategoryComparison] {
-        var comparisons: [CategoryComparison] = []
-        
-        for account in expenseAccounts {
-            let entries = account.entries ?? []
-            var currentTotal: Decimal = 0
-            var previousTotal: Decimal = 0
-            
-            for entry in entries {
-                guard let transaction = entry.transaction,
-                      !transaction.isRecurring else {
-                    continue
-                }
-                
-                let amount: Decimal
-                if entry.entryType == .debit {
-                    amount = entry.amount
-                } else {
-                    amount = -entry.amount
-                }
-                
-                // Check if in current period
-                if transaction.date >= selectedPeriod.currentStartDate &&
-                   transaction.date <= selectedPeriod.currentEndDate {
-                    currentTotal += amount
-                }
-                
-                // Check if in previous year same period
-                if transaction.date >= selectedPeriod.previousStartDate &&
-                   transaction.date <= selectedPeriod.previousEndDate {
-                    previousTotal += amount
-                }
-            }
-            
-            // Include if there's data in either period
-            if currentTotal != 0 || previousTotal != 0 {
-                comparisons.append(CategoryComparison(
-                    account: account,
-                    currentTotal: currentTotal,
-                    previousTotal: previousTotal
-                ))
-            }
-        }
-        
-        // Sort by absolute difference (biggest changes first)
-        comparisons.sort { abs($0.difference) > abs($1.difference) }
-        
-        return comparisons
-    }
+    @State private var isLoading = true
+    @State private var categoryComparisons: [CategoryComparison] = []
     
     private var totalCurrentExpenses: Decimal {
         categoryComparisons.reduce(Decimal.zero) { $0 + $1.currentTotal }
@@ -190,7 +142,12 @@ struct YearOverYearReportView: View {
             .padding()
             .background(.bar)
             
-            if categoryComparisons.isEmpty {
+            if isLoading {
+                Spacer()
+                ProgressView()
+                    .scaleEffect(1.5)
+                Spacer()
+            } else if categoryComparisons.isEmpty {
                 ContentUnavailableView {
                     Label("No data to compare", systemImage: "calendar.badge.clock")
                 } description: {
@@ -286,6 +243,67 @@ struct YearOverYearReportView: View {
                     }
                 }
             }
+        }
+        .task {
+            await loadData()
+        }
+        .onChange(of: selectedPeriod) { _, _ in
+            Task { await loadData() }
+        }
+    }
+    
+    private func loadData() async {
+        isLoading = true
+        
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        let accounts = expenseAccounts
+        let period = selectedPeriod
+        var comparisons: [CategoryComparison] = []
+        
+        for account in accounts {
+            let entries = account.entries ?? []
+            var currentTotal: Decimal = 0
+            var previousTotal: Decimal = 0
+            
+            for entry in entries {
+                guard let transaction = entry.transaction,
+                      !transaction.isRecurring else {
+                    continue
+                }
+                
+                let amount: Decimal
+                if entry.entryType == .debit {
+                    amount = entry.amount
+                } else {
+                    amount = -entry.amount
+                }
+                
+                if transaction.date >= period.currentStartDate &&
+                   transaction.date <= period.currentEndDate {
+                    currentTotal += amount
+                }
+                
+                if transaction.date >= period.previousStartDate &&
+                   transaction.date <= period.previousEndDate {
+                    previousTotal += amount
+                }
+            }
+            
+            if currentTotal != 0 || previousTotal != 0 {
+                comparisons.append(CategoryComparison(
+                    account: account,
+                    currentTotal: currentTotal,
+                    previousTotal: previousTotal
+                ))
+            }
+        }
+        
+        comparisons.sort { abs($0.difference) > abs($1.difference) }
+        
+        await MainActor.run {
+            categoryComparisons = comparisons
+            isLoading = false
         }
     }
 }

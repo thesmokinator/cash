@@ -68,6 +68,8 @@ struct BalanceHistoryReportView: View {
     @Query(sort: \Transaction.date) private var allTransactions: [Transaction]
     
     @State private var selectedPeriod: HistoryPeriod = .sixMonths
+    @State private var isLoading = true
+    @State private var balanceHistory: [BalanceDataPoint] = []
     
     private var assetAccounts: [Account] {
         accounts.filter { $0.accountClass == .asset && $0.isActive && !$0.isSystem }
@@ -79,63 +81,6 @@ struct BalanceHistoryReportView: View {
     
     private var transactions: [Transaction] {
         allTransactions.filter { !$0.isRecurring }
-    }
-    
-    private var balanceHistory: [BalanceDataPoint] {
-        guard !transactions.isEmpty else { return [] }
-        
-        // Get all unique transaction dates sorted
-        let sortedTransactions = transactions.sorted { $0.date < $1.date }
-        
-        // Filter by period
-        let filteredTransactions: [Transaction]
-        if let startDate = selectedPeriod.startDate {
-            filteredTransactions = sortedTransactions.filter { $0.date >= startDate }
-        } else {
-            filteredTransactions = sortedTransactions
-        }
-        
-        guard !filteredTransactions.isEmpty else { return [] }
-        
-        // Calculate running balance
-        var dataPoints: [BalanceDataPoint] = []
-        var runningBalance: Decimal = 0
-        
-        // Calculate initial balance (before the period)
-        if let startDate = selectedPeriod.startDate {
-            for transaction in sortedTransactions where transaction.date < startDate {
-                runningBalance += netBalanceChange(for: transaction)
-            }
-            // Add starting point
-            dataPoints.append(BalanceDataPoint(date: startDate, balance: runningBalance))
-        }
-        
-        // Group transactions by day to reduce data points
-        let calendar = Calendar.current
-        var dailyBalances: [Date: Decimal] = [:]
-        var currentBalance = runningBalance
-        
-        for transaction in filteredTransactions {
-            currentBalance += netBalanceChange(for: transaction)
-            let dayStart = calendar.startOfDay(for: transaction.date)
-            dailyBalances[dayStart] = currentBalance
-        }
-        
-        // Convert to sorted data points
-        let sortedDays = dailyBalances.keys.sorted()
-        for day in sortedDays {
-            if let balance = dailyBalances[day] {
-                dataPoints.append(BalanceDataPoint(date: day, balance: balance))
-            }
-        }
-        
-        // Add current date if not already present
-        let today = calendar.startOfDay(for: Date())
-        if dataPoints.last?.date != today {
-            dataPoints.append(BalanceDataPoint(date: today, balance: currentBalance))
-        }
-        
-        return dataPoints
     }
     
     private func netBalanceChange(for transaction: Transaction) -> Decimal {
@@ -188,7 +133,12 @@ struct BalanceHistoryReportView: View {
             .padding()
             .background(.bar)
             
-            if balanceHistory.isEmpty {
+            if isLoading {
+                Spacer()
+                ProgressView()
+                    .scaleEffect(1.5)
+                Spacer()
+            } else if balanceHistory.isEmpty {
                 ContentUnavailableView {
                     Label("No balance history", systemImage: "chart.xyaxis.line")
                 } description: {
@@ -291,6 +241,82 @@ struct BalanceHistoryReportView: View {
                     }
                 }
             }
+        }
+        .task {
+            await loadData()
+        }
+        .onChange(of: selectedPeriod) { _, _ in
+            Task { await loadData() }
+        }
+    }
+    
+    private func loadData() async {
+        isLoading = true
+        
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        let txns = transactions
+        guard !txns.isEmpty else {
+            await MainActor.run {
+                balanceHistory = []
+                isLoading = false
+            }
+            return
+        }
+        
+        let sortedTransactions = txns.sorted { $0.date < $1.date }
+        let period = selectedPeriod
+        
+        let filteredTransactions: [Transaction]
+        if let startDate = period.startDate {
+            filteredTransactions = sortedTransactions.filter { $0.date >= startDate }
+        } else {
+            filteredTransactions = sortedTransactions
+        }
+        
+        guard !filteredTransactions.isEmpty else {
+            await MainActor.run {
+                balanceHistory = []
+                isLoading = false
+            }
+            return
+        }
+        
+        var dataPoints: [BalanceDataPoint] = []
+        var runningBalance: Decimal = 0
+        
+        if let startDate = period.startDate {
+            for transaction in sortedTransactions where transaction.date < startDate {
+                runningBalance += BalanceCalculator.netBalanceChange(for: transaction)
+            }
+            dataPoints.append(BalanceDataPoint(date: startDate, balance: runningBalance))
+        }
+        
+        let calendar = Calendar.current
+        var dailyBalances: [Date: Decimal] = [:]
+        var currentBalance = runningBalance
+        
+        for transaction in filteredTransactions {
+            currentBalance += BalanceCalculator.netBalanceChange(for: transaction)
+            let dayStart = calendar.startOfDay(for: transaction.date)
+            dailyBalances[dayStart] = currentBalance
+        }
+        
+        let sortedDays = dailyBalances.keys.sorted()
+        for day in sortedDays {
+            if let balance = dailyBalances[day] {
+                dataPoints.append(BalanceDataPoint(date: day, balance: balance))
+            }
+        }
+        
+        let today = calendar.startOfDay(for: Date())
+        if dataPoints.last?.date != today {
+            dataPoints.append(BalanceDataPoint(date: today, balance: currentBalance))
+        }
+        
+        await MainActor.run {
+            balanceHistory = dataPoints
+            isLoading = false
         }
     }
     

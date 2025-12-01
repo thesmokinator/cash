@@ -102,6 +102,10 @@ struct LongTermProjectionReportView: View {
     
     @State private var basePeriod: TrendBasePeriod = .sixMonths
     @State private var projectionPeriod: ProjectionPeriod = .year
+    @State private var isLoading = true
+    @State private var historicalData: [ProjectionDataPoint] = []
+    @State private var projectionData: [ProjectionDataPoint] = []
+    @State private var trendData: (slope: Double, intercept: Double, monthlyChange: Decimal)?
     
     private var transactions: [Transaction] {
         allTransactions.filter { !$0.isRecurring }
@@ -115,113 +119,8 @@ struct LongTermProjectionReportView: View {
         accounts.filter { $0.accountClass == .liability && $0.isActive && !$0.isSystem }
     }
     
-    // Calculate historical balance points
-    private var historicalData: [ProjectionDataPoint] {
-        guard !transactions.isEmpty else { return [] }
-        
-        let sortedTransactions = transactions.sorted { $0.date < $1.date }
-        let startDate = basePeriod.startDate
-        
-        var dataPoints: [ProjectionDataPoint] = []
-        var runningBalance: Decimal = 0
-        
-        // Calculate initial balance before the period
-        for transaction in sortedTransactions where transaction.date < startDate {
-            runningBalance += netBalanceChange(for: transaction)
-        }
-        
-        // Add starting point
-        dataPoints.append(ProjectionDataPoint(date: startDate, balance: runningBalance, isProjected: false))
-        
-        // Group by day
-        let calendar = Calendar.current
-        var dailyBalances: [Date: Decimal] = [:]
-        var currentBalance = runningBalance
-        
-        for transaction in sortedTransactions where transaction.date >= startDate && transaction.date <= Date() {
-            currentBalance += netBalanceChange(for: transaction)
-            let dayStart = calendar.startOfDay(for: transaction.date)
-            dailyBalances[dayStart] = currentBalance
-        }
-        
-        // Convert to sorted data points
-        for day in dailyBalances.keys.sorted() {
-            if let balance = dailyBalances[day] {
-                dataPoints.append(ProjectionDataPoint(date: day, balance: balance, isProjected: false))
-            }
-        }
-        
-        // Add today if not present
-        let today = calendar.startOfDay(for: Date())
-        if dataPoints.last?.date != today {
-            dataPoints.append(ProjectionDataPoint(date: today, balance: currentBalance, isProjected: false))
-        }
-        
-        return dataPoints
-    }
-    
-    // Calculate trend using linear regression
-    private var trendData: (slope: Double, intercept: Double, monthlyChange: Decimal)? {
-        let data = historicalData
-        guard data.count >= 2 else { return nil }
-        
-        // Convert to x (days from start) and y (balance) arrays
-        let startDate = data.first!.date
-        let points: [(x: Double, y: Double)] = data.map { point in
-            let days = Calendar.current.dateComponents([.day], from: startDate, to: point.date).day ?? 0
-            return (x: Double(days), y: point.balanceDouble)
-        }
-        
-        // Linear regression: y = mx + b
-        let n = Double(points.count)
-        let sumX = points.reduce(0) { $0 + $1.x }
-        let sumY = points.reduce(0) { $0 + $1.y }
-        let sumXY = points.reduce(0) { $0 + $1.x * $1.y }
-        let sumX2 = points.reduce(0) { $0 + $1.x * $1.x }
-        
-        let denominator = n * sumX2 - sumX * sumX
-        guard denominator != 0 else { return nil }
-        
-        let slope = (n * sumXY - sumX * sumY) / denominator
-        let intercept = (sumY - slope * sumX) / n
-        
-        // Monthly change (slope * 30 days)
-        let monthlyChange = Decimal(slope * 30)
-        
-        return (slope: slope, intercept: intercept, monthlyChange: monthlyChange)
-    }
-    
-    // Generate projection points
-    private var projectionData: [ProjectionDataPoint] {
-        guard let trend = trendData, !historicalData.isEmpty else { return [] }
-        
-        var projectedPoints: [ProjectionDataPoint] = []
-        let calendar = Calendar.current
-        let startDate = historicalData.first!.date
-        
-        // Generate monthly projection points
-        var currentDate = calendar.startOfDay(for: Date())
-        let endDate = projectionPeriod.endDate
-        
-        while currentDate <= endDate {
-            let days = calendar.dateComponents([.day], from: startDate, to: currentDate).day ?? 0
-            let projectedBalance = trend.intercept + trend.slope * Double(days)
-            
-            projectedPoints.append(ProjectionDataPoint(
-                date: currentDate,
-                balance: Decimal(projectedBalance),
-                isProjected: true
-            ))
-            
-            currentDate = calendar.date(byAdding: .month, value: 1, to: currentDate) ?? currentDate
-        }
-        
-        return projectedPoints
-    }
-    
-    // Combined data for chart
     private var allDataPoints: [ProjectionDataPoint] {
-        historicalData + projectionData.dropFirst() // Drop first to avoid duplicate at today
+        historicalData + projectionData.dropFirst()
     }
     
     private var currentBalance: Decimal {
@@ -240,15 +139,10 @@ struct LongTermProjectionReportView: View {
         assetAccounts.first?.currency ?? liabilityAccounts.first?.currency ?? "EUR"
     }
     
-    private func netBalanceChange(for transaction: Transaction) -> Decimal {
-        BalanceCalculator.netBalanceChange(for: transaction)
-    }
-    
     var body: some View {
         VStack(spacing: 0) {
             // Controls
             HStack(spacing: 16) {
-                // Base period picker
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Trend based on")
                         .font(.caption)
@@ -264,7 +158,6 @@ struct LongTermProjectionReportView: View {
                     .pickerStyle(.menu)
                 }
                 
-                // Projection period picker
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Project for")
                         .font(.caption)
@@ -285,7 +178,12 @@ struct LongTermProjectionReportView: View {
             .padding()
             .background(.bar)
             
-            if historicalData.count < 2 {
+            if isLoading {
+                Spacer()
+                ProgressView()
+                    .scaleEffect(1.5)
+                Spacer()
+            } else if historicalData.count < 2 {
                 ContentUnavailableView {
                     Label("Not enough data", systemImage: "chart.line.uptrend.xyaxis")
                 } description: {
@@ -302,7 +200,6 @@ struct LongTermProjectionReportView: View {
                                 
                                 Spacer()
                                 
-                                // Legend
                                 HStack(spacing: 16) {
                                     HStack(spacing: 4) {
                                         Circle()
@@ -325,7 +222,6 @@ struct LongTermProjectionReportView: View {
                             }
                             
                             Chart {
-                                // Historical data
                                 ForEach(historicalData) { point in
                                     LineMark(
                                         x: .value("Date", point.date),
@@ -335,7 +231,6 @@ struct LongTermProjectionReportView: View {
                                     .lineStyle(StrokeStyle(lineWidth: 2))
                                 }
                                 
-                                // Projection data (dashed line)
                                 ForEach(projectionData) { point in
                                     LineMark(
                                         x: .value("Date", point.date),
@@ -345,7 +240,6 @@ struct LongTermProjectionReportView: View {
                                     .lineStyle(StrokeStyle(lineWidth: 2, dash: [5, 5]))
                                 }
                                 
-                                // Today marker
                                 RuleMark(x: .value("Today", Date()))
                                     .foregroundStyle(Color.gray.opacity(0.5))
                                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
@@ -383,7 +277,6 @@ struct LongTermProjectionReportView: View {
                         
                         // Stats
                         HStack(spacing: 16) {
-                            // Current balance
                             StatCard(
                                 title: String(localized: "Current Balance"),
                                 value: CurrencyFormatter.format(currentBalance, currency: currency),
@@ -391,7 +284,6 @@ struct LongTermProjectionReportView: View {
                                 isPrivate: settings.privacyMode
                             )
                             
-                            // Projected balance
                             StatCard(
                                 title: String(localized: "Projected Balance"),
                                 value: CurrencyFormatter.format(projectedBalance, currency: currency),
@@ -401,7 +293,6 @@ struct LongTermProjectionReportView: View {
                         }
                         .padding(.horizontal)
                         
-                        // Trend info
                         if let trend = trendData {
                             VStack(alignment: .leading, spacing: 12) {
                                 Text("Trend Analysis")
@@ -454,7 +345,6 @@ struct LongTermProjectionReportView: View {
                             .padding(.horizontal)
                         }
                         
-                        // Disclaimer
                         Text("Projections are based on historical trends and do not account for changes in income, expenses, or market conditions.")
                             .font(.caption)
                             .foregroundStyle(.tertiary)
@@ -464,6 +354,118 @@ struct LongTermProjectionReportView: View {
                     }
                 }
             }
+        }
+        .task {
+            await loadData()
+        }
+        .onChange(of: basePeriod) { _, _ in
+            Task { await loadData() }
+        }
+        .onChange(of: projectionPeriod) { _, _ in
+            Task { await loadData() }
+        }
+    }
+    
+    private func loadData() async {
+        isLoading = true
+        
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        let txns = transactions
+        guard !txns.isEmpty else {
+            await MainActor.run {
+                historicalData = []
+                projectionData = []
+                trendData = nil
+                isLoading = false
+            }
+            return
+        }
+        
+        let sortedTransactions = txns.sorted { $0.date < $1.date }
+        let startDate = basePeriod.startDate
+        let calendar = Calendar.current
+        
+        // Calculate historical data
+        var dataPoints: [ProjectionDataPoint] = []
+        var runningBalance: Decimal = 0
+        
+        for transaction in sortedTransactions where transaction.date < startDate {
+            runningBalance += BalanceCalculator.netBalanceChange(for: transaction)
+        }
+        
+        dataPoints.append(ProjectionDataPoint(date: startDate, balance: runningBalance, isProjected: false))
+        
+        var dailyBalances: [Date: Decimal] = [:]
+        var currentBalance = runningBalance
+        
+        for transaction in sortedTransactions where transaction.date >= startDate && transaction.date <= Date() {
+            currentBalance += BalanceCalculator.netBalanceChange(for: transaction)
+            let dayStart = calendar.startOfDay(for: transaction.date)
+            dailyBalances[dayStart] = currentBalance
+        }
+        
+        for day in dailyBalances.keys.sorted() {
+            if let balance = dailyBalances[day] {
+                dataPoints.append(ProjectionDataPoint(date: day, balance: balance, isProjected: false))
+            }
+        }
+        
+        let today = calendar.startOfDay(for: Date())
+        if dataPoints.last?.date != today {
+            dataPoints.append(ProjectionDataPoint(date: today, balance: currentBalance, isProjected: false))
+        }
+        
+        // Calculate trend
+        var calculatedTrend: (slope: Double, intercept: Double, monthlyChange: Decimal)?
+        if dataPoints.count >= 2 {
+            let firstDate = dataPoints.first!.date
+            let points: [(x: Double, y: Double)] = dataPoints.map { point in
+                let days = calendar.dateComponents([.day], from: firstDate, to: point.date).day ?? 0
+                return (x: Double(days), y: point.balanceDouble)
+            }
+            
+            let n = Double(points.count)
+            let sumX = points.reduce(0) { $0 + $1.x }
+            let sumY = points.reduce(0) { $0 + $1.y }
+            let sumXY = points.reduce(0) { $0 + $1.x * $1.y }
+            let sumX2 = points.reduce(0) { $0 + $1.x * $1.x }
+            
+            let denominator = n * sumX2 - sumX * sumX
+            if denominator != 0 {
+                let slope = (n * sumXY - sumX * sumY) / denominator
+                let intercept = (sumY - slope * sumX) / n
+                let monthlyChange = Decimal(slope * 30)
+                calculatedTrend = (slope: slope, intercept: intercept, monthlyChange: monthlyChange)
+            }
+        }
+        
+        // Calculate projection
+        var projectedPoints: [ProjectionDataPoint] = []
+        if let trend = calculatedTrend, !dataPoints.isEmpty {
+            let firstDate = dataPoints.first!.date
+            var currentDate = calendar.startOfDay(for: Date())
+            let endDate = projectionPeriod.endDate
+            
+            while currentDate <= endDate {
+                let days = calendar.dateComponents([.day], from: firstDate, to: currentDate).day ?? 0
+                let projectedBalance = trend.intercept + trend.slope * Double(days)
+                
+                projectedPoints.append(ProjectionDataPoint(
+                    date: currentDate,
+                    balance: Decimal(projectedBalance),
+                    isProjected: true
+                ))
+                
+                currentDate = calendar.date(byAdding: .month, value: 1, to: currentDate) ?? currentDate
+            }
+        }
+        
+        await MainActor.run {
+            historicalData = dataPoints
+            projectionData = projectedPoints
+            trendData = calculatedTrend
+            isLoading = false
         }
     }
     

@@ -95,50 +95,8 @@ struct ExpenseByCategoryReportView: View {
     
     @State private var selectedPeriod: ReportPeriod = .month
     @State private var sortOrder: ExpenseSortOrder = .alphabetical
-    
-    private var categoryExpenses: [CategoryExpense] {
-        let startDate = selectedPeriod.startDate
-        let endDate = Date()
-        
-        var expenses: [CategoryExpense] = []
-        
-        for account in expenseAccounts {
-            let entries = account.entries ?? []
-            var total: Decimal = 0
-            
-            for entry in entries {
-                guard let transaction = entry.transaction,
-                      !transaction.isRecurring,
-                      transaction.date >= startDate,
-                      transaction.date <= endDate else {
-                    continue
-                }
-                
-                // For expenses: debits increase, credits decrease
-                if entry.entryType == .debit {
-                    total += entry.amount
-                } else {
-                    total -= entry.amount
-                }
-            }
-            
-            if total != 0 {
-                expenses.append(CategoryExpense(account: account, total: total))
-            }
-        }
-        
-        // Sort based on selected order
-        switch sortOrder {
-        case .alphabetical:
-            expenses.sort { $0.account.displayName.localizedCaseInsensitiveCompare($1.account.displayName) == .orderedAscending }
-        case .highestFirst:
-            expenses.sort { $0.total > $1.total }
-        case .lowestFirst:
-            expenses.sort { $0.total < $1.total }
-        }
-        
-        return expenses
-    }
+    @State private var isLoading = true
+    @State private var categoryExpenses: [CategoryExpense] = []
     
     private var grandTotal: Decimal {
         categoryExpenses.reduce(Decimal.zero) { $0 + $1.total }
@@ -184,7 +142,12 @@ struct ExpenseByCategoryReportView: View {
             .padding()
             .background(.bar)
             
-            if categoryExpenses.isEmpty {
+            if isLoading {
+                Spacer()
+                ProgressView()
+                    .scaleEffect(1.5)
+                Spacer()
+            } else if categoryExpenses.isEmpty {
                 ContentUnavailableView {
                     Label("No expenses", systemImage: "chart.bar.xaxis")
                 } description: {
@@ -205,6 +168,69 @@ struct ExpenseByCategoryReportView: View {
                 }
                 .listStyle(.inset)
             }
+        }
+        .task {
+            await loadData()
+        }
+        .onChange(of: selectedPeriod) { _, _ in
+            Task { await loadData() }
+        }
+        .onChange(of: sortOrder) { _, _ in
+            Task { await loadData() }
+        }
+    }
+    
+    private func loadData() async {
+        isLoading = true
+        
+        // Slight delay to show loading state
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        let startDate = selectedPeriod.startDate
+        let endDate = Date()
+        let accounts = expenseAccounts
+        let currentSortOrder = sortOrder
+        
+        var expenses: [CategoryExpense] = []
+        
+        for account in accounts {
+            let entries = account.entries ?? []
+            var total: Decimal = 0
+            
+            for entry in entries {
+                guard let transaction = entry.transaction,
+                      !transaction.isRecurring,
+                      transaction.date >= startDate,
+                      transaction.date <= endDate else {
+                    continue
+                }
+                
+                // For expenses: debits increase, credits decrease
+                if entry.entryType == .debit {
+                    total += entry.amount
+                } else {
+                    total -= entry.amount
+                }
+            }
+            
+            if total != 0 {
+                expenses.append(CategoryExpense(account: account, total: total))
+            }
+        }
+        
+        // Sort based on selected order
+        switch currentSortOrder {
+        case .alphabetical:
+            expenses.sort { $0.account.displayName.localizedCaseInsensitiveCompare($1.account.displayName) == .orderedAscending }
+        case .highestFirst:
+            expenses.sort { $0.total > $1.total }
+        case .lowestFirst:
+            expenses.sort { $0.total < $1.total }
+        }
+        
+        await MainActor.run {
+            categoryExpenses = expenses
+            isLoading = false
         }
     }
 }
