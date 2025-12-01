@@ -438,6 +438,9 @@
         }
       }
     },
+    "Annual" : {
+
+    },
     "Are you absolutely sure?" : {
       "localizations" : {
         "it" : {
@@ -650,6 +653,9 @@
         }
       }
     },
+    "Bimonthly" : {
+
+    },
     "Budget" : {
       "localizations" : {
         "it" : {
@@ -712,6 +718,9 @@
           }
         }
       }
+    },
+    "Car Loan" : {
+
     },
     "Cash" : {
       "localizations" : {
@@ -805,17 +814,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verificato"
-          }
-        }
-      }
-    },
-    "Cleared balance" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saldo verificato"
           }
         }
       }
@@ -1521,6 +1519,9 @@
         }
       }
     },
+    "Fixed" : {
+
+    },
     "Fixed Expenses" : {
       "localizations" : {
         "it" : {
@@ -2058,17 +2059,6 @@
         }
       }
     },
-    "Last reconciled" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultima riconciliazione"
-          }
-        }
-      }
-    },
     "Last reconciled: %@" : {
       "localizations" : {
         "it" : {
@@ -2182,6 +2172,9 @@
         }
       }
     },
+    "Mixed" : {
+
+    },
     "Monday" : {
       "localizations" : {
         "it" : {
@@ -2261,6 +2254,9 @@
           }
         }
       }
+    },
+    "Mortgage" : {
+
     },
     "Net Worth" : {
       "localizations" : {
@@ -2690,6 +2686,9 @@
     "Options" : {
 
     },
+    "Other" : {
+
+    },
     "Other expense" : {
       "localizations" : {
         "it" : {
@@ -2752,6 +2751,9 @@
           }
         }
       }
+    },
+    "Personal Loan" : {
+
     },
     "Please enter a valid number for the balance." : {
       "localizations" : {
@@ -2932,6 +2934,9 @@
           }
         }
       }
+    },
+    "Quarterly" : {
+
     },
     "Quit" : {
       "localizations" : {
@@ -3295,6 +3300,9 @@
         }
       }
     },
+    "Semiannual" : {
+
+    },
     "Set opening balance" : {
 
     },
@@ -3367,17 +3375,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Inizia da zero"
-          }
-        }
-      }
-    },
-    "Statement balance" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saldo estratto conto"
           }
         }
       }
@@ -3780,6 +3777,9 @@
           }
         }
       }
+    },
+    "Variable" : {
+
     },
     "Wednesday" : {
       "localizations" : {

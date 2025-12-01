@@ -12,6 +12,7 @@ enum SidebarSelection: Hashable {
     case patrimony
     case forecast
     case budget
+    case loans
     case reports
     case scheduled
     case account(Account)
@@ -51,6 +52,9 @@ struct AccountListView: View {
                             
                             Label("Budget", systemImage: "envelope.fill")
                                 .tag(SidebarSelection.budget)
+                            
+                            Label("Loans & Mortgages", systemImage: "house.fill")
+                                .tag(SidebarSelection.loans)
                             
                             Label("Reports", systemImage: "chart.bar.fill")
                                 .tag(SidebarSelection.reports)
@@ -126,6 +130,8 @@ struct AccountListView: View {
                     ForecastView()
                 case .budget:
                     BudgetView()
+                case .loans:
+                    LoansView()
                 case .reports:
                     ReportsView()
                 case .scheduled:
