@@ -32,6 +32,8 @@ struct AddExistingLoanView: View {
     // Validation
     @State private var showingValidationError = false
     @State private var validationMessage = ""
+    @State private var showingCreateRecurringDialog = false
+    @State private var savedLoan: Loan?
     
     private var principal: Decimal {
         Decimal(string: principalText.replacingOccurrences(of: ",", with: ".")) ?? 0
@@ -216,6 +218,15 @@ struct AddExistingLoanView: View {
             } message: {
                 Text(validationMessage)
             }
+            .sheet(isPresented: $showingCreateRecurringDialog) {
+                if let loan = savedLoan {
+                    CreateLoanRecurringView(loan: loan, onComplete: {
+                        dismiss()
+                    }, onSkip: {
+                        dismiss()
+                    })
+                }
+            }
         }
         .frame(minWidth: 500, minHeight: 550)
     }
@@ -245,7 +256,8 @@ struct AddExistingLoanView: View {
         )
         
         modelContext.insert(loan)
-        dismiss()
+        savedLoan = loan
+        showingCreateRecurringDialog = true
     }
 }
 

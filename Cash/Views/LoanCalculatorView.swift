@@ -38,6 +38,8 @@ struct LoanCalculatorView: View {
     @State private var showingScenarios = false
     @State private var showingSaveDialog = false
     @State private var showingAmortizationHelp = false
+    @State private var showingCreateRecurringDialog = false
+    @State private var savedLoan: Loan?
     
     private var principal: Decimal {
         Decimal(string: principalText.replacingOccurrences(of: ",", with: ".")) ?? 0
@@ -228,6 +230,15 @@ struct LoanCalculatorView: View {
             .sheet(isPresented: $showingAmortizationHelp) {
                 AmortizationHelpView()
             }
+            .sheet(isPresented: $showingCreateRecurringDialog) {
+                if let loan = savedLoan {
+                    CreateLoanRecurringView(loan: loan, onComplete: {
+                        dismiss()
+                    }, onSkip: {
+                        dismiss()
+                    })
+                }
+            }
         }
         .frame(minWidth: 500, minHeight: 650)
     }
@@ -280,7 +291,8 @@ struct LoanCalculatorView: View {
         )
         
         modelContext.insert(loan)
-        dismiss()
+        savedLoan = loan
+        showingCreateRecurringDialog = true
     }
 }
 

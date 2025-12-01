@@ -97,6 +97,7 @@ final class Transaction {
     var isRecurring: Bool // Recurring transactions are templates not counted in balances
     var reconciliationStatusRawValue: String?
     var reconciledDate: Date?
+    var linkedLoanId: UUID?  // Link to Loan for loan payment transactions
     
     @Relationship(deleteRule: .cascade, inverse: \Entry.transaction)
     var entries: [Entry]? = []

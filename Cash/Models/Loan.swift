@@ -296,6 +296,40 @@ final class Loan {
         self.currency = currency
         self.linkedRecurringTransactionId = nil
     }
+    
+    // MARK: - Recurrence Frequency Mapping
+    
+    /// Maps PaymentFrequency to RecurrenceFrequency
+    var recurrenceFrequency: RecurrenceFrequency {
+        switch paymentFrequency {
+        case .monthly:
+            return .monthly
+        case .bimonthly:
+            return .monthly  // interval = 2
+        case .quarterly:
+            return .monthly  // interval = 3
+        case .semiannual:
+            return .monthly  // interval = 6
+        case .annual:
+            return .yearly
+        }
+    }
+    
+    /// Recurrence interval based on payment frequency
+    var recurrenceInterval: Int {
+        switch paymentFrequency {
+        case .monthly:
+            return 1
+        case .bimonthly:
+            return 2
+        case .quarterly:
+            return 3
+        case .semiannual:
+            return 6
+        case .annual:
+            return 1
+        }
+    }
 }
 
 // MARK: - Loan Calculator
@@ -424,6 +458,8 @@ struct LoanCalculator {
         startDate: Date,
         startingPayment: Int
     ) -> [AmortizationEntry] {
+        guard totalPayments > 0, startingPayment <= totalPayments else { return [] }
+        
         var schedule: [AmortizationEntry] = []
         var remainingBalance = principal
         let payment = calculateFrenchPayment(principal: principal, annualRate: annualRate, totalPayments: totalPayments, frequency: frequency)
@@ -466,6 +502,8 @@ struct LoanCalculator {
         startDate: Date,
         startingPayment: Int
     ) -> [AmortizationEntry] {
+        guard totalPayments > 0, startingPayment <= totalPayments else { return [] }
+        
         var schedule: [AmortizationEntry] = []
         var remainingBalance = principal
         let constantPrincipal = (principal / Decimal(totalPayments)).rounded(2)
@@ -510,6 +548,8 @@ struct LoanCalculator {
         startDate: Date,
         startingPayment: Int
     ) -> [AmortizationEntry] {
+        guard totalPayments > 0, startingPayment <= totalPayments else { return [] }
+        
         var schedule: [AmortizationEntry] = []
         var remainingBalance = principal
         let payment = calculateFrenchPayment(principal: principal, annualRate: annualRate, totalPayments: totalPayments, frequency: frequency)
@@ -564,6 +604,8 @@ struct LoanCalculator {
         startDate: Date,
         startingPayment: Int
     ) -> [AmortizationEntry] {
+        guard totalPayments > 0, startingPayment <= totalPayments else { return [] }
+        
         var schedule: [AmortizationEntry] = []
         let periodicRate = annualRate / 100 / Decimal(frequency.paymentsPerYear)
         let interestPayment = (principal * periodicRate).rounded(2)

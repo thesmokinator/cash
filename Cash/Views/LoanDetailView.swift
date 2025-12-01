@@ -19,6 +19,8 @@ struct LoanDetailView: View {
     @State private var showingEarlyRepayment = false
     @State private var showingUpdateRate = false
     @State private var showingRecordPayment = false
+    @State private var showingFullPayoff = false
+    @State private var showingDeleteConfirmation = false
     @State private var newRateText: String = ""
     
     private var remainingBalance: Decimal {
@@ -144,6 +146,11 @@ struct LoanDetailView: View {
                             }
                             .disabled(loan.remainingPayments == 0)
                             
+                            ActionButton(title: "Full Payoff", icon: "checkmark.seal.fill", color: .red) {
+                                showingFullPayoff = true
+                            }
+                            .disabled(loan.remainingPayments == 0)
+                            
                             if loan.interestRateType == .variable || loan.interestRateType == .mixed {
                                 ActionButton(title: "Update Rate", icon: "percent", color: .teal) {
                                     newRateText = "\(loan.currentInterestRate)"
@@ -159,6 +166,13 @@ struct LoanDetailView: View {
             }
             .navigationTitle("Loan Details")
             .toolbar {
+                ToolbarItem(placement: .destructiveAction) {
+                    Button(role: .destructive) {
+                        showingDeleteConfirmation = true
+                    } label: {
+                        Image(systemName: "trash")
+                    }
+                }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                 }
@@ -194,6 +208,15 @@ struct LoanDetailView: View {
                     currency: loan.currency
                 )
             }
+            .sheet(isPresented: $showingFullPayoff) {
+                LoanFullPayoffView(
+                    loan: loan,
+                    remainingBalance: remainingBalance,
+                    onPayoff: {
+                        dismiss()
+                    }
+                )
+            }
             .alert("Update Interest Rate", isPresented: $showingUpdateRate) {
                 TextField("New Rate %", text: $newRateText)
                 Button("Update") {
@@ -203,8 +226,29 @@ struct LoanDetailView: View {
             } message: {
                 Text("Enter the new interest rate. This will recalculate future payments.")
             }
+            .alert("Delete Loan", isPresented: $showingDeleteConfirmation) {
+                Button("Delete", role: .destructive) {
+                    deleteLoan()
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                if loan.linkedRecurringTransactionId != nil {
+                    Text("This loan has linked recurring transactions. Deleting will also remove all scheduled future payments. This action cannot be undone.")
+                } else {
+                    Text("Are you sure you want to delete this loan? This action cannot be undone.")
+                }
+            }
         }
         .frame(minWidth: 600, minHeight: 500)
+    }
+    
+    private func deleteLoan() {
+        // Delete linked recurring transaction if exists
+        LoanTransactionService.unlinkTransaction(for: loan, deleteTransaction: true, modelContext: modelContext)
+        
+        // Delete the loan
+        modelContext.delete(loan)
+        dismiss()
     }
     
     private func recordPayment() {
