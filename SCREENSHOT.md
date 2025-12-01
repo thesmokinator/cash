@@ -17,3 +17,9 @@ Here are all the screenshots of the Cash application:
 ![Screenshot 7](AppStore/Screenshots/007.png)
 
 ![Screenshot 8](AppStore/Screenshots/008.png)
+
+![Screenshot 9](AppStore/Screenshots/009.png)
+
+![Screenshot 10](AppStore/Screenshots/010.png)
+
+![Screenshot 11](AppStore/Screenshots/011.png)

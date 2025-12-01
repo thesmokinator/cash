@@ -4,10 +4,26 @@
     "" : {
 
     },
+    "-" : {
+
+    },
     "-%@" : {
 
     },
     "(%@)" : {
+
+    },
+    "(%@%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "(%1$@%2$@)"
+          }
+        }
+      }
+    },
+    "(%lld fewer)" : {
 
     },
     "/" : {
@@ -23,8 +39,27 @@
         }
       }
     },
+    "#" : {
+
+    },
     "#%@" : {
 
+    },
+    "%" : {
+
+    },
+    "% of repayment amount" : {
+
+    },
+    "%@ - %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ - %2$@"
+          }
+        }
+      }
     },
     "%@ %@" : {
       "localizations" : {
@@ -46,6 +81,9 @@
         }
       }
     },
+    "%@%%" : {
+
+    },
     "%lld" : {
 
     },
@@ -59,6 +97,9 @@
         }
       }
     },
+    "%lld months" : {
+
+    },
     "%lld of %lld" : {
       "localizations" : {
         "it" : {
@@ -68,6 +109,15 @@
           }
         }
       }
+    },
+    "%lld payments left" : {
+
+    },
+    "%lld payments made" : {
+
+    },
+    "%lld remaining" : {
+
     },
     "%lld transactions found" : {
       "localizations" : {
@@ -129,6 +179,22 @@
         }
       }
     },
+    "%lld years" : {
+
+    },
+    "%lld years, %lld months" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld years, %2$lld months"
+          }
+        }
+      }
+    },
+    "%lld%%" : {
+
+    },
     "•" : {
 
     },
@@ -139,6 +205,9 @@
 
     },
     "+%@" : {
+
+    },
+    "+%@%%" : {
 
     },
     "0" : {
@@ -252,6 +321,9 @@
         }
       }
     },
+    "Actions" : {
+
+    },
     "Active" : {
 
     },
@@ -264,6 +336,9 @@
           }
         }
       }
+    },
+    "Add a new loan calculation or track an existing loan" : {
+
     },
     "Add a recurring transaction to see it here" : {
 
@@ -307,6 +382,12 @@
           }
         }
       }
+    },
+    "Add Existing" : {
+
+    },
+    "Add Existing Loan" : {
+
     },
     "Add more transactions to generate projections" : {
       "localizations" : {
@@ -417,6 +498,12 @@
           }
         }
       }
+    },
+    "Amortization" : {
+
+    },
+    "Amortization Schedule" : {
+
     },
     "Amount" : {
       "localizations" : {
@@ -653,6 +740,15 @@
         }
       }
     },
+    "Base Payment" : {
+
+    },
+    "Base Rate" : {
+
+    },
+    "Base Total Interest" : {
+
+    },
     "Bimonthly" : {
 
     },
@@ -696,7 +792,36 @@
         }
       }
     },
+    "By paying %@ now, you will completely pay off this loan and save %@ in interest." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "By paying %1$@ now, you will completely pay off this loan and save %2$@ in interest."
+          }
+        }
+      }
+    },
+    "By paying %@ now, you will reduce your loan term by %lld payments and save %@ overall." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "By paying %1$@ now, you will reduce your loan term by %2$lld payments and save %3$@ overall."
+          }
+        }
+      }
+    },
     "Calculating forecast..." : {
+
+    },
+    "Calculating scenarios..." : {
+
+    },
+    "Calculating..." : {
+
+    },
+    "Calculation Results" : {
 
     },
     "Cancel" : {
@@ -967,6 +1092,15 @@
         }
       }
     },
+    "Current Loan Status" : {
+
+    },
+    "Current Payment" : {
+
+    },
+    "Current Status" : {
+
+    },
     "Custom Name (optional)" : {
       "localizations" : {
         "it" : {
@@ -1206,6 +1340,12 @@
         }
       }
     },
+    "Duration" : {
+
+    },
+    "Early Repayment" : {
+
+    },
     "Edit" : {
       "localizations" : {
         "it" : {
@@ -1275,6 +1415,9 @@
         }
       }
     },
+    "End Date" : {
+
+    },
     "End Date: %@" : {
       "localizations" : {
         "it" : {
@@ -1286,6 +1429,12 @@
       }
     },
     "English" : {
+
+    },
+    "Enter a name for this loan simulation" : {
+
+    },
+    "Enter the new interest rate. This will recalculate future payments." : {
 
     },
     "Enter the starting balance for this account" : {
@@ -1333,6 +1482,9 @@
           }
         }
       }
+    },
+    "Estimated Remaining Balance" : {
+
     },
     "Every" : {
       "localizations" : {
@@ -1519,6 +1671,9 @@
         }
       }
     },
+    "Financial Details" : {
+
+    },
     "Fixed" : {
 
     },
@@ -1621,6 +1776,9 @@
           }
         }
       }
+    },
+    "Full repayment" : {
+
     },
     "General" : {
       "localizations" : {
@@ -1923,6 +2081,9 @@
         }
       }
     },
+    "Interest" : {
+
+    },
     "Interest income" : {
       "localizations" : {
         "it" : {
@@ -1932,6 +2093,21 @@
           }
         }
       }
+    },
+    "Interest Paid" : {
+
+    },
+    "Interest Rate" : {
+
+    },
+    "Interest Rate (TAN)" : {
+
+    },
+    "Interest Rate Type" : {
+
+    },
+    "Interest Saved" : {
+
     },
     "Invalid file format" : {
       "localizations" : {
@@ -2122,6 +2298,18 @@
         }
       }
     },
+    "Loan Calculator" : {
+
+    },
+    "Loan Details" : {
+
+    },
+    "Loan Information" : {
+
+    },
+    "Loans & Mortgages" : {
+
+    },
     "Long Term Projection" : {
       "localizations" : {
         "it" : {
@@ -2225,6 +2413,12 @@
         }
       }
     },
+    "Monthly Diff" : {
+
+    },
+    "Monthly Payment" : {
+
+    },
     "Monthly Surplus" : {
       "localizations" : {
         "it" : {
@@ -2256,6 +2450,12 @@
       }
     },
     "Mortgage" : {
+
+    },
+    "Name" : {
+
+    },
+    "Net Savings" : {
 
     },
     "Net Worth" : {
@@ -2297,6 +2497,18 @@
           }
         }
       }
+    },
+    "New Calculation" : {
+
+    },
+    "New Rate" : {
+
+    },
+    "New Rate %" : {
+
+    },
+    "New Remaining Payments" : {
+
     },
     "New scheduled transaction" : {
 
@@ -2380,6 +2592,9 @@
           }
         }
       }
+    },
+    "Next Payment" : {
+
     },
     "Next week" : {
       "localizations" : {
@@ -2531,6 +2746,9 @@
         }
       }
     },
+    "No loans" : {
+
+    },
     "No recurring transactions" : {
       "localizations" : {
         "it" : {
@@ -2640,6 +2858,16 @@
         }
       }
     },
+    "Note: A penalty of %@ (%@%%) has been deducted from your savings." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Note: A penalty of %1$@ (%2$@%%) has been deducted from your savings."
+          }
+        }
+      }
+    },
     "OK" : {
       "localizations" : {
         "it" : {
@@ -2686,6 +2914,12 @@
     "Options" : {
 
     },
+    "Original Loan Details" : {
+
+    },
+    "Original Principal" : {
+
+    },
     "Other" : {
 
     },
@@ -2721,6 +2955,38 @@
           }
         }
       }
+    },
+    "Payment" : {
+
+    },
+    "Payment Amount" : {
+
+    },
+    "Payment Details" : {
+
+    },
+    "Payment Frequency" : {
+
+    },
+    "Payments Already Made" : {
+
+    },
+    "payments left" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "rate rimanenti"
+          }
+        }
+      }
+    },
+    "Penalty" : {
+
+    },
+    "Penalty Amount" : {
+
     },
     "Period" : {
       "localizations" : {
@@ -2865,6 +3131,15 @@
         }
       }
     },
+    "Principal" : {
+
+    },
+    "Principal Amount" : {
+
+    },
+    "Progress" : {
+
+    },
     "Project for" : {
       "localizations" : {
         "it" : {
@@ -2938,6 +3213,9 @@
     "Quarterly" : {
 
     },
+    "Quick:" : {
+
+    },
     "Quit" : {
       "localizations" : {
         "it" : {
@@ -2947,6 +3225,12 @@
           }
         }
       }
+    },
+    "Rate Scenarios" : {
+
+    },
+    "Rate Scenarios Analysis" : {
+
     },
     "ratio" : {
       "localizations" : {
@@ -3038,6 +3322,9 @@
         }
       }
     },
+    "Record Payment" : {
+
+    },
     "Recurrence" : {
       "localizations" : {
         "it" : {
@@ -3058,6 +3345,12 @@
         }
       }
     },
+    "Remaining Balance" : {
+
+    },
+    "Remaining Payments" : {
+
+    },
     "Remove" : {
       "localizations" : {
         "it" : {
@@ -3077,6 +3370,9 @@
           }
         }
       }
+    },
+    "Repayment Amount" : {
+
     },
     "Reports" : {
       "localizations" : {
@@ -3116,6 +3412,9 @@
           }
         }
       }
+    },
+    "Results" : {
+
     },
     "Retained earnings" : {
       "localizations" : {
@@ -3176,6 +3475,9 @@
           }
         }
       }
+    },
+    "Save Simulation" : {
+
     },
     "Scheduled" : {
       "localizations" : {
@@ -3422,6 +3724,9 @@
         }
       }
     },
+    "Summary" : {
+
+    },
     "Sunday" : {
       "localizations" : {
         "it" : {
@@ -3441,6 +3746,9 @@
           }
         }
       }
+    },
+    "TAEG (optional)" : {
+
     },
     "The app needs to restart to apply language changes." : {
 
@@ -3538,6 +3846,9 @@
         }
       }
     },
+    "Time Saved" : {
+
+    },
     "To" : {
       "localizations" : {
         "it" : {
@@ -3558,6 +3869,9 @@
         }
       }
     },
+    "Total Amount" : {
+
+    },
     "Total Expenses Variation" : {
       "localizations" : {
         "it" : {
@@ -3567,6 +3881,12 @@
           }
         }
       }
+    },
+    "Total Interest" : {
+
+    },
+    "Total Payments" : {
+
     },
     "Track your personal finances with double-entry bookkeeping" : {
       "localizations" : {
@@ -3587,6 +3907,9 @@
           }
         }
       }
+    },
+    "Tracking" : {
+
     },
     "Transaction %lld of %lld" : {
       "localizations" : {
@@ -3728,6 +4051,15 @@
         }
       }
     },
+    "Update" : {
+
+    },
+    "Update Interest Rate" : {
+
+    },
+    "Update Rate" : {
+
+    },
     "Use Average" : {
       "localizations" : {
         "it" : {
@@ -3778,7 +4110,13 @@
         }
       }
     },
+    "Validation Error" : {
+
+    },
     "Variable" : {
+
+    },
+    "View Amortization Schedule" : {
 
     },
     "Wednesday" : {

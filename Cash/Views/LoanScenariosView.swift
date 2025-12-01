@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+struct RateScenario: Identifiable {
+    let id = UUID()
+    let rateChange: Decimal
+    let newRate: Decimal
+    let payment: Decimal
+    let totalInterest: Decimal
+}
+
 struct LoanScenariosView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppSettings.self) private var settings
@@ -17,7 +25,7 @@ struct LoanScenariosView: View {
     let frequency: PaymentFrequency
     let currency: String
     
-    @State private var scenarios: [(rateChange: Decimal, newRate: Decimal, payment: Decimal, totalInterest: Decimal)] = []
+    @State private var scenarios: [RateScenario] = []
     @State private var customVariations: [Decimal] = [-1, -0.5, 0, 0.5, 1, 1.5, 2]
     @State private var isLoading = true
     
@@ -88,7 +96,7 @@ struct LoanScenariosView: View {
                     Spacer()
                 } else {
                     // Scenarios table
-                    Table(scenarios, id: \.rateChange) { scenario in
+                    Table(scenarios) { 
                         TableColumn("Change") { s in
                             HStack {
                                 if s.rateChange > 0 {
@@ -193,7 +201,7 @@ struct LoanScenariosView: View {
         )
         
         await MainActor.run {
-            scenarios = result
+            scenarios = result.map { RateScenario(rateChange: $0.0, newRate: $0.1, payment: $0.2, totalInterest: $0.3) }
             isLoading = false
         }
     }

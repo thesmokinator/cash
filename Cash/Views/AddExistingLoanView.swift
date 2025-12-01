@@ -104,7 +104,7 @@ struct AddExistingLoanView: View {
                     }
                     
                     Picker("Currency", selection: $currency) {
-                        ForEach(CurrencyList.commonCurrencies, id: \.code) { curr in
+                        ForEach(CurrencyList.currencies) { curr in
                             Text("\(curr.code) - \(curr.name)").tag(curr.code)
                         }
                     }

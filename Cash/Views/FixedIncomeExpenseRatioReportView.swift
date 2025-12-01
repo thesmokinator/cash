@@ -120,10 +120,13 @@ struct FixedIncomeExpenseRatioReportView: View {
                 ScrollView {
                     VStack(spacing: 24) {
                         if recurringTransactions.isEmpty {
-                            ContentUnavailableView {
-                                Label("No recurring transactions", systemImage: "arrow.triangle.2.circlepath")
-                            } description: {
-                                Text("Add recurring transactions to analyze your financial stability")
+                            VStack {
+                                ContentUnavailableView {
+                                    Label("No recurring transactions", systemImage: "arrow.triangle.2.circlepath")
+                                } description: {
+                                    Text("Add recurring transactions to analyze your financial stability")
+                                }
+                                Spacer()
                             }
                         } else {
                             // Ratio indicator

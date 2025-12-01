@@ -148,10 +148,13 @@ struct YearOverYearReportView: View {
                     .scaleEffect(1.5)
                 Spacer()
             } else if categoryComparisons.isEmpty {
-                ContentUnavailableView {
-                    Label("No data to compare", systemImage: "calendar.badge.clock")
-                } description: {
-                    Text("Not enough expense data for year-over-year comparison")
+                VStack {
+                    ContentUnavailableView {
+                        Label("No data to compare", systemImage: "calendar.badge.clock")
+                    } description: {
+                        Text("Not enough expense data for year-over-year comparison")
+                    }
+                    Spacer()
                 }
             } else {
                 ScrollView {

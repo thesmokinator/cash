@@ -83,7 +83,7 @@ struct LoanCalculatorView: View {
                     }
                     
                     Picker("Currency", selection: $currency) {
-                        ForEach(CurrencyList.commonCurrencies, id: \.code) { curr in
+                        ForEach(CurrencyList.currencies) { curr in
                             Text("\(curr.code) - \(curr.name)").tag(curr.code)
                         }
                     }
@@ -263,7 +263,7 @@ struct ResultRow: View {
                 isPrivate: settings.privacyMode,
                 font: isHighlighted ? .headline : .body,
                 fontWeight: isHighlighted ? .bold : .medium,
-                color: isHighlighted ? .tint : .primary
+                color: isHighlighted ? Color.accentColor : Color.primary
             )
         }
     }
