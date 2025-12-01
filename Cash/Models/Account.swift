@@ -283,6 +283,8 @@ final class Account {
     var isSystem: Bool
     var createdAt: Date
     var includedInBudget: Bool = false
+    var lastReconciledBalance: Decimal?
+    var lastReconciledDate: Date?
     
     @Relationship(deleteRule: .cascade, inverse: \Entry.account)
     var entries: [Entry]? = []
@@ -329,6 +331,33 @@ final class Account {
         balance
     }
     
+    /// Calculate cleared balance (only cleared and reconciled transactions)
+    var clearedBalance: Decimal {
+        let allEntries = entries ?? []
+        var total: Decimal = 0
+        
+        for entry in allEntries {
+            // Skip entries from recurring transactions
+            if entry.transaction?.isRecurring == true {
+                continue
+            }
+            
+            // Only include cleared or reconciled transactions
+            let status = entry.transaction?.reconciliationStatus ?? .notReconciled
+            guard status == .cleared || status == .reconciled else {
+                continue
+            }
+            
+            if accountClass.normalBalance == .debit {
+                total += entry.entryType == .debit ? entry.amount : -entry.amount
+            } else {
+                total += entry.entryType == .credit ? entry.amount : -entry.amount
+            }
+        }
+        
+        return total
+    }
+    
     /// Returns the display name - uses account name
     var displayName: String {
         name
@@ -354,6 +383,8 @@ final class Account {
         self.isSystem = isSystem
         self.createdAt = Date()
         self.includedInBudget = includedInBudget
+        self.lastReconciledBalance = nil
+        self.lastReconciledDate = nil
     }
 }
 

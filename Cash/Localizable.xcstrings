@@ -119,6 +119,16 @@
         }
       }
     },
+    "%lld unreconciled transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld transazioni non riconciliate"
+          }
+        }
+      }
+    },
     "•" : {
 
     },
@@ -132,6 +142,9 @@
 
     },
     "0" : {
+
+    },
+    "0.00" : {
 
     },
     "1 Month" : {
@@ -385,6 +398,16 @@
         }
       }
     },
+    "All transactions for this account have been reconciled" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutte le transazioni per questo conto sono state riconciliate"
+          }
+        }
+      }
+    },
     "Alphabetical" : {
       "localizations" : {
         "it" : {
@@ -587,6 +610,16 @@
         }
       }
     },
+    "Balanced!" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quadrato!"
+          }
+        }
+      }
+    },
     "Bank account" : {
       "localizations" : {
         "it" : {
@@ -756,6 +789,37 @@
         }
       }
     },
+    "Clear selection" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deseleziona tutto"
+          }
+        }
+      }
+    },
+    "Cleared" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verificato"
+          }
+        }
+      }
+    },
+    "Cleared balance" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo verificato"
+          }
+        }
+      }
+    },
     "Close" : {
       "localizations" : {
         "it" : {
@@ -772,6 +836,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Completato"
+          }
+        }
+      }
+    },
+    "Confirm reconciliation" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conferma riconciliazione"
           }
         }
       }
@@ -1080,6 +1154,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dettagli"
+          }
+        }
+      }
+    },
+    "Difference" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Differenza"
+          }
+        }
+      }
+    },
+    "Difference: %@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Differenza: %@"
           }
         }
       }
@@ -1964,6 +2058,27 @@
         }
       }
     },
+    "Last reconciled" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultima riconciliazione"
+          }
+        }
+      }
+    },
+    "Last reconciled: %@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultima riconciliazione: %@"
+          }
+        }
+      }
+    },
     "Last Year" : {
       "localizations" : {
         "it" : {
@@ -2469,6 +2584,16 @@
     "No transactions match your search" : {
 
     },
+    "No transactions to reconcile" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nessuna transazione da riconciliare"
+          }
+        }
+      }
+    },
     "Normal: credit" : {
       "localizations" : {
         "it" : {
@@ -2505,6 +2630,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dati insufficienti per il confronto anno su anno"
+          }
+        }
+      }
+    },
+    "Not reconciled" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non riconciliato"
           }
         }
       }
@@ -2838,6 +2973,66 @@
         }
       }
     },
+    "Reconcile" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riconcilia"
+          }
+        }
+      }
+    },
+    "Reconcile %lld transactions" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riconcilia %lld transazioni"
+          }
+        }
+      }
+    },
+    "Reconcile: %@" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riconcilia: %@"
+          }
+        }
+      }
+    },
+    "Reconciled" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riconciliato"
+          }
+        }
+      }
+    },
+    "Reconciled transaction" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transazione riconciliata"
+          }
+        }
+      }
+    },
+    "Reconciliation status" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stato riconciliazione"
+          }
+        }
+      }
+    },
     "Recurrence" : {
       "localizations" : {
         "it" : {
@@ -3030,6 +3225,16 @@
         }
       }
     },
+    "Select all" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seleziona tutto"
+          }
+        }
+      }
+    },
     "Select an account" : {
       "localizations" : {
         "it" : {
@@ -3166,6 +3371,37 @@
         }
       }
     },
+    "Statement balance" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo estratto conto"
+          }
+        }
+      }
+    },
+    "Statement date" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data estratto conto"
+          }
+        }
+      }
+    },
+    "Statement ending balance" : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saldo finale estratto conto"
+          }
+        }
+      }
+    },
     "Status" : {
 
     },
@@ -3242,6 +3478,16 @@
         }
       }
     },
+    "This transaction has been reconciled. Modifying it may cause discrepancies with your bank statement." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa transazione è stata riconciliata. Modificarla potrebbe causare discrepanze con l'estratto conto."
+          }
+        }
+      }
+    },
     "This week" : {
       "localizations" : {
         "it" : {
@@ -3264,6 +3510,16 @@
     },
     "This will delete all accounts and transactions." : {
 
+    },
+    "This will mark %lld transactions as reconciled. Reconciled transactions should not be modified." : {
+      "localizations" : {
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo segnerà %lld transazioni come riconciliate. Le transazioni riconciliate non dovrebbero essere modificate."
+          }
+        }
+      }
     },
     "This will permanently delete all your accounts and transactions. This action cannot be undone." : {
       "localizations" : {

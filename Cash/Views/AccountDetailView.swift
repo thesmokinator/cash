@@ -14,6 +14,7 @@ struct AccountDetailView: View {
     @Environment(AppSettings.self) private var settings
     @State private var showingEditSheet = false
     @State private var showingDeleteConfirmation = false
+    @State private var showingReconciliation = false
     @Binding var showingAddTransaction: Bool
     
     var body: some View {
@@ -79,6 +80,13 @@ struct AccountDetailView: View {
         .navigationTitle(account.displayName)
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
+                // Reconcile button - only for asset and liability accounts
+                if account.accountClass == .asset || account.accountClass == .liability {
+                    Button(action: { showingReconciliation = true }) {
+                        Label("Reconcile", systemImage: "checkmark.shield")
+                    }
+                }
+                
                 Button(action: { showingEditSheet = true }) {
                     Label("Edit account", systemImage: "pencil")
                 }
@@ -95,6 +103,9 @@ struct AccountDetailView: View {
         }
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionView(preselectedAccount: account)
+        }
+        .sheet(isPresented: $showingReconciliation) {
+            ReconciliationView(account: account)
         }
         .confirmationDialog(
             "Delete account",
