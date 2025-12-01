@@ -17,6 +17,14 @@ struct CurrencyFormatter {
         return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
     
+    static func formatCompact(_ amount: Decimal, currency: String = "EUR") -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = currency
+        formatter.maximumFractionDigits = 0
+        return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
+    }
+    
     static func parse(_ text: String) -> Decimal {
         let cleaned = text.replacingOccurrences(of: ",", with: ".")
         return Decimal(string: cleaned) ?? 0
@@ -199,5 +207,66 @@ struct PrivacyBlurModifier: ViewModifier {
 extension View {
     func privacyBlur(_ isPrivate: Bool) -> some View {
         modifier(PrivacyBlurModifier(isPrivate: isPrivate))
+    }
+}
+
+// MARK: - Transaction Helpers
+
+struct TransactionHelper {
+    
+    /// Returns the icon and color for a transaction based on its entries
+    static func iconInfo(for transaction: Transaction) -> (iconName: String, color: Color) {
+        let entries = transaction.entries ?? []
+        let hasExpense = entries.contains { $0.account?.accountClass == .expense }
+        let hasIncome = entries.contains { $0.account?.accountClass == .income }
+        
+        if hasExpense {
+            let iconName = entries.first { $0.account?.accountClass == .expense }?.account?.accountType.iconName ?? "arrow.up.circle.fill"
+            return (iconName, .red)
+        } else if hasIncome {
+            let iconName = entries.first { $0.account?.accountClass == .income }?.account?.accountType.iconName ?? "arrow.down.circle.fill"
+            return (iconName, .green)
+        } else {
+            return ("arrow.left.arrow.right.circle.fill", .blue)
+        }
+    }
+    
+    /// Returns a summary string for a transaction (expense/income account name or "Transfer")
+    static func summary(for transaction: Transaction) -> String {
+        let entries = transaction.entries ?? []
+        let expenseAccount = entries.first { $0.account?.accountClass == .expense }?.account
+        let incomeAccount = entries.first { $0.account?.accountClass == .income }?.account
+        
+        if let expense = expenseAccount {
+            return expense.name
+        } else if let income = incomeAccount {
+            return income.name
+        } else {
+            return String(localized: "Transfer")
+        }
+    }
+    
+    /// Returns a string showing the accounts involved in a transaction (credit → debit)
+    static func accountsSummary(for transaction: Transaction) -> String {
+        let entries = transaction.entries ?? []
+        let debitAccount = entries.first { $0.entryType == .debit }?.account
+        let creditAccount = entries.first { $0.entryType == .credit }?.account
+        
+        if let debit = debitAccount, let credit = creditAccount {
+            return "\(credit.name) → \(debit.name)"
+        }
+        return ""
+    }
+}
+
+// MARK: - Transaction Icon View
+
+struct TransactionIconView: View {
+    let transaction: Transaction
+    
+    var body: some View {
+        let info = TransactionHelper.iconInfo(for: transaction)
+        Image(systemName: info.iconName)
+            .foregroundColor(info.color)
     }
 }

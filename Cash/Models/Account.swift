@@ -282,6 +282,7 @@ final class Account {
     var isActive: Bool
     var isSystem: Bool
     var createdAt: Date
+    var includedInBudget: Bool = false
     
     @Relationship(deleteRule: .cascade, inverse: \Entry.account)
     var entries: [Entry]? = []
@@ -340,7 +341,8 @@ final class Account {
         accountClass: AccountClass,
         accountType: AccountType,
         isActive: Bool = true,
-        isSystem: Bool = false
+        isSystem: Bool = false,
+        includedInBudget: Bool = false
     ) {
         self.id = UUID()
         self.name = name
@@ -351,6 +353,7 @@ final class Account {
         self.isActive = isActive
         self.isSystem = isSystem
         self.createdAt = Date()
+        self.includedInBudget = includedInBudget
     }
 }
 

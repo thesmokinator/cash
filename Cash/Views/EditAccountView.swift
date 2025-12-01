@@ -19,6 +19,7 @@ struct EditAccountView: View {
     @State private var selectedClass: AccountClass = .asset
     @State private var selectedType: AccountType = .bank
     @State private var isActive: Bool = true
+    @State private var includedInBudget: Bool = false
     
     @State private var showingValidationError = false
     @State private var validationMessage: LocalizedStringKey = ""
@@ -76,6 +77,16 @@ struct EditAccountView: View {
                         .help("Inactive accounts are hidden from selection lists")
                 }
                 
+                if selectedClass == .expense {
+                    Section {
+                        Toggle("Include in Budget", isOn: $includedInBudget)
+                    } header: {
+                        Text("Budget")
+                    } footer: {
+                        Text("Enable this to use this category as an envelope in your budget.")
+                    }
+                }
+                
                 Section {
                     HStack {
                         Text("Current balance")
@@ -124,6 +135,7 @@ struct EditAccountView: View {
         selectedClass = account.accountClass
         selectedType = account.accountType
         isActive = account.isActive
+        includedInBudget = account.includedInBudget
     }
     
     private func saveChanges() {
@@ -139,6 +151,7 @@ struct EditAccountView: View {
         account.accountClass = selectedClass
         account.accountType = selectedType
         account.isActive = isActive
+        account.includedInBudget = selectedClass == .expense ? includedInBudget : false
         
         dismiss()
     }

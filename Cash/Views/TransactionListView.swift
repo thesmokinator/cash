@@ -77,36 +77,10 @@ struct TransactionListView: View {
     @State private var transactionToDelete: Transaction?
     @State private var dateFilter: TransactionDateFilter = .thisMonth
     @State private var searchText: String = ""
+    @State private var isLoading = true
+    @State private var displayedTransactions: [(String, [Transaction])] = []
     
     var account: Account?
-    
-    private var filteredTransactions: [Transaction] {
-        var result: [Transaction]
-        
-        // If searching, always use last 12 months
-        if !searchText.isEmpty {
-            let range = TransactionDateFilter.last12Months.dateRange
-            result = transactions.filter { $0.date >= range.start && $0.date <= range.end }
-            result = result.filter { $0.descriptionText.localizedCaseInsensitiveContains(searchText) }
-        } else {
-            let range = dateFilter.dateRange
-            result = transactions.filter { $0.date >= range.start && $0.date <= range.end }
-        }
-        
-        if let account {
-            result = result.filter { transaction in
-                (transaction.entries ?? []).contains { $0.account?.id == account.id }
-            }
-        }
-        return result
-    }
-    
-    private var groupedTransactions: [(String, [Transaction])] {
-        let grouped = Dictionary(grouping: filteredTransactions) { transaction in
-            transaction.date.formatted(date: .long, time: .omitted)
-        }
-        return grouped.sorted { $0.value.first?.date ?? Date() > $1.value.first?.date ?? Date() }
-    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -117,7 +91,14 @@ struct TransactionListView: View {
             )
             
             Group {
-                if filteredTransactions.isEmpty {
+                if isLoading {
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                            .scaleEffect(1.5)
+                        Spacer()
+                    }
+                } else if displayedTransactions.isEmpty {
                     VStack {
                         ContentUnavailableView {
                             Label("No transactions", systemImage: "arrow.left.arrow.right")
@@ -128,7 +109,7 @@ struct TransactionListView: View {
                     }
                 } else {
                     List {
-                        ForEach(groupedTransactions, id: \.0) { dateString, dayTransactions in
+                        ForEach(displayedTransactions, id: \.0) { dateString, dayTransactions in
                             Section(dateString) {
                                 ForEach(dayTransactions) { transaction in
                                     TransactionRowView(transaction: transaction, highlightAccount: account)
@@ -185,7 +166,60 @@ struct TransactionListView: View {
         } message: {
             Text("Are you sure you want to delete this transaction?")
         }
+        .task {
+            await loadTransactions()
+        }
+        .onChange(of: dateFilter) { _, _ in
+            Task { await loadTransactions() }
+        }
+        .onChange(of: searchText) { _, _ in
+            Task { await loadTransactions() }
+        }
+        .onChange(of: transactions) { _, _ in
+            Task { await loadTransactions() }
+        }
+        .onChange(of: account) { _, _ in
+            Task { await loadTransactions() }
+        }
         .id(settings.refreshID)
+    }
+    
+    private func loadTransactions() async {
+        isLoading = true
+        
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        let allTxns = transactions
+        let currentAccount = account
+        let currentSearchText = searchText
+        let currentDateFilter = dateFilter
+        
+        var result: [Transaction]
+        
+        if !currentSearchText.isEmpty {
+            let range = TransactionDateFilter.last12Months.dateRange
+            result = allTxns.filter { $0.date >= range.start && $0.date <= range.end }
+            result = result.filter { $0.descriptionText.localizedCaseInsensitiveContains(currentSearchText) }
+        } else {
+            let range = currentDateFilter.dateRange
+            result = allTxns.filter { $0.date >= range.start && $0.date <= range.end }
+        }
+        
+        if let acc = currentAccount {
+            result = result.filter { transaction in
+                (transaction.entries ?? []).contains { $0.account?.id == acc.id }
+            }
+        }
+        
+        let grouped = Dictionary(grouping: result) { transaction in
+            transaction.date.formatted(date: .long, time: .omitted)
+        }
+        let sortedGroups = grouped.sorted { $0.value.first?.date ?? Date() > $1.value.first?.date ?? Date() }
+        
+        await MainActor.run {
+            displayedTransactions = sortedGroups
+            isLoading = false
+        }
     }
     
     private func deleteTransactions(from dayTransactions: [Transaction], at offsets: IndexSet) {
@@ -260,13 +294,13 @@ struct TransactionRowView: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            transactionIcon
+            TransactionIconView(transaction: transaction)
                 .font(.title2)
                 .frame(width: 32)
             
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 4) {
-                    Text(transaction.descriptionText.isEmpty ? transactionSummary : transaction.descriptionText)
+                    Text(transaction.descriptionText.isEmpty ? TransactionHelper.summary(for: transaction) : transaction.descriptionText)
                         .font(.headline)
                     
                     if transaction.isRecurring {
@@ -275,7 +309,7 @@ struct TransactionRowView: View {
                 }
                 
                 HStack(spacing: 4) {
-                    Text(accountsSummary)
+                    Text(TransactionHelper.accountsSummary(for: transaction))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
@@ -286,7 +320,7 @@ struct TransactionRowView: View {
             
             VStack(alignment: .trailing, spacing: 2) {
                 PrivacyAmountView(
-                    amount: formatAmount(transaction.amount),
+                    amount: CurrencyFormatter.format(transaction.amount),
                     isPrivate: settings.privacyMode,
                     font: .subheadline,
                     fontWeight: .semibold
@@ -302,61 +336,6 @@ struct TransactionRowView: View {
             }
         }
         .padding(.vertical, 4)
-    }
-    
-    private var transactionIcon: some View {
-        let entries = transaction.entries ?? []
-        let hasExpense = entries.contains { $0.account?.accountClass == .expense }
-        let hasIncome = entries.contains { $0.account?.accountClass == .income }
-        
-        let iconName: String
-        let color: Color
-        
-        if hasExpense {
-            iconName = entries.first { $0.account?.accountClass == .expense }?.account?.accountType.iconName ?? "arrow.up.circle.fill"
-            color = .red
-        } else if hasIncome {
-            iconName = entries.first { $0.account?.accountClass == .income }?.account?.accountType.iconName ?? "arrow.down.circle.fill"
-            color = .green
-        } else {
-            iconName = "arrow.left.arrow.right.circle.fill"
-            color = .blue
-        }
-        
-        return Image(systemName: iconName)
-            .foregroundColor(color)
-    }
-    
-    private var transactionSummary: String {
-        let entries = transaction.entries ?? []
-        let expenseAccount = entries.first { $0.account?.accountClass == .expense }?.account
-        let incomeAccount = entries.first { $0.account?.accountClass == .income }?.account
-        
-        if let expense = expenseAccount {
-            return expense.name
-        } else if let income = incomeAccount {
-            return income.name
-        } else {
-            return String(localized: "Transfer")
-        }
-    }
-    
-    private var accountsSummary: String {
-        let entries = transaction.entries ?? []
-        let debitAccount = entries.first { $0.entryType == .debit }?.account
-        let creditAccount = entries.first { $0.entryType == .credit }?.account
-        
-        if let debit = debitAccount, let credit = creditAccount {
-            return "\(credit.name) → \(debit.name)"
-        }
-        return ""
-    }
-    
-    private func formatAmount(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "EUR"
-        return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
 }
 

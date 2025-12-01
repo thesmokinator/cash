@@ -259,7 +259,7 @@ struct OFXImportWizard: View {
                     
                     Spacer()
                     
-                    Text(formatAmount(item.ofxTransaction.absoluteAmount))
+                    Text(CurrencyFormatter.format(item.ofxTransaction.absoluteAmount, currency: selectedBankAccount?.currency ?? "EUR"))
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundStyle(item.ofxTransaction.isExpense ? .red : .green)
@@ -360,7 +360,7 @@ struct OFXImportWizard: View {
                         
                         Spacer()
                         
-                        Text(formatAmount(item.ofxTransaction.absoluteAmount))
+                        Text(CurrencyFormatter.format(item.ofxTransaction.absoluteAmount, currency: selectedBankAccount?.currency ?? "EUR"))
                             .foregroundStyle(item.ofxTransaction.isExpense ? .red : .green)
                             .fontWeight(.medium)
                     }
@@ -522,13 +522,6 @@ struct OFXImportWizard: View {
                 context: modelContext
             )
         }
-    }
-    
-    private func formatAmount(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = selectedBankAccount?.currency ?? "EUR"
-        return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
 }
 

@@ -11,6 +11,8 @@ import SwiftData
 enum SidebarSelection: Hashable {
     case patrimony
     case forecast
+    case budget
+    case reports
     case scheduled
     case account(Account)
 }
@@ -46,6 +48,12 @@ struct AccountListView: View {
                             
                             Label("Forecast", systemImage: "chart.line.uptrend.xyaxis")
                                 .tag(SidebarSelection.forecast)
+                            
+                            Label("Budget", systemImage: "envelope.fill")
+                                .tag(SidebarSelection.budget)
+                            
+                            Label("Reports", systemImage: "chart.bar.fill")
+                                .tag(SidebarSelection.reports)
                         }
                     }
                     
@@ -116,6 +124,10 @@ struct AccountListView: View {
                     NetWorthView()
                 case .forecast:
                     ForecastView()
+                case .budget:
+                    BudgetView()
+                case .reports:
+                    ReportsView()
                 case .scheduled:
                     ScheduledTransactionsView()
                 case .account(let account):
@@ -192,7 +204,7 @@ struct AccountRowView: View {
             Spacer()
             
             PrivacyAmountView(
-                amount: formatBalance(account.balance, currency: account.currency),
+                amount: CurrencyFormatter.format(account.balance, currency: account.currency),
                 isPrivate: settings.privacyMode,
                 font: .subheadline,
                 fontWeight: .medium,
@@ -218,13 +230,6 @@ struct AccountRowView: View {
         case .equity:
             return .primary
         }
-    }
-    
-    private func formatBalance(_ balance: Decimal, currency: String) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = currency
-        return formatter.string(from: balance as NSDecimalNumber) ?? "\(CurrencyList.symbol(forCode: currency))\(balance)"
     }
 }
 

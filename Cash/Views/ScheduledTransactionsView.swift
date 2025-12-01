@@ -18,13 +18,8 @@ struct ScheduledTransactionsView: View {
     @State private var transactionToExecute: Transaction?
     @State private var searchText: String = ""
     @State private var dummyDateFilter: TransactionDateFilter = .thisMonth
-    
-    private var filteredTransactions: [Transaction] {
-        if searchText.isEmpty {
-            return scheduledTransactions
-        }
-        return scheduledTransactions.filter { $0.descriptionText.localizedCaseInsensitiveContains(searchText) }
-    }
+    @State private var isLoading = true
+    @State private var displayedTransactions: [Transaction] = []
     
     var body: some View {
         VStack(spacing: 0) {
@@ -35,7 +30,14 @@ struct ScheduledTransactionsView: View {
                 onAddTransaction: { showingAddScheduled = true }
             )
                         
-            if filteredTransactions.isEmpty {
+            if isLoading {
+                VStack {
+                    Spacer()
+                    ProgressView()
+                        .scaleEffect(1.5)
+                    Spacer()
+                }
+            } else if displayedTransactions.isEmpty {
                 VStack {
                     ContentUnavailableView {
                         Label(scheduledTransactions.isEmpty ? "No scheduled transactions" : "No results", systemImage: scheduledTransactions.isEmpty ? "calendar.badge.clock" : "magnifyingglass")
@@ -46,7 +48,7 @@ struct ScheduledTransactionsView: View {
                 }
             } else {
                 List {
-                    ForEach(filteredTransactions) { transaction in
+                    ForEach(displayedTransactions) { transaction in
                         ScheduledTransactionRow(transaction: transaction)
                             .contentShape(Rectangle())
                             .onTapGesture {
@@ -141,6 +143,37 @@ struct ScheduledTransactionsView: View {
             Text("Are you sure you want to delete this scheduled transaction?")
         }
         .id(settings.refreshID)
+        .task {
+            await loadTransactions()
+        }
+        .onChange(of: searchText) { _, _ in
+            Task { await loadTransactions() }
+        }
+        .onChange(of: scheduledTransactions) { _, _ in
+            Task { await loadTransactions() }
+        }
+    }
+    
+    private func loadTransactions() async {
+        isLoading = true
+        
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        let allTxns = scheduledTransactions
+        let currentSearchText = searchText
+        
+        var result: [Transaction]
+        
+        if currentSearchText.isEmpty {
+            result = allTxns
+        } else {
+            result = allTxns.filter { $0.descriptionText.localizedCaseInsensitiveContains(currentSearchText) }
+        }
+        
+        await MainActor.run {
+            displayedTransactions = result
+            isLoading = false
+        }
     }
     
     private func executeTransaction(_ template: Transaction) {
@@ -180,13 +213,13 @@ struct ScheduledTransactionRow: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            transactionIcon
+            TransactionIconView(transaction: transaction)
                 .font(.title2)
                 .frame(width: 32)
             
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 4) {
-                    Text(transaction.descriptionText.isEmpty ? transactionSummary : transaction.descriptionText)
+                    Text(transaction.descriptionText.isEmpty ? TransactionHelper.summary(for: transaction) : transaction.descriptionText)
                         .font(.headline)
                     
                     RecurringIcon()
@@ -209,7 +242,7 @@ struct ScheduledTransactionRow: View {
                     }
                 }
                 
-                Text(accountsSummary)
+                Text(TransactionHelper.accountsSummary(for: transaction))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
@@ -218,68 +251,13 @@ struct ScheduledTransactionRow: View {
             Spacer()
             
             PrivacyAmountView(
-                amount: formatAmount(transaction.amount),
+                amount: CurrencyFormatter.format(transaction.amount),
                 isPrivate: settings.privacyMode,
                 font: .subheadline,
                 fontWeight: .semibold
             )
         }
         .padding(.vertical, 4)
-    }
-    
-    private var transactionIcon: some View {
-        let entries = transaction.entries ?? []
-        let hasExpense = entries.contains { $0.account?.accountClass == .expense }
-        let hasIncome = entries.contains { $0.account?.accountClass == .income }
-        
-        let iconName: String
-        let color: Color
-        
-        if hasExpense {
-            iconName = entries.first { $0.account?.accountClass == .expense }?.account?.accountType.iconName ?? "arrow.up.circle.fill"
-            color = .red
-        } else if hasIncome {
-            iconName = entries.first { $0.account?.accountClass == .income }?.account?.accountType.iconName ?? "arrow.down.circle.fill"
-            color = .green
-        } else {
-            iconName = "arrow.left.arrow.right.circle.fill"
-            color = .blue
-        }
-        
-        return Image(systemName: iconName)
-            .foregroundColor(color)
-    }
-    
-    private var transactionSummary: String {
-        let entries = transaction.entries ?? []
-        let expenseAccount = entries.first { $0.account?.accountClass == .expense }?.account
-        let incomeAccount = entries.first { $0.account?.accountClass == .income }?.account
-        
-        if let expense = expenseAccount {
-            return expense.name
-        } else if let income = incomeAccount {
-            return income.name
-        } else {
-            return String(localized: "Transfer")
-        }
-    }
-    
-    private var accountsSummary: String {
-        let entries = transaction.entries ?? []
-        let debitAccount = entries.first { $0.entryType == .debit }?.account
-        let creditAccount = entries.first { $0.entryType == .credit }?.account
-        
-        if let debit = debitAccount, let credit = creditAccount {
-            return "\(credit.name) → \(debit.name)"
-        }
-        return ""
-    }
-    
-    private func formatAmount(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "EUR"
-        return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
 }
 

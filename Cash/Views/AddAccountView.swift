@@ -21,6 +21,7 @@ struct AddAccountView: View {
     @State private var selectedType: AccountType = .bank
     @State private var initialBalance: String = ""
     @State private var createOpeningBalance: Bool = false
+    @State private var includedInBudget: Bool = false
     
     @State private var showingValidationError = false
     @State private var validationMessage: LocalizedStringKey = ""
@@ -88,6 +89,16 @@ struct AddAccountView: View {
                         }
                     }
                 }
+                
+                if selectedClass == .expense {
+                    Section {
+                        Toggle("Include in Budget", isOn: $includedInBudget)
+                    } header: {
+                        Text("Budget")
+                    } footer: {
+                        Text("Enable this to use this category as an envelope in your budget.")
+                    }
+                }
             }
             .formStyle(.grouped)
             .navigationTitle("New account")
@@ -143,7 +154,8 @@ struct AddAccountView: View {
             accountNumber: accountNumber.trimmingCharacters(in: .whitespacesAndNewlines),
             currency: selectedCurrency,
             accountClass: selectedClass,
-            accountType: selectedType
+            accountType: selectedType,
+            includedInBudget: selectedClass == .expense ? includedInBudget : false
         )
         
         modelContext.insert(account)

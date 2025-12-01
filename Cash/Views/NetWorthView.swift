@@ -41,7 +41,7 @@ struct NetWorthView: View {
                         .font(.headline)
                         .foregroundStyle(.secondary)
                     PrivacyAmountView(
-                        amount: formatCurrency(netWorth),
+                        amount: CurrencyFormatter.format(netWorth),
                         isPrivate: settings.privacyMode,
                         font: .system(size: 48, weight: .bold),
                         color: netWorth >= 0 ? .primary : .red
@@ -110,13 +110,6 @@ struct NetWorthView: View {
         .navigationTitle("Net Worth")
         .id(settings.refreshID)
     }
-    
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "EUR"
-        return formatter.string(from: amount as NSDecimalNumber) ?? "€\(amount)"
-    }
 }
 
 struct SummaryCard: View {
@@ -137,7 +130,7 @@ struct SummaryCard: View {
             .font(.subheadline)
             
             PrivacyAmountView(
-                amount: formatCurrency(amount),
+                amount: CurrencyFormatter.format(amount),
                 isPrivate: privacyMode,
                 font: .title2,
                 fontWeight: .semibold
@@ -147,13 +140,6 @@ struct SummaryCard: View {
         .padding()
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-    
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "EUR"
-        return formatter.string(from: amount as NSDecimalNumber) ?? "€\(amount)"
     }
 }
 
@@ -172,19 +158,12 @@ struct AccountBalanceRow: View {
             Spacer()
             
             PrivacyAmountView(
-                amount: formatCurrency(account.balance, currency: account.currency),
+                amount: CurrencyFormatter.format(account.balance, currency: account.currency),
                 isPrivate: privacyMode,
                 fontWeight: .medium
             )
         }
         .padding(.vertical, 4)
-    }
-    
-    private func formatCurrency(_ amount: Decimal, currency: String) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = currency
-        return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
 }
 

@@ -170,7 +170,6 @@ struct ForecastView: View {
                                 AxisValueLabel {
                                     if let doubleValue = value.as(Double.self) {
                                         Text(formatCurrencyCompact(Decimal(doubleValue)))
-                                            .privacyBlur(settings.privacyMode)
                                     }
                                 }
                             }
@@ -182,6 +181,7 @@ struct ForecastView: View {
                             }
                         }
                         .frame(height: 200)
+                        .privacyBlur(settings.privacyMode)
                     } else {
                         ContentUnavailableView {
                             Label("No forecast data", systemImage: "chart.line.uptrend.xyaxis")
@@ -376,11 +376,7 @@ struct ForecastView: View {
     }
     
     private func formatCurrencyCompact(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "EUR"
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: amount as NSDecimalNumber) ?? "€\(amount)"
+        CurrencyFormatter.formatCompact(amount)
     }
 }
 
@@ -404,7 +400,7 @@ struct ForecastSummaryCard: View {
             .font(.subheadline)
             
             PrivacyAmountView(
-                amount: formatCurrency(amount),
+                amount: CurrencyFormatter.format(amount),
                 isPrivate: privacyMode,
                 font: .title3,
                 fontWeight: .semibold,
@@ -415,13 +411,6 @@ struct ForecastSummaryCard: View {
         .padding()
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-    
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "EUR"
-        return formatter.string(from: amount as NSDecimalNumber) ?? "€\(amount)"
     }
 }
 
@@ -461,10 +450,7 @@ struct ProjectedTransactionRow: View {
     }
     
     private func formatAmount(_ amount: Decimal, isExpense: Bool) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = "EUR"
-        let formatted = formatter.string(from: amount as NSDecimalNumber) ?? "€\(amount)"
+        let formatted = CurrencyFormatter.format(amount)
         return isExpense ? "-\(formatted)" : "+\(formatted)"
     }
 }

@@ -859,3 +859,589 @@ struct AppSettingsTests {
         #expect(!AppLanguage.italian.iconName.isEmpty)
     }
 }
+
+// MARK: - Report Utilities Tests
+
+struct ReportUtilitiesTests {
+    
+    @Test func percentageCalculatorChange() async throws {
+        // 100 -> 150 = +50%
+        let increase = PercentageCalculator.percentageChange(from: 100, to: 150)
+        #expect(increase == 50)
+        
+        // 100 -> 50 = -50%
+        let decrease = PercentageCalculator.percentageChange(from: 100, to: 50)
+        #expect(decrease == -50)
+        
+        // 0 -> 100 = +100%
+        let fromZero = PercentageCalculator.percentageChange(from: 0, to: 100)
+        #expect(fromZero == 100)
+        
+        // 0 -> -100 = -100%
+        let fromZeroNegative = PercentageCalculator.percentageChange(from: 0, to: -100)
+        #expect(fromZeroNegative == -100)
+        
+        // 0 -> 0 = 0%
+        let zeroToZero = PercentageCalculator.percentageChange(from: 0, to: 0)
+        #expect(zeroToZero == 0)
+    }
+    
+    @Test func percentageCalculatorPartOfWhole() async throws {
+        // 25 of 100 = 25%
+        let quarter = PercentageCalculator.percentage(of: 25, in: 100)
+        #expect(quarter == 25)
+        
+        // 50 of 200 = 25%
+        let ratio = PercentageCalculator.percentage(of: 50, in: 200)
+        #expect(ratio == 25)
+        
+        // x of 0 = 0%
+        let divByZero = PercentageCalculator.percentage(of: 50, in: 0)
+        #expect(divByZero == 0)
+    }
+    
+    @Test func linearRegressionCalculation() async throws {
+        // Simple linear data: y = 2x + 1
+        let points: [(x: Double, y: Double)] = [
+            (0, 1),
+            (1, 3),
+            (2, 5),
+            (3, 7)
+        ]
+        
+        let regression = LinearRegression.calculate(from: points)
+        
+        #expect(regression != nil)
+        #expect(abs(regression!.slope - 2.0) < 0.001)
+        #expect(abs(regression!.intercept - 1.0) < 0.001)
+    }
+    
+    @Test func linearRegressionPrediction() async throws {
+        let points: [(x: Double, y: Double)] = [
+            (0, 10),
+            (10, 20),
+            (20, 30)
+        ]
+        
+        let regression = LinearRegression.calculate(from: points)
+        
+        #expect(regression != nil)
+        
+        let prediction = regression!.predict(x: 30)
+        #expect(abs(prediction - 40.0) < 0.001)
+    }
+    
+    @Test func linearRegressionRequiresMinimumPoints() async throws {
+        let singlePoint: [(x: Double, y: Double)] = [(0, 0)]
+        let regression = LinearRegression.calculate(from: singlePoint)
+        
+        #expect(regression == nil)
+        
+        let empty: [(x: Double, y: Double)] = []
+        let emptyRegression = LinearRegression.calculate(from: empty)
+        
+        #expect(emptyRegression == nil)
+    }
+    
+    @Test func linearRegressionMonthlyChange() async throws {
+        // Slope of 10 per day = 300 per month
+        let points: [(x: Double, y: Double)] = [
+            (0, 0),
+            (1, 10)
+        ]
+        
+        let regression = LinearRegression.calculate(from: points)
+        
+        #expect(regression != nil)
+        #expect(regression!.monthlyChange == 300)
+    }
+    
+    @Test func chartAxisFormatterSmallNumbers() async throws {
+        #expect(ChartAxisFormatter.format(500) == "500")
+        #expect(ChartAxisFormatter.format(0) == "0")
+        #expect(ChartAxisFormatter.format(-500) == "-500")
+    }
+    
+    @Test func chartAxisFormatterThousands() async throws {
+        let result = ChartAxisFormatter.format(5000)
+        #expect(result == "5K")
+        
+        let negative = ChartAxisFormatter.format(-5000)
+        #expect(negative == "-5K")
+    }
+    
+    @Test func chartAxisFormatterMillions() async throws {
+        let result = ChartAxisFormatter.format(5000000)
+        #expect(result == "5.0M")
+        
+        let fractional = ChartAxisFormatter.format(1500000)
+        #expect(fractional == "1.5M")
+    }
+    
+    @Test func dateRangeHelperPastMonths() async throws {
+        let range = DateRangeHelper.pastMonths(3)
+        
+        #expect(range.start < range.end)
+        
+        let calendar = Calendar.current
+        let monthsDiff = calendar.dateComponents([.month], from: range.start, to: range.end).month
+        #expect(monthsDiff == 3)
+    }
+    
+    @Test func dateRangeHelperFutureMonths() async throws {
+        let range = DateRangeHelper.futureMonths(6)
+        
+        #expect(range.start < range.end)
+        
+        let calendar = Calendar.current
+        let monthsDiff = calendar.dateComponents([.month], from: range.start, to: range.end).month
+        #expect(monthsDiff == 6)
+    }
+    
+    @Test func dateRangeHelperIsDateInRange() async throws {
+        let now = Date()
+        let range = DateRangeHelper.pastMonths(1)
+        
+        #expect(DateRangeHelper.isDate(now, inRange: range) == true)
+        
+        let calendar = Calendar.current
+        let farPast = calendar.date(byAdding: .year, value: -5, to: now)!
+        #expect(DateRangeHelper.isDate(farPast, inRange: range) == false)
+    }
+}
+
+// MARK: - Report Type Tests
+
+struct ReportTypeTests {
+    
+    @Test func allReportTypesExist() async throws {
+        #expect(ReportType.allCases.count == 5)
+        #expect(ReportType.allCases.contains(.expensesByCategory))
+        #expect(ReportType.allCases.contains(.fixedIncomeExpenseRatio))
+        #expect(ReportType.allCases.contains(.yearOverYear))
+        #expect(ReportType.allCases.contains(.balanceHistory))
+        #expect(ReportType.allCases.contains(.longTermProjection))
+    }
+    
+    @Test func reportTypesHaveLocalizedNames() async throws {
+        for reportType in ReportType.allCases {
+            #expect(!reportType.localizedName.isEmpty)
+        }
+    }
+    
+    @Test func reportTypesHaveIcons() async throws {
+        for reportType in ReportType.allCases {
+            #expect(!reportType.iconName.isEmpty)
+        }
+    }
+}
+
+// MARK: - Report Period Tests
+
+struct ReportPeriodTests {
+    
+    @Test func allReportPeriodsExist() async throws {
+        #expect(ReportPeriod.allCases.count == 4)
+        #expect(ReportPeriod.allCases.contains(.month))
+        #expect(ReportPeriod.allCases.contains(.threeMonths))
+        #expect(ReportPeriod.allCases.contains(.sixMonths))
+        #expect(ReportPeriod.allCases.contains(.year))
+    }
+    
+    @Test func reportPeriodMonths() async throws {
+        #expect(ReportPeriod.month.months == 1)
+        #expect(ReportPeriod.threeMonths.months == 3)
+        #expect(ReportPeriod.sixMonths.months == 6)
+        #expect(ReportPeriod.year.months == 12)
+    }
+    
+    @Test func reportPeriodStartDatesInPast() async throws {
+        let now = Date()
+        
+        for period in ReportPeriod.allCases {
+            #expect(period.startDate < now)
+        }
+    }
+    
+    @Test func reportPeriodLocalizedNames() async throws {
+        for period in ReportPeriod.allCases {
+            #expect(!period.localizedName.isEmpty)
+        }
+    }
+}
+
+// MARK: - Stability Level Tests
+
+struct StabilityLevelTests {
+    
+    @Test func stabilityLevelColors() async throws {
+        #expect(StabilityLevel.excellent.color == .green)
+        #expect(StabilityLevel.good.color == .blue)
+        #expect(StabilityLevel.adequate.color == .orange)
+        #expect(StabilityLevel.atRisk.color == .red)
+        #expect(StabilityLevel.noData.color == .gray)
+    }
+    
+    @Test func stabilityLevelIcons() async throws {
+        for level in [StabilityLevel.excellent, .good, .adequate, .atRisk, .noData] {
+            #expect(!level.iconName.isEmpty)
+        }
+    }
+    
+    @Test func stabilityLevelLocalizedNames() async throws {
+        for level in [StabilityLevel.excellent, .good, .adequate, .atRisk, .noData] {
+            #expect(!level.localizedName.isEmpty)
+        }
+    }
+}
+
+// MARK: - History Period Tests
+
+struct HistoryPeriodTests {
+    
+    @Test func allHistoryPeriodsExist() async throws {
+        #expect(HistoryPeriod.allCases.count == 4)
+        #expect(HistoryPeriod.allCases.contains(.threeMonths))
+        #expect(HistoryPeriod.allCases.contains(.sixMonths))
+        #expect(HistoryPeriod.allCases.contains(.year))
+        #expect(HistoryPeriod.allCases.contains(.allTime))
+    }
+    
+    @Test func historyPeriodStartDates() async throws {
+        let now = Date()
+        
+        // All periods except allTime should have a start date in the past
+        #expect(HistoryPeriod.threeMonths.startDate != nil)
+        #expect(HistoryPeriod.threeMonths.startDate! < now)
+        
+        #expect(HistoryPeriod.sixMonths.startDate != nil)
+        #expect(HistoryPeriod.sixMonths.startDate! < now)
+        
+        #expect(HistoryPeriod.year.startDate != nil)
+        #expect(HistoryPeriod.year.startDate! < now)
+        
+        // allTime should have nil start date
+        #expect(HistoryPeriod.allTime.startDate == nil)
+    }
+    
+    @Test func historyPeriodLocalizedNames() async throws {
+        for period in HistoryPeriod.allCases {
+            #expect(!period.localizedName.isEmpty)
+        }
+    }
+}
+
+// MARK: - Projection Period Tests
+
+struct ProjectionPeriodTests {
+    
+    @Test func allProjectionPeriodsExist() async throws {
+        #expect(ProjectionPeriod.allCases.count == 4)
+        #expect(ProjectionPeriod.allCases.contains(.sixMonths))
+        #expect(ProjectionPeriod.allCases.contains(.year))
+        #expect(ProjectionPeriod.allCases.contains(.twoYears))
+        #expect(ProjectionPeriod.allCases.contains(.fiveYears))
+    }
+    
+    @Test func projectionPeriodMonths() async throws {
+        #expect(ProjectionPeriod.sixMonths.months == 6)
+        #expect(ProjectionPeriod.year.months == 12)
+        #expect(ProjectionPeriod.twoYears.months == 24)
+        #expect(ProjectionPeriod.fiveYears.months == 60)
+    }
+    
+    @Test func projectionPeriodEndDatesInFuture() async throws {
+        let now = Date()
+        
+        for period in ProjectionPeriod.allCases {
+            #expect(period.endDate > now)
+        }
+    }
+    
+    @Test func projectionPeriodLocalizedNames() async throws {
+        for period in ProjectionPeriod.allCases {
+            #expect(!period.localizedName.isEmpty)
+        }
+    }
+}
+
+// MARK: - Trend Base Period Tests
+
+struct TrendBasePeriodTests {
+    
+    @Test func allTrendBasePeriodsExist() async throws {
+        #expect(TrendBasePeriod.allCases.count == 3)
+        #expect(TrendBasePeriod.allCases.contains(.threeMonths))
+        #expect(TrendBasePeriod.allCases.contains(.sixMonths))
+        #expect(TrendBasePeriod.allCases.contains(.year))
+    }
+    
+    @Test func trendBasePeriodMonths() async throws {
+        #expect(TrendBasePeriod.threeMonths.months == 3)
+        #expect(TrendBasePeriod.sixMonths.months == 6)
+        #expect(TrendBasePeriod.year.months == 12)
+    }
+    
+    @Test func trendBasePeriodStartDatesInPast() async throws {
+        let now = Date()
+        
+        for period in TrendBasePeriod.allCases {
+            #expect(period.startDate < now)
+        }
+    }
+    
+    @Test func trendBasePeriodLocalizedNames() async throws {
+        for period in TrendBasePeriod.allCases {
+            #expect(!period.localizedName.isEmpty)
+        }
+    }
+}
+
+// MARK: - Budget Tests
+
+struct BudgetTests {
+    
+    @Test func budgetCreation() async throws {
+        let budget = Budget(
+            startDate: Date(),
+            periodType: .monthly,
+            rolloverEnabled: false
+        )
+        
+        #expect(budget.periodType == .monthly)
+        #expect(budget.rolloverEnabled == false)
+        #expect(budget.isActive == true)
+    }
+    
+    @Test func budgetPeriodTypeLocalizedNames() async throws {
+        for periodType in BudgetPeriodType.allCases {
+            #expect(!periodType.localizedName.isEmpty)
+            #expect(!periodType.iconName.isEmpty)
+        }
+    }
+    
+    @Test func budgetEndDateCalculationMonthly() async throws {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = 2025
+        components.month = 1
+        components.day = 1
+        let startDate = calendar.date(from: components)!
+        
+        let endDate = Budget.calculateEndDate(from: startDate, periodType: .monthly)
+        
+        let endComponents = calendar.dateComponents([.year, .month, .day], from: endDate)
+        #expect(endComponents.year == 2025)
+        #expect(endComponents.month == 1)
+        #expect(endComponents.day == 31)
+    }
+    
+    @Test func budgetEndDateCalculationWeekly() async throws {
+        let calendar = Calendar.current
+        var components = DateComponents()
+        components.year = 2025
+        components.month = 1
+        components.day = 1
+        let startDate = calendar.date(from: components)!
+        
+        let endDate = Budget.calculateEndDate(from: startDate, periodType: .weekly)
+        
+        let daysDiff = calendar.dateComponents([.day], from: startDate, to: endDate).day
+        #expect(daysDiff == 6)
+    }
+    
+    @Test func budgetTotalsWithNoEnvelopes() async throws {
+        let budget = Budget(
+            startDate: Date(),
+            periodType: .monthly
+        )
+        
+        #expect(budget.totalBudgeted == 0)
+        #expect(budget.totalSpent == 0)
+        #expect(budget.totalAvailable == 0)
+        #expect(budget.percentageUsed == 0)
+        #expect(budget.isOverBudget == false)
+    }
+    
+    @Test func budgetDisplayName() async throws {
+        let budget = Budget(
+            name: "Test Budget",
+            startDate: Date(),
+            periodType: .monthly
+        )
+        
+        #expect(budget.displayName == "Test Budget")
+        
+        let unnamedBudget = Budget(
+            startDate: Date(),
+            periodType: .monthly
+        )
+        
+        #expect(!unnamedBudget.displayName.isEmpty)
+    }
+}
+
+// MARK: - Envelope Tests
+
+struct EnvelopeTests {
+    
+    @Test func envelopeCreation() async throws {
+        let envelope = Envelope(
+            name: "Groceries",
+            budgetedAmount: 300
+        )
+        
+        #expect(envelope.name == "Groceries")
+        #expect(envelope.budgetedAmount == 300)
+        #expect(envelope.rolloverAmount == 0)
+    }
+    
+    @Test func envelopeEffectiveBudget() async throws {
+        let envelope = Envelope(
+            budgetedAmount: 300
+        )
+        envelope.rolloverAmount = 50
+        
+        #expect(envelope.effectiveBudget == 350)
+    }
+    
+    @Test func envelopeDisplayName() async throws {
+        let envelope = Envelope(
+            name: "Custom Name",
+            budgetedAmount: 100
+        )
+        
+        #expect(envelope.displayName == "Custom Name")
+        
+        let unnamedEnvelope = Envelope(
+            budgetedAmount: 100
+        )
+        
+        #expect(!unnamedEnvelope.displayName.isEmpty)
+    }
+    
+    @Test func envelopeStatusColors() async throws {
+        #expect(EnvelopeStatus.healthy.color == "green")
+        #expect(EnvelopeStatus.warning.color == "orange")
+        #expect(EnvelopeStatus.exceeded.color == "red")
+    }
+    
+    @Test func envelopeIconName() async throws {
+        let envelope = Envelope(
+            budgetedAmount: 100
+        )
+        
+        #expect(envelope.iconName == "envelope.fill")
+    }
+}
+
+// MARK: - Envelope Transfer Tests
+
+struct EnvelopeTransferTests {
+    
+    @Test func transferValidation() async throws {
+        let from = Envelope(budgetedAmount: 100)
+        let to = Envelope(budgetedAmount: 50)
+        
+        // Valid transfer
+        let validTransfer = EnvelopeTransfer(fromEnvelope: from, toEnvelope: to, amount: 50)
+        // Note: isValid depends on availableAmount which requires budget relationship
+        // So we just test that the struct is created correctly
+        #expect(validTransfer.amount == 50)
+        
+        // Invalid transfer (zero amount)
+        let zeroTransfer = EnvelopeTransfer(fromEnvelope: from, toEnvelope: to, amount: 0)
+        #expect(zeroTransfer.isValid == false)
+        
+        // Invalid transfer (negative amount)
+        let negativeTransfer = EnvelopeTransfer(fromEnvelope: from, toEnvelope: to, amount: -10)
+        #expect(negativeTransfer.isValid == false)
+    }
+    
+    @Test func transferExecution() async throws {
+        let from = Envelope(budgetedAmount: 100)
+        let to = Envelope(budgetedAmount: 50)
+        
+        let transfer = EnvelopeTransfer(fromEnvelope: from, toEnvelope: to, amount: 30)
+        transfer.execute()
+        
+        #expect(from.budgetedAmount == 70)
+        #expect(to.budgetedAmount == 80)
+    }
+}
+
+// MARK: - Envelope Status Tests
+
+struct EnvelopeStatusTests {
+    
+    @Test func envelopeStatusThresholds() async throws {
+        // Healthy: percentage < 80%
+        #expect(EnvelopeStatus.healthy.color == "green")
+        
+        // Warning: 80% <= percentage < 100%
+        #expect(EnvelopeStatus.warning.color == "orange")
+        
+        // Exceeded: percentage >= 100%
+        #expect(EnvelopeStatus.exceeded.color == "red")
+    }
+    
+    @Test func allEnvelopeStatusesHaveColors() async throws {
+        for status in [EnvelopeStatus.healthy, .warning, .exceeded] {
+            #expect(!status.color.isEmpty)
+        }
+    }
+}
+
+// MARK: - Budget Period Tests
+
+struct BudgetPeriodTests {
+    
+    @Test func weeklyBudgetPeriod() async throws {
+        let periodType = BudgetPeriodType.weekly
+        #expect(periodType.rawValue == "weekly")
+        #expect(!periodType.localizedName.isEmpty)
+    }
+    
+    @Test func monthlyBudgetPeriod() async throws {
+        let periodType = BudgetPeriodType.monthly
+        #expect(periodType.rawValue == "monthly")
+        #expect(!periodType.localizedName.isEmpty)
+    }
+    
+    @Test func budgetPeriodTypeIcons() async throws {
+        for periodType in BudgetPeriodType.allCases {
+            #expect(!periodType.iconName.isEmpty)
+        }
+    }
+}
+
+// MARK: - Budget Current Period Tests
+
+struct BudgetCurrentPeriodTests {
+    
+    @Test func budgetIsCurrentPeriod() async throws {
+        let calendar = Calendar.current
+        let today = Date()
+        let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: today))!
+        
+        let budget = Budget(
+            startDate: startOfMonth,
+            periodType: .monthly
+        )
+        
+        #expect(budget.isCurrentPeriod == true)
+    }
+    
+    @Test func budgetIsNotCurrentPeriod() async throws {
+        let calendar = Calendar.current
+        let lastYear = calendar.date(byAdding: .year, value: -1, to: Date())!
+        let startOfLastYear = calendar.date(from: calendar.dateComponents([.year, .month], from: lastYear))!
+        
+        let budget = Budget(
+            startDate: startOfLastYear,
+            periodType: .monthly
+        )
+        
+        #expect(budget.isCurrentPeriod == false)
+    }
+}

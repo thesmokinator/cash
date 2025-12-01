@@ -48,7 +48,7 @@ struct AccountDetailView: View {
                     
                     VStack(alignment: .trailing, spacing: 2) {
                         PrivacyAmountView(
-                            amount: formatBalance(account.balance, currency: account.currency),
+                            amount: CurrencyFormatter.format(account.balance, currency: account.currency),
                             isPrivate: settings.privacyMode,
                             font: .title,
                             fontWeight: .semibold,
@@ -127,13 +127,6 @@ struct AccountDetailView: View {
         case .equity:
             return .primary
         }
-    }
-    
-    private func formatBalance(_ balance: Decimal, currency: String) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.currencyCode = currency
-        return formatter.string(from: balance as NSDecimalNumber) ?? "\(CurrencyList.symbol(forCode: currency))\(balance)"
     }
 }
 
