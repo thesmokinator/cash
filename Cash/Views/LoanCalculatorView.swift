@@ -177,6 +177,15 @@ struct LoanCalculatorView: View {
                             Label("Rate Scenarios", systemImage: "chart.line.uptrend.xyaxis")
                         }
                     }
+                    
+                    Section("Budget Impact Analysis") {
+                        LoanAffordabilityView(
+                            proposedPayment: calculatedPayment,
+                            currency: currency
+                        )
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
+                    }
                 }
             }
             .formStyle(.grouped)

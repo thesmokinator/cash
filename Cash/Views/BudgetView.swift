@@ -34,13 +34,7 @@ struct BudgetView: View {
               let category = envelope.category else {
             return "EUR"
         }
-        // Check if category is still valid by accessing a simple property
-        do {
-            let _ = category.id
-            return category.currency
-        } catch {
-            return "EUR"
-        }
+        return category.currency
     }
     
     private func filteredEnvelopes(from envelopes: [Envelope]) -> [Envelope] {

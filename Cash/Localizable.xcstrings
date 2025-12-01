@@ -198,6 +198,9 @@
     "•" : {
 
     },
+    "••••" : {
+
+    },
     "© 2025 Michele Broggi" : {
 
     },
@@ -710,6 +713,12 @@
     "Available: %@" : {
 
     },
+    "Average Monthly Expenses" : {
+
+    },
+    "Average Monthly Income" : {
+
+    },
     "Avg. last 3 months:" : {
       "localizations" : {
         "it" : {
@@ -822,6 +831,12 @@
     "Base Total Interest" : {
 
     },
+    "Based on %lld months of data" : {
+
+    },
+    "Based on 6 months of data" : {
+
+    },
     "Bimonthly" : {
 
     },
@@ -834,6 +849,9 @@
           }
         }
       }
+    },
+    "Budget Impact Analysis" : {
+
     },
     "Budget Period" : {
       "localizations" : {
@@ -1026,6 +1044,9 @@
         }
       }
     },
+    "Comfortable" : {
+
+    },
     "Complete" : {
       "localizations" : {
         "it" : {
@@ -1085,6 +1106,9 @@
           }
         }
       }
+    },
+    "Could not calculate budget impact" : {
+
     },
     "Cr" : {
       "localizations" : {
@@ -1218,6 +1242,9 @@
     "Current Loan Status" : {
 
     },
+    "Current Monthly Surplus" : {
+
+    },
     "Current Payment" : {
 
     },
@@ -1318,6 +1345,9 @@
       }
     },
     "Debit account (receives value)" : {
+
+    },
+    "Debt-to-Income Ratio" : {
 
     },
     "Default accounts" : {
@@ -2080,6 +2110,9 @@
     "Hide amounts" : {
 
     },
+    "High risk of financial difficulty. Strongly reconsider." : {
+
+    },
     "Highest first" : {
       "localizations" : {
         "it" : {
@@ -2111,6 +2144,9 @@
       }
     },
     "iCloud not available in this build" : {
+
+    },
+    "Ideal" : {
 
     },
     "Import %lld Transactions" : {
@@ -2565,6 +2601,15 @@
         }
       }
     },
+    "Limit" : {
+
+    },
+    "Limited data (%lld months) - results may vary" : {
+
+    },
+    "Limited historical data. Add more transactions for a more accurate analysis." : {
+
+    },
     "Loan" : {
       "localizations" : {
         "it" : {
@@ -2626,6 +2671,9 @@
           }
         }
       }
+    },
+    "Manageable" : {
+
     },
     "Maximum" : {
       "localizations" : {
@@ -2806,6 +2854,9 @@
       }
     },
     "New Calculation" : {
+
+    },
+    "New Loan Payment" : {
 
     },
     "New Rate" : {
@@ -3080,6 +3131,9 @@
         }
       }
     },
+    "No historical data available" : {
+
+    },
     "No loans" : {
 
     },
@@ -3276,6 +3330,9 @@
           }
         }
       }
+    },
+    "Other Scheduled Expenses" : {
+
     },
     "Parse error: %@" : {
 
@@ -3842,6 +3899,12 @@
         }
       }
     },
+    "Risk" : {
+
+    },
+    "Risky" : {
+
+    },
     "Salary" : {
       "localizations" : {
         "it" : {
@@ -4160,6 +4223,9 @@
         }
       }
     },
+    "Surplus After Loan" : {
+
+    },
     "System" : {
       "localizations" : {
         "it" : {
@@ -4174,6 +4240,15 @@
 
     },
     "The app needs to restart to apply language changes." : {
+
+    },
+    "The payment fits well within your budget with room to spare." : {
+
+    },
+    "The payment is affordable but leaves limited savings capacity." : {
+
+    },
+    "The payment may strain your budget. Consider a smaller loan." : {
 
     },
     "Theme" : {
@@ -4215,6 +4290,9 @@
           }
         }
       }
+    },
+    "This payment exceeds your available surplus. Not recommended." : {
+
     },
     "This transaction has been reconciled. Modifying it may cause discrepancies with your bank statement." : {
       "localizations" : {
@@ -4298,6 +4376,9 @@
           }
         }
       }
+    },
+    "Tight" : {
+
     },
     "Time Saved" : {
 
@@ -4486,6 +4567,12 @@
           }
         }
       }
+    },
+    "Unable to Analyze" : {
+
+    },
+    "Unaffordable" : {
+
     },
     "Understanding the Ratio" : {
       "localizations" : {
