@@ -148,10 +148,13 @@ struct ExpenseByCategoryReportView: View {
                     .scaleEffect(1.5)
                 Spacer()
             } else if categoryExpenses.isEmpty {
-                ContentUnavailableView {
-                    Label("No expenses", systemImage: "chart.bar.xaxis")
-                } description: {
-                    Text("No expenses recorded in this period")
+                VStack {
+                    ContentUnavailableView {
+                        Label("No expenses", systemImage: "chart.bar.xaxis")
+                    } description: {
+                        Text("No expenses recorded in this period")
+                    }
+                    Spacer()
                 }
             } else {
                 // Category list

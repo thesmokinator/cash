@@ -124,6 +124,38 @@ struct TransactionListView: View {
                                                 Label("Edit", systemImage: "pencil")
                                             }
                                             
+                                            // Reconciliation status menu
+                                            if !transaction.isRecurring {
+                                                Divider()
+                                                
+                                                Menu {
+                                                    Button {
+                                                        transaction.reconciliationStatus = .notReconciled
+                                                        transaction.reconciledDate = nil
+                                                    } label: {
+                                                        Label("Not reconciled", systemImage: ReconciliationStatus.notReconciled.iconName)
+                                                    }
+                                                    
+                                                    Button {
+                                                        transaction.reconciliationStatus = .cleared
+                                                        transaction.reconciledDate = nil
+                                                    } label: {
+                                                        Label("Cleared", systemImage: ReconciliationStatus.cleared.iconName)
+                                                    }
+                                                    
+                                                    Button {
+                                                        transaction.reconciliationStatus = .reconciled
+                                                        transaction.reconciledDate = Date()
+                                                    } label: {
+                                                        Label("Reconciled", systemImage: ReconciliationStatus.reconciled.iconName)
+                                                    }
+                                                } label: {
+                                                    Label("Reconciliation status", systemImage: "checkmark.shield")
+                                                }
+                                            }
+                                            
+                                            Divider()
+                                            
                                             Button(role: .destructive) {
                                                 transactionToDelete = transaction
                                             } label: {
@@ -305,6 +337,11 @@ struct TransactionRowView: View {
                     
                     if transaction.isRecurring {
                         RecurringIcon()
+                    }
+                    
+                    // Reconciliation status icon
+                    if !transaction.isRecurring {
+                        ReconciliationStatusIcon(status: transaction.reconciliationStatus)
                     }
                 }
                 

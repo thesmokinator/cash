@@ -34,6 +34,7 @@ struct EditTransactionView: View {
     
     @State private var showingValidationError = false
     @State private var validationMessage: LocalizedStringKey = ""
+    @State private var showingReconciledWarning = false
     
     private var activeAccounts: [Account] {
         accounts.filter { $0.isActive }
@@ -58,6 +59,10 @@ struct EditTransactionView: View {
         (transaction.attachments ?? []).filter { !attachmentsToDelete.contains($0.id) }
     }
     
+    private var isReconciled: Bool {
+        transaction.reconciliationStatus == .reconciled
+    }
+    
     init(transaction: Transaction) {
         self.transaction = transaction
         _date = State(initialValue: transaction.date)
@@ -80,6 +85,24 @@ struct EditTransactionView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // Warning banner for reconciled transactions
+                if isReconciled {
+                    Section {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.orange)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Reconciled transaction")
+                                    .font(.headline)
+                                Text("This transaction has been reconciled. Modifying it may cause discrepancies with your bank statement.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+                
                 Section("Recurrence") {
                     RecurrenceConfigView(
                         isRecurring: $isRecurring,

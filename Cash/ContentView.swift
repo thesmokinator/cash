@@ -211,6 +211,11 @@ struct WelcomeSheet: View {
         }
         .padding(40)
         .frame(width: 450, height: 560)
+        .overlay {
+            if appState.isLoading {
+                LoadingOverlayView(message: appState.loadingMessage)
+            }
+        }
         .fileImporter(
             isPresented: $showingImportPicker,
             allowedContentTypes: [.data],
@@ -253,30 +258,23 @@ struct WelcomeSheet: View {
             appState.isLoading = true
             appState.loadingMessage = String(localized: "Importing data...")
             
-            Task.detached(priority: .userInitiated) {
+            Task {
+                // Small delay to allow UI to show the spinner
+                try? await Task.sleep(nanoseconds: 100_000_000)
+                
                 do {
                     let data = try Data(contentsOf: url)
                     url.stopAccessingSecurityScopedResource()
                     
-                    await MainActor.run {
-                        do {
-                            _ = try DataExporter.importCashBackup(from: data, into: modelContext)
-                            AppConfiguration.markSetupCompleted(in: modelContext)
-                            appState.isLoading = false
-                            appState.showWelcomeSheet = false
-                        } catch {
-                            appState.isLoading = false
-                            errorMessage = error.localizedDescription
-                            showingError = true
-                        }
-                    }
+                    _ = try DataExporter.importCashBackup(from: data, into: modelContext)
+                    AppConfiguration.markSetupCompleted(in: modelContext)
+                    appState.isLoading = false
+                    appState.showWelcomeSheet = false
                 } catch {
                     url.stopAccessingSecurityScopedResource()
-                    await MainActor.run {
-                        appState.isLoading = false
-                        errorMessage = error.localizedDescription
-                        showingError = true
-                    }
+                    appState.isLoading = false
+                    errorMessage = error.localizedDescription
+                    showingError = true
                 }
             }
             

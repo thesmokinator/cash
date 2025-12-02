@@ -160,7 +160,24 @@ struct AddAccountView: View {
         
         modelContext.insert(account)
         
-        if createOpeningBalance && balance > 0, let equityAccount = openingBalanceEquityAccount {
+        if createOpeningBalance && balance > 0 {
+            // Find or create the Opening Balance Equity account
+            let equityAccount: Account
+            if let existingEquity = openingBalanceEquityAccount {
+                equityAccount = existingEquity
+            } else {
+                // Create the Opening Balance Equity account if it doesn't exist
+                equityAccount = Account(
+                    name: AccountType.openingBalance.localizedName,
+                    accountNumber: "",
+                    currency: selectedCurrency,
+                    accountClass: .equity,
+                    accountType: .openingBalance,
+                    isSystem: true
+                )
+                modelContext.insert(equityAccount)
+            }
+            
             _ = TransactionBuilder.createOpeningBalance(
                 account: account,
                 amount: balance,

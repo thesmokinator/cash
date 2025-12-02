@@ -184,10 +184,13 @@ struct LongTermProjectionReportView: View {
                     .scaleEffect(1.5)
                 Spacer()
             } else if historicalData.count < 2 {
-                ContentUnavailableView {
-                    Label("Not enough data", systemImage: "chart.line.uptrend.xyaxis")
-                } description: {
-                    Text("Add more transactions to generate projections")
+                VStack {
+                    ContentUnavailableView {
+                        Label("Not enough data", systemImage: "chart.line.uptrend.xyaxis")
+                    } description: {
+                        Text("Add more transactions to generate projections")
+                    }
+                    Spacer()
                 }
             } else {
                 ScrollView {

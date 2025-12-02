@@ -8,6 +8,50 @@
 import Foundation
 import SwiftData
 
+// MARK: - Reconciliation Status
+
+/// Status of transaction reconciliation with bank statements
+enum ReconciliationStatus: String, Codable, CaseIterable, Identifiable {
+    case notReconciled = "n"  // Not yet verified
+    case cleared = "c"        // Verified/cleared but not formally reconciled
+    case reconciled = "r"     // Formally reconciled with bank statement
+    
+    var id: String { rawValue }
+    
+    var localizedName: String {
+        switch self {
+        case .notReconciled:
+            return String(localized: "Not reconciled")
+        case .cleared:
+            return String(localized: "Cleared")
+        case .reconciled:
+            return String(localized: "Reconciled")
+        }
+    }
+    
+    var iconName: String {
+        switch self {
+        case .notReconciled:
+            return "circle"
+        case .cleared:
+            return "checkmark.circle"
+        case .reconciled:
+            return "lock.circle.fill"
+        }
+    }
+    
+    var shortName: String {
+        switch self {
+        case .notReconciled:
+            return "n"
+        case .cleared:
+            return "c"
+        case .reconciled:
+            return "R"
+        }
+    }
+}
+
 // MARK: - Entry Model
 
 /// A single debit or credit entry within a transaction.
@@ -51,6 +95,9 @@ final class Transaction {
     var reference: String
     var createdAt: Date
     var isRecurring: Bool // Recurring transactions are templates not counted in balances
+    var reconciliationStatusRawValue: String?
+    var reconciledDate: Date?
+    var linkedLoanId: UUID?  // Link to Loan for loan payment transactions
     
     @Relationship(deleteRule: .cascade, inverse: \Entry.transaction)
     var entries: [Entry]? = []
@@ -60,6 +107,11 @@ final class Transaction {
     
     @Relationship(deleteRule: .cascade, inverse: \RecurrenceRule.transaction)
     var recurrenceRule: RecurrenceRule?
+    
+    var reconciliationStatus: ReconciliationStatus {
+        get { ReconciliationStatus(rawValue: reconciliationStatusRawValue ?? "n") ?? .notReconciled }
+        set { reconciliationStatusRawValue = newValue.rawValue }
+    }
     
     /// Total amount of debit entries
     var totalDebits: Decimal {
@@ -117,6 +169,8 @@ final class Transaction {
         self.reference = reference
         self.createdAt = Date()
         self.isRecurring = isRecurring
+        self.reconciliationStatusRawValue = nil
+        self.reconciledDate = nil
     }
     
     /// Add a balanced pair of entries (debit and credit)

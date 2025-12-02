@@ -1445,3 +1445,690 @@ struct BudgetCurrentPeriodTests {
         #expect(budget.isCurrentPeriod == false)
     }
 }
+
+// MARK: - Loan Calculator Tests
+
+struct LoanCalculatorTests {
+    
+    @Test func frenchAmortizationPaymentCalculation() async throws {
+        // Test French (constant payment) amortization
+        let payment = LoanCalculator.calculatePayment(
+            principal: 100000,
+            annualRate: 5,
+            totalPayments: 120,
+            frequency: .monthly,
+            amortizationType: .french
+        )
+        
+        // Monthly payment should be around 1060.66 for 100k at 5% over 10 years
+        #expect(payment > 1050)
+        #expect(payment < 1075)
+    }
+    
+    @Test func italianAmortizationPaymentCalculation() async throws {
+        // Test Italian (constant principal) amortization
+        let payment = LoanCalculator.calculatePayment(
+            principal: 100000,
+            annualRate: 5,
+            totalPayments: 120,
+            frequency: .monthly,
+            amortizationType: .italian
+        )
+        
+        // First payment should be higher than French due to higher initial interest
+        #expect(payment > 1200)
+    }
+    
+    @Test func americanAmortizationPaymentCalculation() async throws {
+        // Test American (bullet) - interest only payments
+        let payment = LoanCalculator.calculatePayment(
+            principal: 100000,
+            annualRate: 6,
+            totalPayments: 120,
+            frequency: .monthly,
+            amortizationType: .american
+        )
+        
+        // Interest only: 100000 * 0.06 / 12 = 500
+        #expect(payment == 500)
+    }
+    
+    @Test func zeroInterestLoan() async throws {
+        let payment = LoanCalculator.calculatePayment(
+            principal: 12000,
+            annualRate: 0,
+            totalPayments: 12,
+            frequency: .monthly,
+            amortizationType: .french
+        )
+        
+        // 12000 / 12 = 1000
+        #expect(payment == 1000)
+    }
+    
+    @Test func amortizationScheduleGeneration() async throws {
+        let schedule = LoanCalculator.generateAmortizationSchedule(
+            principal: 10000,
+            annualRate: 5,
+            totalPayments: 12,
+            frequency: .monthly,
+            amortizationType: .french,
+            startDate: Date()
+        )
+        
+        #expect(schedule.count == 12)
+        
+        // First payment should have higher interest than principal
+        let firstEntry = schedule.first!
+        #expect(firstEntry.paymentNumber == 1)
+        #expect(firstEntry.interest > 0)
+        #expect(firstEntry.principal > 0)
+        
+        // Last entry should have zero remaining balance
+        let lastEntry = schedule.last!
+        #expect(lastEntry.remainingBalance == 0)
+    }
+    
+    @Test func italianScheduleDecreasingPayments() async throws {
+        let schedule = LoanCalculator.generateAmortizationSchedule(
+            principal: 12000,
+            annualRate: 6,
+            totalPayments: 12,
+            frequency: .monthly,
+            amortizationType: .italian,
+            startDate: Date()
+        )
+        
+        #expect(schedule.count == 12)
+        
+        // Italian: payments should decrease over time
+        let firstPayment = schedule.first!.payment
+        let lastPayment = schedule.last!.payment
+        #expect(firstPayment > lastPayment)
+        
+        // Principal should be constant (1000 per month)
+        let firstPrincipal = schedule.first!.principal
+        #expect(firstPrincipal == 1000)
+    }
+    
+    @Test func americanScheduleBulletPayment() async throws {
+        let schedule = LoanCalculator.generateAmortizationSchedule(
+            principal: 10000,
+            annualRate: 5,
+            totalPayments: 12,
+            frequency: .monthly,
+            amortizationType: .american,
+            startDate: Date()
+        )
+        
+        #expect(schedule.count == 12)
+        
+        // All payments except last should be interest-only
+        for i in 0..<11 {
+            #expect(schedule[i].principal == 0)
+            #expect(schedule[i].remainingBalance == 10000)
+        }
+        
+        // Last payment includes full principal
+        let lastEntry = schedule.last!
+        #expect(lastEntry.principal == 10000)
+        #expect(lastEntry.remainingBalance == 0)
+    }
+    
+    @Test func remainingBalanceCalculation() async throws {
+        let remaining = LoanCalculator.remainingBalance(
+            principal: 100000,
+            annualRate: 5,
+            totalPayments: 120,
+            paymentsMade: 60,
+            frequency: .monthly,
+            amortizationType: .french
+        )
+        
+        // After 60 payments, balance should be roughly half but slightly more due to interest
+        #expect(remaining > 45000)
+        #expect(remaining < 60000)
+    }
+    
+    @Test func remainingBalanceAtEnd() async throws {
+        let remaining = LoanCalculator.remainingBalance(
+            principal: 100000,
+            annualRate: 5,
+            totalPayments: 120,
+            paymentsMade: 120,
+            frequency: .monthly,
+            amortizationType: .french
+        )
+        
+        #expect(remaining == 0)
+    }
+    
+    @Test func totalInterestCalculation() async throws {
+        let totalInterest = LoanCalculator.calculateTotalInterest(
+            principal: 100000,
+            annualRate: 5,
+            totalPayments: 120,
+            frequency: .monthly,
+            amortizationType: .french
+        )
+        
+        // Total interest should be significant over 10 years
+        #expect(totalInterest > 25000)
+        #expect(totalInterest < 35000)
+    }
+    
+    @Test func earlyRepaymentSavings() async throws {
+        let result = LoanCalculator.calculateEarlyRepayment(
+            remainingBalance: 50000,
+            remainingPayments: 60,
+            annualRate: 5,
+            frequency: .monthly,
+            earlyRepaymentAmount: 10000,
+            penaltyPercentage: 1,
+            amortizationType: .french
+        )
+        
+        #expect(result.savedInterest > 0)
+        #expect(result.penaltyAmount == 100) // 1% of 10000
+        #expect(result.newRemainingPayments < 60)
+    }
+    
+    @Test func rateScenarioSimulation() async throws {
+        let scenarios = LoanCalculator.simulateRateScenarios(
+            principal: 100000,
+            baseRate: 5,
+            totalPayments: 120,
+            frequency: .monthly,
+            amortizationType: .french
+        )
+        
+        #expect(scenarios.count == 7) // Default variations
+        
+        // Higher rates should have higher payments
+        let lowerRateScenario = scenarios.first { $0.rateChange == -1 }!
+        let higherRateScenario = scenarios.first { $0.rateChange == 1 }!
+        
+        #expect(higherRateScenario.payment > lowerRateScenario.payment)
+        #expect(higherRateScenario.totalInterest > lowerRateScenario.totalInterest)
+    }
+    
+    @Test func paymentFrequencyCalculations() async throws {
+        #expect(PaymentFrequency.monthly.paymentsPerYear == 12)
+        #expect(PaymentFrequency.quarterly.paymentsPerYear == 4)
+        #expect(PaymentFrequency.annual.paymentsPerYear == 1)
+        
+        #expect(PaymentFrequency.monthly.monthsBetweenPayments == 1)
+        #expect(PaymentFrequency.quarterly.monthsBetweenPayments == 3)
+        #expect(PaymentFrequency.semiannual.monthsBetweenPayments == 6)
+    }
+}
+
+// MARK: - Loan Model Tests
+
+struct LoanModelTests {
+    
+    @Test func loanCreation() async throws {
+        let loan = Loan(
+            name: "Test Mortgage",
+            loanType: .mortgage,
+            interestRateType: .fixed,
+            paymentFrequency: .monthly,
+            amortizationType: .french,
+            principalAmount: 200000,
+            currentInterestRate: 3.5,
+            taeg: 3.8,
+            totalPayments: 240,
+            monthlyPayment: 1160,
+            startDate: Date()
+        )
+        
+        #expect(loan.name == "Test Mortgage")
+        #expect(loan.loanType == .mortgage)
+        #expect(loan.interestRateType == .fixed)
+        #expect(loan.principalAmount == 200000)
+        #expect(loan.totalPayments == 240)
+    }
+    
+    @Test func loanProgressCalculation() async throws {
+        let loan = Loan(
+            name: "Car Loan",
+            loanType: .carLoan,
+            interestRateType: .fixed,
+            principalAmount: 20000,
+            currentInterestRate: 5,
+            totalPayments: 60,
+            monthlyPayment: 377,
+            startDate: Date(),
+            isExisting: true,
+            paymentsMade: 30
+        )
+        
+        #expect(loan.remainingPayments == 30)
+        #expect(loan.progressPercentage == 50)
+    }
+    
+    @Test func loanTotalAmounts() async throws {
+        let loan = Loan(
+            name: "Personal Loan",
+            loanType: .personalLoan,
+            interestRateType: .fixed,
+            principalAmount: 10000,
+            currentInterestRate: 8,
+            totalPayments: 36,
+            monthlyPayment: 313,
+            startDate: Date(),
+            paymentsMade: 12
+        )
+        
+        #expect(loan.totalAmountPaid == Decimal(313) * Decimal(12))
+        #expect(loan.totalAmountToPay == Decimal(313) * Decimal(36))
+    }
+    
+    @Test func loanTypeProperties() async throws {
+        for loanType in LoanType.allCases {
+            #expect(!loanType.localizedName.isEmpty)
+            #expect(!loanType.iconName.isEmpty)
+        }
+    }
+    
+    @Test func interestRateTypeProperties() async throws {
+        for rateType in InterestRateType.allCases {
+            #expect(!rateType.localizedName.isEmpty)
+        }
+    }
+    
+    @Test func amortizationTypeProperties() async throws {
+        for amortType in AmortizationType.allCases {
+            #expect(!amortType.localizedName.isEmpty)
+            #expect(!amortType.shortName.isEmpty)
+            #expect(!amortType.descriptionText.isEmpty)
+        }
+    }
+    
+    @Test func loanRecurrenceMapping() async throws {
+        let monthlyLoan = Loan(
+            name: "Monthly",
+            loanType: .other,
+            interestRateType: .fixed,
+            paymentFrequency: .monthly,
+            principalAmount: 1000,
+            currentInterestRate: 5,
+            totalPayments: 12,
+            monthlyPayment: 100,
+            startDate: Date()
+        )
+        
+        #expect(monthlyLoan.recurrenceFrequency == .monthly)
+        #expect(monthlyLoan.recurrenceInterval == 1)
+        
+        let quarterlyLoan = Loan(
+            name: "Quarterly",
+            loanType: .other,
+            interestRateType: .fixed,
+            paymentFrequency: .quarterly,
+            principalAmount: 1000,
+            currentInterestRate: 5,
+            totalPayments: 4,
+            monthlyPayment: 300,
+            startDate: Date()
+        )
+        
+        #expect(quarterlyLoan.recurrenceFrequency == .monthly)
+        #expect(quarterlyLoan.recurrenceInterval == 3)
+    }
+}
+
+// MARK: - Attachment Tests
+
+struct AttachmentTests {
+    
+    @Test func attachmentCreation() async throws {
+        let data = "Test content".data(using: .utf8)!
+        let attachment = Attachment(
+            filename: "document.pdf",
+            mimeType: "application/pdf",
+            data: data
+        )
+        
+        #expect(attachment.filename == "document.pdf")
+        #expect(attachment.mimeType == "application/pdf")
+        #expect(attachment.data == data)
+    }
+    
+    @Test func fileExtensionExtraction() async throws {
+        let pdfAttachment = Attachment(filename: "doc.pdf", mimeType: "application/pdf", data: Data())
+        #expect(pdfAttachment.fileExtension == "pdf")
+        
+        let jpgAttachment = Attachment(filename: "image.JPG", mimeType: "image/jpeg", data: Data())
+        #expect(jpgAttachment.fileExtension == "jpg")
+        
+        let noExtension = Attachment(filename: "file", mimeType: "text/plain", data: Data())
+        #expect(noExtension.fileExtension == "file")
+    }
+    
+    @Test func isImageDetection() async throws {
+        let jpgAttachment = Attachment(filename: "photo.jpg", mimeType: "image/jpeg", data: Data())
+        #expect(jpgAttachment.isImage == true)
+        
+        let pngAttachment = Attachment(filename: "screenshot.png", mimeType: "image/png", data: Data())
+        #expect(pngAttachment.isImage == true)
+        
+        let heicAttachment = Attachment(filename: "iphone.heic", mimeType: "image/heic", data: Data())
+        #expect(heicAttachment.isImage == true)
+        
+        let pdfAttachment = Attachment(filename: "doc.pdf", mimeType: "application/pdf", data: Data())
+        #expect(pdfAttachment.isImage == false)
+    }
+    
+    @Test func isPDFDetection() async throws {
+        let pdfAttachment = Attachment(filename: "document.pdf", mimeType: "application/pdf", data: Data())
+        #expect(pdfAttachment.isPDF == true)
+        
+        let txtAttachment = Attachment(filename: "notes.txt", mimeType: "text/plain", data: Data())
+        #expect(txtAttachment.isPDF == false)
+    }
+    
+    @Test func isTextDetection() async throws {
+        let txtAttachment = Attachment(filename: "notes.txt", mimeType: "text/plain", data: Data())
+        #expect(txtAttachment.isText == true)
+        
+        let pdfAttachment = Attachment(filename: "doc.pdf", mimeType: "application/pdf", data: Data())
+        #expect(txtAttachment.isText == true)
+        #expect(pdfAttachment.isText == false)
+    }
+    
+    @Test func iconNameSelection() async throws {
+        let imageAttachment = Attachment(filename: "photo.jpg", mimeType: "image/jpeg", data: Data())
+        #expect(imageAttachment.iconName == "photo")
+        
+        let pdfAttachment = Attachment(filename: "doc.pdf", mimeType: "application/pdf", data: Data())
+        #expect(pdfAttachment.iconName == "doc.richtext")
+        
+        let txtAttachment = Attachment(filename: "notes.txt", mimeType: "text/plain", data: Data())
+        #expect(txtAttachment.iconName == "doc.text")
+        
+        let otherAttachment = Attachment(filename: "data.bin", mimeType: "application/octet-stream", data: Data())
+        #expect(otherAttachment.iconName == "doc")
+    }
+}
+
+// MARK: - Reconciliation Status Tests
+
+struct ReconciliationStatusTests {
+    
+    @Test func reconciliationStatusRawValues() async throws {
+        #expect(ReconciliationStatus.notReconciled.rawValue == "n")
+        #expect(ReconciliationStatus.cleared.rawValue == "c")
+        #expect(ReconciliationStatus.reconciled.rawValue == "r")
+    }
+    
+    @Test func reconciliationStatusLocalizedNames() async throws {
+        for status in ReconciliationStatus.allCases {
+            #expect(!status.localizedName.isEmpty)
+        }
+    }
+    
+    @Test func reconciliationStatusIcons() async throws {
+        #expect(ReconciliationStatus.notReconciled.iconName == "circle")
+        #expect(ReconciliationStatus.cleared.iconName == "checkmark.circle")
+        #expect(ReconciliationStatus.reconciled.iconName == "lock.circle.fill")
+    }
+    
+    @Test func reconciliationStatusShortNames() async throws {
+        #expect(ReconciliationStatus.notReconciled.shortName == "n")
+        #expect(ReconciliationStatus.cleared.shortName == "c")
+        #expect(ReconciliationStatus.reconciled.shortName == "R")
+    }
+}
+
+// MARK: - Balance Calculator Tests
+
+struct BalanceCalculatorTests {
+    
+    @Test func expenseAmountCalculation() async throws {
+        let transaction = Transaction(date: Date(), descriptionText: "Grocery")
+        
+        let expenseAccount = Account(
+            name: "Food",
+            currency: "EUR",
+            accountClass: .expense,
+            accountType: .food
+        )
+        
+        let bankAccount = Account(
+            name: "Bank",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+        
+        let debitEntry = Entry(entryType: .debit, amount: 50, account: expenseAccount)
+        let creditEntry = Entry(entryType: .credit, amount: 50, account: bankAccount)
+        
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        transaction.entries = [debitEntry, creditEntry]
+        
+        let expense = BalanceCalculator.expenseAmount(for: transaction)
+        #expect(expense == 50)
+    }
+    
+    @Test func incomeAmountCalculation() async throws {
+        let transaction = Transaction(date: Date(), descriptionText: "Salary")
+        
+        let incomeAccount = Account(
+            name: "Salary",
+            currency: "EUR",
+            accountClass: .income,
+            accountType: .salary
+        )
+        
+        let bankAccount = Account(
+            name: "Bank",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+        
+        let debitEntry = Entry(entryType: .debit, amount: 2000, account: bankAccount)
+        let creditEntry = Entry(entryType: .credit, amount: 2000, account: incomeAccount)
+        
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        transaction.entries = [debitEntry, creditEntry]
+        
+        let income = BalanceCalculator.incomeAmount(for: transaction)
+        #expect(income == 2000)
+    }
+    
+    @Test func netBalanceChangeForExpense() async throws {
+        let transaction = Transaction(date: Date(), descriptionText: "Purchase")
+        
+        let expenseAccount = Account(
+            name: "Shopping",
+            currency: "EUR",
+            accountClass: .expense,
+            accountType: .shopping
+        )
+        
+        let bankAccount = Account(
+            name: "Bank",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+        
+        let debitEntry = Entry(entryType: .debit, amount: 100, account: expenseAccount)
+        let creditEntry = Entry(entryType: .credit, amount: 100, account: bankAccount)
+        
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        transaction.entries = [debitEntry, creditEntry]
+        
+        // Net balance change: asset decreased by 100
+        let change = BalanceCalculator.netBalanceChange(for: transaction)
+        #expect(change == -100)
+    }
+    
+    @Test func netBalanceChangeForIncome() async throws {
+        let transaction = Transaction(date: Date(), descriptionText: "Salary")
+        
+        let incomeAccount = Account(
+            name: "Salary",
+            currency: "EUR",
+            accountClass: .income,
+            accountType: .salary
+        )
+        
+        let bankAccount = Account(
+            name: "Bank",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+        
+        let debitEntry = Entry(entryType: .debit, amount: 3000, account: bankAccount)
+        let creditEntry = Entry(entryType: .credit, amount: 3000, account: incomeAccount)
+        
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        transaction.entries = [debitEntry, creditEntry]
+        
+        // Net balance change: asset increased by 3000
+        let change = BalanceCalculator.netBalanceChange(for: transaction)
+        #expect(change == 3000)
+    }
+    
+    @Test func netBalanceChangeForTransfer() async throws {
+        let transaction = Transaction(date: Date(), descriptionText: "Transfer")
+        
+        let checkingAccount = Account(
+            name: "Checking",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+        
+        let savingsAccount = Account(
+            name: "Savings",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+        
+        let debitEntry = Entry(entryType: .debit, amount: 500, account: savingsAccount)
+        let creditEntry = Entry(entryType: .credit, amount: 500, account: checkingAccount)
+        
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        transaction.entries = [debitEntry, creditEntry]
+        
+        // Transfer between assets: net change should be 0
+        let change = BalanceCalculator.netBalanceChange(for: transaction)
+        #expect(change == 0)
+    }
+}
+
+// MARK: - Currency Helper Tests
+
+struct CurrencyHelperTests {
+    
+    @Test func defaultCurrencyFromAssetAccount() async throws {
+        let usdAccount = Account(
+            name: "US Bank",
+            currency: "USD",
+            accountClass: .asset,
+            accountType: .bank
+        )
+        
+        let eurAccount = Account(
+            name: "EU Bank",
+            currency: "EUR",
+            accountClass: .liability,
+            accountType: .creditCard
+        )
+        
+        let currency = CurrencyHelper.defaultCurrency(from: [usdAccount, eurAccount])
+        #expect(currency == "USD") // Prefers asset accounts
+    }
+    
+    @Test func defaultCurrencyFromLiabilityWhenNoAssets() async throws {
+        let creditCard = Account(
+            name: "Credit Card",
+            currency: "GBP",
+            accountClass: .liability,
+            accountType: .creditCard
+        )
+        
+        let expenseAccount = Account(
+            name: "Food",
+            currency: "EUR",
+            accountClass: .expense,
+            accountType: .food
+        )
+        
+        let currency = CurrencyHelper.defaultCurrency(from: [creditCard, expenseAccount])
+        #expect(currency == "GBP") // Falls back to liability
+    }
+    
+    @Test func defaultCurrencyFromEmptyList() async throws {
+        let currency = CurrencyHelper.defaultCurrency(from: [])
+        #expect(currency == "EUR") // Default fallback
+    }
+}
+
+// MARK: - Decimal Rounding Tests
+
+struct DecimalRoundingTests {
+    
+    @Test func decimalRounding() async throws {
+        let value1 = Decimal(string: "123.456")!
+        #expect(value1.rounded(2) == Decimal(string: "123.46"))
+        
+        let value2 = Decimal(string: "99.994")!
+        #expect(value2.rounded(2) == Decimal(string: "99.99"))
+        
+        let value3 = Decimal(string: "100.005")!
+        #expect(value3.rounded(2) == Decimal(string: "100.00") || value3.rounded(2) == Decimal(string: "100.01"))
+    }
+}
+
+// MARK: - Export Format Tests
+
+struct ExportFormatTests {
+    
+    @Test func exportFormatProperties() async throws {
+        #expect(ExportFormat.cashBackup.fileExtension == "cashdata")
+        #expect(ExportFormat.ofx.fileExtension == "ofx")
+        
+        for format in ExportFormat.allCases {
+            #expect(!format.localizedName.isEmpty)
+            #expect(!format.iconName.isEmpty)
+        }
+    }
+    
+    @Test func exportFilenameGeneration() async throws {
+        let cashFilename = DataExporter.generateFilename(for: .cashBackup)
+        #expect(cashFilename.hasPrefix("Cash_Export_"))
+        #expect(cashFilename.hasSuffix(".cashdata"))
+        
+        let ofxFilename = DataExporter.generateFilename(for: .ofx)
+        #expect(ofxFilename.hasPrefix("Cash_Export_"))
+        #expect(ofxFilename.hasSuffix(".ofx"))
+    }
+}
+
+// MARK: - DataExporter Error Tests
+
+struct DataExporterErrorTests {
+    
+    @Test func errorDescriptions() async throws {
+        #expect(DataExporterError.noData.errorDescription != nil)
+        #expect(DataExporterError.encodingFailed.errorDescription != nil)
+        #expect(DataExporterError.decodingFailed.errorDescription != nil)
+        #expect(DataExporterError.compressionFailed.errorDescription != nil)
+        #expect(DataExporterError.decompressionFailed.errorDescription != nil)
+        #expect(DataExporterError.invalidFormat.errorDescription != nil)
+        #expect(DataExporterError.importFailed("test").errorDescription?.contains("test") == true)
+    }
+}

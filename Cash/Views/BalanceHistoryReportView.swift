@@ -139,10 +139,13 @@ struct BalanceHistoryReportView: View {
                     .scaleEffect(1.5)
                 Spacer()
             } else if balanceHistory.isEmpty {
-                ContentUnavailableView {
-                    Label("No balance history", systemImage: "chart.xyaxis.line")
-                } description: {
-                    Text("Add transactions to see your balance history")
+                VStack {
+                    ContentUnavailableView {
+                        Label("No balance history", systemImage: "chart.xyaxis.line")
+                    } description: {
+                        Text("Add transactions to see your balance history")
+                    }
+                    Spacer()
                 }
             } else {
                 ScrollView {

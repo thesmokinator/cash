@@ -42,6 +42,7 @@ struct CashApp: App {
             AppConfiguration.self,
             Budget.self,
             Envelope.self,
+            Loan.self,
         ])
         
         #if ENABLE_ICLOUD

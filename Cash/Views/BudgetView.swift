@@ -27,11 +27,14 @@ struct BudgetView: View {
     }
     
     private var currency: String {
-        if let envelope = activeBudget?.envelopes?.first,
-           let category = envelope.category {
-            return category.currency
+        // Safely get currency, avoiding access to potentially invalidated objects
+        guard let budget = activeBudget,
+              let envelopes = budget.envelopes,
+              let envelope = envelopes.first,
+              let category = envelope.category else {
+            return "EUR"
         }
-        return "EUR"
+        return category.currency
     }
     
     private func filteredEnvelopes(from envelopes: [Envelope]) -> [Envelope] {

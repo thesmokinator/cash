@@ -12,6 +12,7 @@ enum SidebarSelection: Hashable {
     case patrimony
     case forecast
     case budget
+    case loans
     case reports
     case scheduled
     case account(Account)
@@ -52,16 +53,19 @@ struct AccountListView: View {
                             Label("Budget", systemImage: "envelope.fill")
                                 .tag(SidebarSelection.budget)
                             
+                            Label("Loans & Mortgages", systemImage: "house.fill")
+                                .tag(SidebarSelection.loans)
+                            
                             Label("Reports", systemImage: "chart.bar.fill")
                                 .tag(SidebarSelection.reports)
                         }
                     }
                     
                     ForEach(AccountClass.allCases.sorted(by: { $0.displayOrder < $1.displayOrder })) { accountClass in
-                        let filteredAccounts = accounts
+                        let classAccounts = accounts
                             .filter { $0.accountClass == accountClass && $0.isActive && !$0.isSystem }
-                            .sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
-                        if !filteredAccounts.isEmpty {
+                        
+                        if !classAccounts.isEmpty {
                             Section(accountClass.localizedPluralName) {
                                 // Add Scheduled as first item in Expenses section
                                 if accountClass == .expense {
@@ -80,18 +84,27 @@ struct AccountListView: View {
                                     .tag(SidebarSelection.scheduled)
                                 }
                                 
-                                ForEach(filteredAccounts) { account in
+                                // Show all accounts flat, sorted by type then name
+                                let sortedAccounts = classAccounts.sorted { a, b in
+                                    if a.accountType.localizedName != b.accountType.localizedName {
+                                        return a.accountType.localizedName.localizedCaseInsensitiveCompare(b.accountType.localizedName) == .orderedAscending
+                                    }
+                                    return a.displayName.localizedCaseInsensitiveCompare(b.displayName) == .orderedAscending
+                                }
+                                
+                                ForEach(sortedAccounts) { account in
                                     AccountRowView(account: account)
                                         .tag(SidebarSelection.account(account))
                                 }
                                 .onDelete { indexSet in
-                                    deleteAccounts(from: filteredAccounts, at: indexSet)
+                                    deleteAccounts(from: sortedAccounts, at: indexSet)
                                 }
                             }
                         }
                     }
                 }
             }
+            .listStyle(.sidebar)
             .navigationTitle("Chart of accounts")
             .navigationSplitViewColumnWidth(min: 280, ideal: 320)
             .toolbar {
@@ -126,6 +139,8 @@ struct AccountListView: View {
                     ForecastView()
                 case .budget:
                     BudgetView()
+                case .loans:
+                    LoansView()
                 case .reports:
                     ReportsView()
                 case .scheduled:

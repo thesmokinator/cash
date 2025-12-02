@@ -270,3 +270,31 @@ struct TransactionIconView: View {
             .foregroundColor(info.color)
     }
 }
+
+// MARK: - Labeled Amount Row
+
+/// A reusable row component for displaying a label with an amount value
+/// Used in loan calculators, reports, and financial summaries
+struct LabeledAmountRow: View {
+    @Environment(AppSettings.self) private var settings
+    let label: LocalizedStringKey
+    let value: Decimal
+    let currency: String
+    var valueColor: Color = .primary
+    var isHighlighted: Bool = false
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .foregroundStyle(isHighlighted ? .primary : .secondary)
+            Spacer()
+            PrivacyAmountView(
+                amount: CurrencyFormatter.format(value, currency: currency),
+                isPrivate: settings.privacyMode,
+                font: isHighlighted ? .headline : .body,
+                fontWeight: isHighlighted ? .semibold : .regular,
+                color: valueColor
+            )
+        }
+    }
+}
