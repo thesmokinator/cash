@@ -34,20 +34,70 @@ struct AmortizationScheduleView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Summary header
-                HStack(spacing: 24) {
-                    SummaryItem(label: "Principal", value: principal, currency: currency)
-                    SummaryItem(label: "Interest Rate", value: annualRate, suffix: "%", isPercentage: true)
-                    SummaryItem(label: "Total Interest", value: totalInterestPaid, currency: currency)
-                    SummaryItem(label: "Total Amount", value: principal + totalInterestPaid, currency: currency)
-                    
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Method")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Text(amortizationType.shortName)
+                // Header with summary
+                VStack(spacing: 12) {
+                    HStack {
+                        Text("Amortization Schedule")
                             .font(.headline)
-                            .fontWeight(.semibold)
+                        Spacer()
+                    }
+                    
+                    HStack(spacing: 32) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Principal")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            PrivacyAmountView(
+                                amount: CurrencyFormatter.format(principal, currency: currency),
+                                isPrivate: settings.privacyMode,
+                                font: .title2,
+                                fontWeight: .bold
+                            )
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Interest Rate")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Text("\(annualRate.formatted())%")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Total Interest")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            PrivacyAmountView(
+                                amount: CurrencyFormatter.format(totalInterestPaid, currency: currency),
+                                isPrivate: settings.privacyMode,
+                                font: .title2,
+                                fontWeight: .bold
+                            )
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Total Amount")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            PrivacyAmountView(
+                                amount: CurrencyFormatter.format(principal + totalInterestPaid, currency: currency),
+                                isPrivate: settings.privacyMode,
+                                font: .title2,
+                                fontWeight: .bold
+                            )
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Method")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Text(amortizationType.shortName)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                        }
+                        
+                        Spacer()
                     }
                 }
                 .padding()
@@ -149,42 +199,6 @@ struct AmortizationScheduleView: View {
         await MainActor.run {
             schedule = result
             isLoading = false
-        }
-    }
-}
-
-// MARK: - Summary Item
-
-struct SummaryItem: View {
-    @Environment(AppSettings.self) private var settings
-    let label: LocalizedStringKey
-    let value: Decimal
-    var currency: String? = nil
-    var suffix: String? = nil
-    var isPercentage: Bool = false
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            
-            if isPercentage {
-                Text("\(value.formatted())%")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-            } else if let currency = currency {
-                PrivacyAmountView(
-                    amount: CurrencyFormatter.format(value, currency: currency),
-                    isPrivate: settings.privacyMode,
-                    font: .headline,
-                    fontWeight: .semibold
-                )
-            } else {
-                Text(value.formatted())
-                    .font(.headline)
-                    .fontWeight(.semibold)
-            }
         }
     }
 }
