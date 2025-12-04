@@ -53,18 +53,13 @@ struct PremiumFeaturesList: View {
 /// A badge/button that promotes premium features - opens Settings on Subscription tab
 struct PremiumPromoBadge: View {
     @State private var subscriptionManager = SubscriptionManager.shared
-    @Environment(\.openSettings) private var openSettings
     
     var body: some View {
         // Don't show if already premium
         if !subscriptionManager.isPremiumEnabled {
             Button {
-                // Open Settings window
-                openSettings()
-                // Post notification to switch to subscription tab (with small delay to ensure window is open)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    NotificationCenter.default.post(name: .showSubscriptionTab, object: nil)
-                }
+                // Post notification to open Settings and switch to subscription tab
+                NotificationCenter.default.post(name: .showSubscriptionTab, object: nil)
             } label: {
                 HStack(spacing: 6) {
                     Image(systemName: "crown")

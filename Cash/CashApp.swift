@@ -26,6 +26,7 @@ extension Notification.Name {
     static let importOFX = Notification.Name("importOFX")
     static let showSubscription = Notification.Name("showSubscription")
     static let showSubscriptionTab = Notification.Name("showSubscriptionTab")
+    static let showSettings = Notification.Name("showSettings")
 }
 
 @main
@@ -34,6 +35,7 @@ struct CashApp: App {
     @State private var menuAppState = AppState()
     @State private var navigationState = NavigationState()
     @State private var showingSubscriptionSheet = false
+    @State private var showingSettingsSheet = false
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -80,6 +82,21 @@ struct CashApp: App {
         WindowGroup {
             ContentView()
                 .environment(navigationState)
+                .sheet(isPresented: $showingSettingsSheet) {
+                    SettingsView(appState: menuAppState, dismissSettings: { showingSettingsSheet = false })
+                        .environment(settings)
+                        .modelContainer(sharedModelContainer)
+                }
+                .sheet(isPresented: $showingSubscriptionSheet) {
+                    SubscriptionSheetView()
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .showSettings)) { _ in
+                    showingSettingsSheet = true
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .showSubscriptionTab)) { _ in
+                    showingSettingsSheet = true
+                    // The SettingsView will handle switching to the subscription tab
+                }
         }
         .modelContainer(sharedModelContainer)
         .environment(settings)
@@ -115,33 +132,24 @@ struct CashApp: App {
                 }
             }
             
+            // Settings menu item (replaces system Preferences)
+            CommandGroup(replacing: .appSettings) {
+                Button {
+                    showingSettingsSheet = true
+                } label: {
+                    Text("Settings...")
+                }
+                .keyboardShortcut(",", modifiers: .command)
+            }
+            
             // Subscription menu item in App menu
-            CommandGroup(after: .appSettings) {
+            CommandGroup(after: .appInfo) {
                 Button {
                     showingSubscriptionSheet = true
                 } label: {
                     Label("Subscription...", systemImage: "crown.fill")
                 }
             }
-        }
-        
-        Settings {
-            SettingsView(appState: menuAppState, dismissSettings: {})
-                .environment(settings)
-                .modelContainer(sharedModelContainer)
-                .overlay {
-                    if menuAppState.isLoading {
-                        LoadingOverlayView(message: menuAppState.loadingMessage)
-                    }
-                }
-                .sheet(isPresented: $menuAppState.showWelcomeSheet) {
-                    WelcomeSheet(appState: menuAppState)
-                        .modelContainer(sharedModelContainer)
-                        .interactiveDismissDisabled()
-                }
-                .sheet(isPresented: $showingSubscriptionSheet) {
-                    SubscriptionSheetView()
-                }
         }
     }
 }

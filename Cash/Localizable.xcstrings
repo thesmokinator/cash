@@ -15544,6 +15544,12 @@
         }
       }
     },
+    "Settings" : {
+
+    },
+    "Settings..." : {
+
+    },
     "Shopping" : {
       "localizations" : {
         "de" : {

@@ -86,15 +86,25 @@ struct SettingsView: View {
     @Query private var transactions: [Transaction]
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Tab Bar with icons
-            tabBar
-            
-            Divider()
-            
-            // Content
-            tabContent
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        NavigationStack {
+            VStack(spacing: 0) {
+                // Tab Bar with icons
+                tabBar
+                
+                Divider()
+                
+                // Content
+                tabContent
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .navigationTitle("Settings")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") {
+                        dismissSettings()
+                    }
+                }
+            }
         }
         .frame(width: 580, height: 520)
         .id(settings.refreshID)
