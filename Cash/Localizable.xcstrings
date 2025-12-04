@@ -3911,25 +3911,25 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kasse"
+            "value" : "Cash"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dinero"
+            "value" : "Cash"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Espèces"
+            "value" : "Cash"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Contanti"
+            "value" : "Cash"
           }
         }
       }
@@ -17734,7 +17734,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bienvenido a efectivo"
+            "value" : "Bienvenido a Cash"
           }
         },
         "fr" : {
