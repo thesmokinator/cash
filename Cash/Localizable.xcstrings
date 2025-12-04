@@ -7919,6 +7919,40 @@
         }
       }
     },
+    "Get support or contribute on GitHub." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unterstützung erhalten oder auf GitHub beitragen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Get support or contribute on GitHub."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtén soporte o contribuye en GitHub."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obtenez de l'aide ou contribuez sur GitHub."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ottieni supporto o contribuisci su GitHub."
+          }
+        }
+      }
+    },
     "Good" : {
       "localizations" : {
         "de" : {

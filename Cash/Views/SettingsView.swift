@@ -555,25 +555,36 @@ struct AboutSettingsTab: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 20)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 15)
             
             Spacer()
             
-            Button {
-                showingLicense = true
-            } label: {
-                Text("© 2025 Michele Broggi")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-            }
-            .buttonStyle(.plain)
-            .onHover { hovering in
-                if hovering {
-                    NSCursor.pointingHand.push()
-                } else {
-                    NSCursor.pop()
+            VStack(spacing: 5) {
+                Link(destination: URL(string: "https://github.com/thesmokinator/cash")!) {
+                    Text("Get support or contribute on GitHub.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .underline()
+                }
+                
+                Button {
+                    showingLicense = true
+                } label: {
+                    Text("© 2025 Michele Broggi")
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+                .buttonStyle(.plain)
+                .onHover { hovering in
+                    if hovering {
+                        NSCursor.pointingHand.push()
+                    } else {
+                        NSCursor.pop()
+                    }
                 }
             }
+            
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
