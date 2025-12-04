@@ -27,6 +27,7 @@ struct AccountListView: View {
     @State private var showingAddAccount = false
     @State private var showingAddTransaction = false
     @State private var selection: SidebarSelection? = .patrimony
+    @State private var subscriptionManager = SubscriptionManager.shared
     
     private var hasAccounts: Bool {
         !accounts.filter { $0.isActive && !$0.isSystem }.isEmpty
@@ -50,14 +51,21 @@ struct AccountListView: View {
                             Label("Forecast", systemImage: "chart.line.uptrend.xyaxis")
                                 .tag(SidebarSelection.forecast)
                             
-                            Label("Budget", systemImage: "envelope.fill")
-                                .tag(SidebarSelection.budget)
+                            // Premium features - only show if subscribed
+                            if subscriptionManager.isFeatureEnabled(.budgeting) {
+                                Label("Budget", systemImage: "envelope.fill")
+                                    .tag(SidebarSelection.budget)
+                            }
                             
-                            Label("Loans & Mortgages", systemImage: "house.fill")
-                                .tag(SidebarSelection.loans)
+                            if subscriptionManager.isFeatureEnabled(.loans) {
+                                Label("Loans & Mortgages", systemImage: "house.fill")
+                                    .tag(SidebarSelection.loans)
+                            }
                             
-                            Label("Reports", systemImage: "chart.bar.fill")
-                                .tag(SidebarSelection.reports)
+                            if subscriptionManager.isFeatureEnabled(.reports) {
+                                Label("Reports", systemImage: "chart.bar.fill")
+                                    .tag(SidebarSelection.reports)
+                            }
                         }
                     }
                     

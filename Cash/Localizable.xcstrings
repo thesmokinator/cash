@@ -5803,6 +5803,9 @@
     "Deutsch" : {
 
     },
+    "DEV" : {
+
+    },
     "Difference" : {
       "localizations" : {
         "de" : {
@@ -6224,6 +6227,9 @@
           }
         }
       }
+    },
+    "Enable iCloud sync" : {
+
     },
     "Enable Rollover" : {
       "localizations" : {
@@ -7549,9 +7555,6 @@
     "Français" : {
 
     },
-    "Free" : {
-
-    },
     "Free users can create up to %lld accounts." : {
 
     },
@@ -8290,7 +8293,17 @@
         }
       }
     },
+    "iCloud access restricted" : {
+
+    },
+    "iCloud account" : {
+
+    },
+    "iCloud account available" : {
+
+    },
     "iCloud not available in this build" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8319,6 +8332,12 @@
       }
     },
     "iCloud Sync" : {
+
+    },
+    "iCloud sync requires an active subscription." : {
+
+    },
+    "iCloud temporarily unavailable" : {
 
     },
     "Ideal" : {
@@ -11911,6 +11930,9 @@
         }
       }
     },
+    "No iCloud account" : {
+
+    },
     "No loans" : {
       "localizations" : {
         "de" : {
@@ -13463,7 +13485,10 @@
         }
       }
     },
-    "Premium" : {
+    "Premium (Development)" : {
+
+    },
+    "Premium feature" : {
 
     },
     "Premium Feature" : {
@@ -15612,6 +15637,9 @@
         }
       }
     },
+    "Sign in to iCloud in System Settings to enable sync." : {
+
+    },
     "Similar to French but interest is paid at the beginning of each period." : {
       "localizations" : {
         "de" : {
@@ -15870,6 +15898,9 @@
         }
       }
     },
+    "Storage used" : {
+
+    },
     "Subscribe" : {
 
     },
@@ -16055,6 +16086,12 @@
     "Sync your data across all your Apple devices using iCloud." : {
 
     },
+    "Sync your data across all your devices." : {
+
+    },
+    "Synchronization" : {
+
+    },
     "System" : {
       "localizations" : {
         "de" : {
@@ -16110,6 +16147,12 @@
           }
         }
       }
+    },
+    "The app needs to restart to apply iCloud changes." : {
+
+    },
+    "The app needs to restart to apply iCloud sync changes." : {
+
     },
     "The app needs to restart to apply language changes." : {
       "localizations" : {
@@ -17339,6 +17382,9 @@
         }
       }
     },
+    "Unable to determine iCloud status" : {
+
+    },
     "Unable to load subscription plans. Please try again later." : {
 
     },
@@ -17397,6 +17443,9 @@
           }
         }
       }
+    },
+    "Unknown iCloud status" : {
+
     },
     "Unlimited Accounts" : {
 
@@ -18040,6 +18089,12 @@
           }
         }
       }
+    },
+    "When enabled, your accounts and transactions will be synced across all your devices using iCloud." : {
+
+    },
+    "When enabled, your accounts and transactions will be synced across all your devices using iCloud. Changes may take a few moments to appear on other devices." : {
+
     },
     "Would you like to create a recurring transaction to track your payments?" : {
       "localizations" : {

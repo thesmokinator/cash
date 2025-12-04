@@ -46,13 +46,6 @@ struct BudgetView: View {
     }
     
     var body: some View {
-        PremiumContentWrapper(feature: .budgeting) {
-            budgetContent
-        }
-    }
-    
-    @ViewBuilder
-    private var budgetContent: some View {
         VStack(spacing: 0) {
             if let budget = activeBudget {
                 // Budget Header - sempre in alto

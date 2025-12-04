@@ -18,13 +18,6 @@ struct LoansView: View {
     @State private var selectedLoan: Loan?
     
     var body: some View {
-        PremiumContentWrapper(feature: .loans) {
-            loansContent
-        }
-    }
-    
-    @ViewBuilder
-    private var loansContent: some View {
         VStack(spacing: 0) {
             // Header
             HStack {

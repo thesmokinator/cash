@@ -19,9 +19,6 @@ import CloudKit
 enum SettingsTab: String, CaseIterable, Identifiable {
     case general = "general"
     case subscription = "subscription"
-    #if ENABLE_ICLOUD
-    case icloud = "icloud"
-    #endif
     case data = "data"
     case about = "about"
     
@@ -33,10 +30,6 @@ enum SettingsTab: String, CaseIterable, Identifiable {
             return "General"
         case .subscription:
             return "Subscription"
-        #if ENABLE_ICLOUD
-        case .icloud:
-            return "iCloud"
-        #endif
         case .data:
             return "Data"
         case .about:
@@ -50,10 +43,6 @@ enum SettingsTab: String, CaseIterable, Identifiable {
             return "gearshape.fill"
         case .subscription:
             return "crown.fill"
-        #if ENABLE_ICLOUD
-        case .icloud:
-            return "icloud.fill"
-        #endif
         case .data:
             return "externaldrive.fill"
         case .about:
@@ -214,10 +203,6 @@ struct SettingsView: View {
                 GeneralSettingsTabContent()
             case .subscription:
                 SubscriptionSettingsTabContent()
-            #if ENABLE_ICLOUD
-            case .icloud:
-                iCloudSettingsTabContent()
-            #endif
             case .data:
                 DataSettingsTabContent(
                     showingExportFormatPicker: $showingExportFormatPicker,
@@ -456,10 +441,14 @@ struct GeneralSettingsTab: View {
     }
 }
 
-#if ENABLE_ICLOUD
-// MARK: - iCloud Settings Tab Content
+// MARK: - Data Settings Tab Content
 
-struct iCloudSettingsTabContent: View {
+struct DataSettingsTabContent: View {
+    @Binding var showingExportFormatPicker: Bool
+    @Binding var showingImportConfirmation: Bool
+    @Binding var showingFirstResetAlert: Bool
+    
+    #if ENABLE_ICLOUD
     @State private var cloudManager = CloudKitManager.shared
     @State private var subscriptionManager = SubscriptionManager.shared
     @State private var showingRestartAlert = false
@@ -468,132 +457,12 @@ struct iCloudSettingsTabContent: View {
     private var hasICloudAccount: Bool {
         FileManager.default.ubiquityIdentityToken != nil
     }
+    #endif
     
     var body: some View {
-        // Premium requirement section
-        if !subscriptionManager.isFeatureEnabled(.iCloudSync) {
-            Section {
-                HStack(spacing: 12) {
-                    Image(systemName: "crown.fill")
-                        .font(.title2)
-                        .foregroundStyle(.yellow)
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Premium feature")
-                            .font(.headline)
-                        Text("iCloud sync requires an active subscription.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    
-                    Spacer()
-                    
-                    Button("Upgrade") {
-                        showingPaywall = true
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-                .padding(.vertical, 4)
-            }
-        }
-        
-        Section {
-            Toggle("Enable iCloud sync", isOn: Binding(
-                get: { cloudManager.isEnabled },
-                set: { newValue in
-                    cloudManager.isEnabled = newValue
-                    if cloudManager.needsRestart {
-                        showingRestartAlert = true
-                    }
-                }
-            ))
-            .disabled(!cloudManager.isAvailable)
-        } header: {
-            Text("Synchronization")
-        } footer: {
-            Text("When enabled, your accounts and transactions will be synced across all your devices using iCloud.")
-        }
-        
-        Section("iCloud account") {
-            LabeledContent("Status") {
-                HStack(spacing: 6) {
-                    Circle()
-                        .fill(cloudManager.accountStatus == .available ? Color.green : Color.orange)
-                        .frame(width: 8, height: 8)
-                    Text(cloudManager.accountStatusDescription)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            
-            if cloudManager.isEnabled {
-                LabeledContent("Storage used") {
-                    if cloudManager.isLoadingStorage {
-                        ProgressView()
-                            .scaleEffect(0.7)
-                    } else {
-                        Text(cloudManager.formattedStorageUsed)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-        }
-        
-        if !hasICloudAccount {
-            Section {
-                HStack {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.orange)
-                    Text("Sign in to iCloud in System Settings to enable sync.")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-}
-
-// MARK: - iCloud Settings Tab (Legacy)
-
-struct iCloudSettingsTab: View {
-    @State private var cloudManager = CloudKitManager.shared
-    @State private var subscriptionManager = SubscriptionManager.shared
-    @State private var showingRestartAlert = false
-    @State private var showingPaywall = false
-    
-    /// Whether iCloud account is available (ignoring premium status)
-    private var hasICloudAccount: Bool {
-        FileManager.default.ubiquityIdentityToken != nil
-    }
-    
-    var body: some View {
-        Form {
-            // Premium requirement section
-            if !subscriptionManager.isFeatureEnabled(.iCloudSync) {
-                Section {
-                    HStack(spacing: 12) {
-                        Image(systemName: "crown.fill")
-                            .font(.title2)
-                            .foregroundStyle(.yellow)
-                        
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("Premium feature")
-                                .font(.headline)
-                            Text("iCloud sync requires an active subscription.")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        
-                        Spacer()
-                        
-                        Button("Upgrade") {
-                            showingPaywall = true
-                        }
-                        .buttonStyle(.borderedProminent)
-                    }
-                    .padding(.vertical, 4)
-                }
-            }
-            
+        #if ENABLE_ICLOUD
+        // iCloud Sync Section
+        if subscriptionManager.isFeatureEnabled(.iCloudSync) {
             Section {
                 Toggle("Enable iCloud sync", isOn: Binding(
                     get: { cloudManager.isEnabled },
@@ -605,24 +474,18 @@ struct iCloudSettingsTab: View {
                     }
                 ))
                 .disabled(!cloudManager.isAvailable)
-            } header: {
-                Text("Synchronization")
-            } footer: {
-                Text("When enabled, your accounts and transactions will be synced across all your devices using iCloud. Changes may take a few moments to appear on other devices.")
-            }
-            
-            Section {
-                LabeledContent("Status") {
-                    HStack(spacing: 6) {
-                        Circle()
-                            .fill(cloudManager.accountStatus == .available ? Color.green : Color.orange)
-                            .frame(width: 8, height: 8)
-                        Text(cloudManager.accountStatusDescription)
-                            .foregroundStyle(.secondary)
-                    }
-                }
                 
                 if cloudManager.isEnabled {
+                    LabeledContent("Status") {
+                        HStack(spacing: 6) {
+                            Circle()
+                                .fill(cloudManager.accountStatus == .available ? Color.green : Color.orange)
+                                .frame(width: 8, height: 8)
+                            Text(cloudManager.accountStatusDescription)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
                     LabeledContent("Storage used") {
                         if cloudManager.isLoadingStorage {
                             ProgressView()
@@ -634,54 +497,28 @@ struct iCloudSettingsTab: View {
                     }
                 }
             } header: {
-                Text("iCloud account")
-            }
-            
-            if !hasICloudAccount {
-                Section {
-                    HStack {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundStyle(.orange)
-                        Text("Sign in to iCloud in System Settings to enable sync.")
-                            .font(.callout)
-                            .foregroundStyle(.secondary)
-                    }
+                Text("iCloud Sync")
+            } footer: {
+                if !hasICloudAccount {
+                    Text("Sign in to iCloud in System Settings to enable sync.")
+                } else {
+                    Text("Sync your data across all your devices.")
                 }
             }
-        }
-        .formStyle(.grouped)
-        .onAppear {
-            Task {
-                await cloudManager.checkAccountStatus()
-                await cloudManager.fetchStorageUsed()
+            .alert("Restart required", isPresented: $showingRestartAlert) {
+                Button("Later") {
+                    cloudManager.needsRestart = false
+                }
+                Button("Restart now") {
+                    cloudManager.needsRestart = false
+                    AppSettings.shared.restartApp()
+                }
+            } message: {
+                Text("The app needs to restart to apply iCloud changes.")
             }
         }
-        .alert("Restart required", isPresented: $showingRestartAlert) {
-            Button("Later") {
-                cloudManager.needsRestart = false
-            }
-            Button("Restart now") {
-                cloudManager.needsRestart = false
-                AppSettings.shared.restartApp()
-            }
-        } message: {
-            Text("The app needs to restart to apply iCloud sync changes.")
-        }
-        .sheet(isPresented: $showingPaywall) {
-            SubscriptionPaywallView(feature: .iCloudSync)
-        }
-    }
-}
-#endif
-
-// MARK: - Data Settings Tab Content
-
-struct DataSettingsTabContent: View {
-    @Binding var showingExportFormatPicker: Bool
-    @Binding var showingImportConfirmation: Bool
-    @Binding var showingFirstResetAlert: Bool
-    
-    var body: some View {
+        #endif
+        
         Section {
             Button {
                 showingExportFormatPicker = true
