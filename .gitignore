@@ -47,3 +47,29 @@ xcuserdata/
 # App-specific
 *.plist~
 *.orig
+
+# Certificates and sensitive files
+*.p12
+*.p12.cer
+*.cer
+*.key
+*.pem
+developer-id-*.p12
+developer-id-*.cer
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+secrets.json
+credentials.json
+
+# Demo and test data
+demo.cashdata
+*.backup
+
+# IDE and editor
+.vscode/
+.idea/
+*.sublime-*
+
