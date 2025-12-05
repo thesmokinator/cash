@@ -24,8 +24,6 @@ extension Notification.Name {
     static let addNewTransaction = Notification.Name("addNewTransaction")
     static let addNewScheduledTransaction = Notification.Name("addNewScheduledTransaction")
     static let importOFX = Notification.Name("importOFX")
-    static let showSubscription = Notification.Name("showSubscription")
-    static let showSubscriptionTab = Notification.Name("showSubscriptionTab")
     static let showSettings = Notification.Name("showSettings")
 }
 
@@ -34,7 +32,6 @@ struct CashApp: App {
     @State private var settings = AppSettings.shared
     @State private var menuAppState = AppState()
     @State private var navigationState = NavigationState()
-    @State private var showingSubscriptionSheet = false
     @State private var showingSettingsSheet = false
     
     var sharedModelContainer: ModelContainer = {
@@ -87,15 +84,8 @@ struct CashApp: App {
                         .environment(settings)
                         .modelContainer(sharedModelContainer)
                 }
-                .sheet(isPresented: $showingSubscriptionSheet) {
-                    SubscriptionSheetView()
-                }
                 .onReceive(NotificationCenter.default.publisher(for: .showSettings)) { _ in
                     showingSettingsSheet = true
-                }
-                .onReceive(NotificationCenter.default.publisher(for: .showSubscriptionTab)) { _ in
-                    showingSettingsSheet = true
-                    // The SettingsView will handle switching to the subscription tab
                 }
                 .onAppear {
                     // Start iCloud sync monitoring
@@ -145,39 +135,6 @@ struct CashApp: App {
                 }
                 .keyboardShortcut(",", modifiers: .command)
             }
-            
-            // Subscription menu item in App menu
-            CommandGroup(after: .appInfo) {
-                Button {
-                    showingSubscriptionSheet = true
-                } label: {
-                    Label("Subscription...", systemImage: "crown.fill")
-                }
-            }
         }
-    }
-}
-
-// MARK: - Subscription Sheet View
-
-struct SubscriptionSheetView: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        NavigationStack {
-            Form {
-                SubscriptionSettingsTabContent()
-            }
-            .formStyle(.grouped)
-            .navigationTitle("Subscription")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") {
-                        dismiss()
-                    }
-                }
-            }
-        }
-        .frame(width: 500, height: 500)
     }
 }

@@ -352,41 +352,6 @@
         }
       }
     },
-    "%@ every %lld months" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ every %2$lld months"
-          }
-        }
-      }
-    },
-    "%@ every %lld years" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ every %2$lld years"
-          }
-        }
-      }
-    },
-    "%@/day" : {
-
-    },
-    "%@/mo" : {
-
-    },
-    "%@/month" : {
-
-    },
-    "%@/week" : {
-
-    },
-    "%@/year" : {
-
-    },
     "%@%@" : {
       "localizations" : {
         "de" : {
@@ -2065,12 +2030,6 @@
         }
       }
     },
-    "Advanced Reports" : {
-
-    },
-    "Advanced reports and analytics for your finances." : {
-
-    },
     "All data will be permanently deleted." : {
       "localizations" : {
         "de" : {
@@ -2888,9 +2847,6 @@
         }
       }
     },
-    "Available plans" : {
-
-    },
     "Available:" : {
       "localizations" : {
         "de" : {
@@ -3475,18 +3431,6 @@
         }
       }
     },
-    "BEST VALUE" : {
-
-    },
-    "Billed annually • Save 33%" : {
-
-    },
-    "Billed monthly" : {
-
-    },
-    "Billing issue - Please update payment method" : {
-
-    },
     "Bimonthly" : {
       "localizations" : {
         "de" : {
@@ -3632,9 +3576,6 @@
           }
         }
       }
-    },
-    "Budgeting" : {
-
     },
     "By Category" : {
       "localizations" : {
@@ -4079,9 +4020,6 @@
           }
         }
       }
-    },
-    "Checking subscription status..." : {
-
     },
     "Choose an account from the sidebar to view details" : {
       "localizations" : {
@@ -4620,9 +4558,6 @@
           }
         }
       }
-    },
-    "Create and manage budgets to track your spending." : {
-
     },
     "Create Budget" : {
       "localizations" : {
@@ -7500,9 +7435,6 @@
     "Français" : {
 
     },
-    "Free" : {
-
-    },
     "Freelance" : {
       "localizations" : {
         "de" : {
@@ -7959,12 +7891,6 @@
         }
       }
     },
-    "Get the most out of Cash with powerful premium features" : {
-
-    },
-    "Go Premium" : {
-
-    },
     "Good" : {
       "localizations" : {
         "de" : {
@@ -8020,9 +7946,6 @@
           }
         }
       }
-    },
-    "Grace period until %@" : {
-
     },
     "Healthcare" : {
       "localizations" : {
@@ -9866,9 +9789,6 @@
     "Links" : {
 
     },
-    "Loading plans..." : {
-
-    },
     "Loan" : {
       "localizations" : {
         "de" : {
@@ -9930,9 +9850,6 @@
           }
         }
       }
-    },
-    "Loan calculators, amortization schedules, and mortgage tools." : {
-
     },
     "Loan Details" : {
       "localizations" : {
@@ -10153,9 +10070,6 @@
           }
         }
       }
-    },
-    "Manage subscription" : {
-
     },
     "Manageable" : {
       "localizations" : {
@@ -12188,9 +12102,6 @@
         }
       }
     },
-    "Not Now" : {
-
-    },
     "Not reconciled" : {
       "localizations" : {
         "de" : {
@@ -12218,9 +12129,6 @@
           }
         }
       }
-    },
-    "Not subscribed" : {
-
     },
     "Note: A penalty of %@ (%@%%) has been deducted from your savings." : {
       "localizations" : {
@@ -13363,15 +13271,6 @@
           }
         }
       }
-    },
-    "Premium" : {
-
-    },
-    "Premium Feature" : {
-
-    },
-    "Premium features" : {
-
     },
     "Prepaid expense" : {
       "localizations" : {
@@ -14668,12 +14567,6 @@
         }
       }
     },
-    "Restore purchases" : {
-
-    },
-    "Restore Purchases" : {
-
-    },
     "Results" : {
       "localizations" : {
         "de" : {
@@ -15786,36 +15679,6 @@
     "Storage used" : {
 
     },
-    "Subscribe" : {
-
-    },
-    "Subscribe to unlock all premium features." : {
-
-    },
-    "Subscribed" : {
-
-    },
-    "Subscribed - Expires %@" : {
-
-    },
-    "Subscribed - Renews %@" : {
-
-    },
-    "Subscription" : {
-
-    },
-    "Subscription expired" : {
-
-    },
-    "Subscription revoked" : {
-
-    },
-    "Subscription status" : {
-
-    },
-    "Subscription..." : {
-
-    },
     "Subscriptions" : {
       "localizations" : {
         "de" : {
@@ -15963,9 +15826,6 @@
       }
     },
     "Sync issue" : {
-
-    },
-    "Sync your data across all your Apple devices using iCloud." : {
 
     },
     "Sync your data across all your devices." : {
@@ -17267,9 +17127,6 @@
     "Unable to determine iCloud status" : {
 
     },
-    "Unable to load subscription plans. Please try again later." : {
-
-    },
     "Unaffordable" : {
       "localizations" : {
         "de" : {
@@ -17327,12 +17184,6 @@
       }
     },
     "Unknown iCloud status" : {
-
-    },
-    "Unlock Cash Premium" : {
-
-    },
-    "Unlock with Premium" : {
 
     },
     "Unnamed Envelope" : {
@@ -18099,9 +17950,6 @@
           }
         }
       }
-    },
-    "You can switch plans anytime. Apple will automatically prorate your subscription." : {
-
     },
     "You save %@ in interest!" : {
       "localizations" : {

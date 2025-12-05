@@ -18,7 +18,6 @@ import CloudKit
 
 enum SettingsTab: String, CaseIterable, Identifiable {
     case general = "general"
-    case subscription = "subscription"
     case data = "data"
     case about = "about"
     
@@ -28,8 +27,6 @@ enum SettingsTab: String, CaseIterable, Identifiable {
         switch self {
         case .general:
             return "General"
-        case .subscription:
-            return "Subscription"
         case .data:
             return "Data"
         case .about:
@@ -41,8 +38,6 @@ enum SettingsTab: String, CaseIterable, Identifiable {
         switch self {
         case .general:
             return "gearshape.fill"
-        case .subscription:
-            return "crown.fill"
         case .data:
             return "externaldrive.fill"
         case .about:
@@ -153,11 +148,6 @@ struct SettingsView: View {
         } message: {
             Text(errorMessage)
         }
-        .onReceive(NotificationCenter.default.publisher(for: .showSubscriptionTab)) { _ in
-            withAnimation(.easeInOut(duration: 0.15)) {
-                selectedTab = .subscription
-            }
-        }
     }
     
     // MARK: - Tab Bar
@@ -206,8 +196,6 @@ struct SettingsView: View {
             switch selectedTab {
             case .general:
                 GeneralSettingsTabContent()
-            case .subscription:
-                SubscriptionSettingsTabContent()
             case .data:
                 DataSettingsTabContent(
                     showingExportFormatPicker: $showingExportFormatPicker,
@@ -408,9 +396,7 @@ struct DataSettingsTabContent: View {
     
     #if ENABLE_ICLOUD
     @State private var cloudManager = CloudKitManager.shared
-    @State private var subscriptionManager = SubscriptionManager.shared
     @State private var showingRestartAlert = false
-    @State private var showingPaywall = false
     
     private var hasICloudAccount: Bool {
         FileManager.default.ubiquityIdentityToken != nil
@@ -420,60 +406,58 @@ struct DataSettingsTabContent: View {
     var body: some View {
         #if ENABLE_ICLOUD
         // iCloud Sync Section
-        if subscriptionManager.isFeatureEnabled(.iCloudSync) {
-            Section {
-                Toggle("Enable iCloud sync", isOn: Binding(
-                    get: { cloudManager.isEnabled },
-                    set: { newValue in
-                        cloudManager.isEnabled = newValue
-                        if cloudManager.needsRestart {
-                            showingRestartAlert = true
-                        }
+        Section {
+            Toggle("Enable iCloud sync", isOn: Binding(
+                get: { cloudManager.isEnabled },
+                set: { newValue in
+                    cloudManager.isEnabled = newValue
+                    if cloudManager.needsRestart {
+                        showingRestartAlert = true
                     }
-                ))
-                .disabled(!cloudManager.isAvailable)
+                }
+            ))
+            .disabled(!cloudManager.isAvailable)
+            
+            if cloudManager.isEnabled {
+                LabeledContent("Status") {
+                    HStack(spacing: 6) {
+                        Circle()
+                            .fill(cloudManager.accountStatus == .available ? Color.green : Color.orange)
+                            .frame(width: 8, height: 8)
+                        Text(cloudManager.accountStatusDescription)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 
-                if cloudManager.isEnabled {
-                    LabeledContent("Status") {
-                        HStack(spacing: 6) {
-                            Circle()
-                                .fill(cloudManager.accountStatus == .available ? Color.green : Color.orange)
-                                .frame(width: 8, height: 8)
-                            Text(cloudManager.accountStatusDescription)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-                    
-                    LabeledContent("Storage used") {
-                        if cloudManager.isLoadingStorage {
-                            ProgressView()
-                                .scaleEffect(0.7)
-                        } else {
-                            Text(cloudManager.formattedStorageUsed)
-                                .foregroundStyle(.secondary)
-                        }
+                LabeledContent("Storage used") {
+                    if cloudManager.isLoadingStorage {
+                        ProgressView()
+                            .scaleEffect(0.7)
+                    } else {
+                        Text(cloudManager.formattedStorageUsed)
+                            .foregroundStyle(.secondary)
                     }
                 }
-            } header: {
-                Text("iCloud Sync")
-            } footer: {
-                if !hasICloudAccount {
-                    Text("Sign in to iCloud in System Settings to enable sync.")
-                } else {
-                    Text("Sync your data across all your devices.")
-                }
             }
-            .alert("Restart required", isPresented: $showingRestartAlert) {
-                Button("Later") {
-                    cloudManager.needsRestart = false
-                }
-                Button("Restart now") {
-                    cloudManager.needsRestart = false
-                    AppSettings.shared.restartApp()
-                }
-            } message: {
-                Text("The app needs to restart to apply iCloud changes.")
+        } header: {
+            Text("iCloud Sync")
+        } footer: {
+            if !hasICloudAccount {
+                Text("Sign in to iCloud in System Settings to enable sync.")
+            } else {
+                Text("Sync your data across all your devices.")
             }
+        }
+        .alert("Restart required", isPresented: $showingRestartAlert) {
+            Button("Later") {
+                cloudManager.needsRestart = false
+            }
+            Button("Restart now") {
+                cloudManager.needsRestart = false
+                AppSettings.shared.restartApp()
+            }
+        } message: {
+            Text("The app needs to restart to apply iCloud changes.")
         }
         #endif
         

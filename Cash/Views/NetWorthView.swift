@@ -37,15 +37,13 @@ struct NetWorthView: View {
             VStack(spacing: 24) {
                 // Net Worth Card with Premium button
                 VStack(spacing: 8) {
-                    // Header with Premium button
+                    // Header
                     HStack {
                         Text("Net Worth")
                             .font(.headline)
                             .foregroundStyle(.secondary)
                         
                         Spacer()
-                        
-                        PremiumPromoBadge()
                     }
                     .padding(.horizontal)
                     
