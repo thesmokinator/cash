@@ -352,41 +352,6 @@
         }
       }
     },
-    "%@ %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ %2$@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ %2$@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ %2$@"
-          }
-        }
-      }
-    },
     "%@ every %lld months" : {
       "localizations" : {
         "en" : {
@@ -408,6 +373,9 @@
       }
     },
     "%@/day" : {
+
+    },
+    "%@/mo" : {
 
     },
     "%@/month" : {
@@ -1478,9 +1446,6 @@
           }
         }
       }
-    },
-    "Account limit reached" : {
-
     },
     "Account name" : {
       "localizations" : {
@@ -3510,7 +3475,10 @@
         }
       }
     },
-    "Billed annually" : {
+    "BEST VALUE" : {
+
+    },
+    "Billed annually • Save 33%" : {
 
     },
     "Billed monthly" : {
@@ -4049,9 +4017,6 @@
           }
         }
       }
-    },
-    "Category limit reached" : {
-
     },
     "Change" : {
       "localizations" : {
@@ -4748,15 +4713,6 @@
           }
         }
       }
-    },
-    "Create unlimited accounts (free: up to 5)." : {
-
-    },
-    "Create unlimited income/expense categories (free: up to 10)." : {
-
-    },
-    "Create unlimited scheduled transactions (free: up to 5)." : {
-
     },
     "Create your first account to get started." : {
       "localizations" : {
@@ -5793,6 +5749,9 @@
       }
     },
     "Deutsch" : {
+
+    },
+    "DEV" : {
 
     },
     "Difference" : {
@@ -7544,18 +7503,6 @@
     "Français" : {
 
     },
-    "Free" : {
-
-    },
-    "Free users can create up to %lld accounts." : {
-
-    },
-    "Free users can create up to %lld categories." : {
-
-    },
-    "Free users can create up to %lld scheduled transactions." : {
-
-    },
     "Freelance" : {
       "localizations" : {
         "de" : {
@@ -8012,40 +7959,8 @@
         }
       }
     },
-    "Get support or contribute on GitHub." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unterstützung erhalten oder auf GitHub beitragen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Get support or contribute on GitHub."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Obtén soporte o contribuye en GitHub."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Obtenez de l'aide ou contribuez sur GitHub."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ottieni supporto o contribuisci su GitHub."
-          }
-        }
-      }
+    "Get the most out of Cash with powerful premium features" : {
+
     },
     "Go Premium" : {
 
@@ -8288,35 +8203,6 @@
     },
     "iCloud account available" : {
 
-    },
-    "iCloud not available in this build" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud ist in diesem Build nicht verfügbar"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud no está disponible en esta compilación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud n'est pas disponible dans cette version"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud non disponibile in questa versione"
-          }
-        }
-      }
     },
     "iCloud Sync" : {
 
@@ -9749,6 +9635,9 @@
           }
         }
       }
+    },
+    "Last synced: %@" : {
+
     },
     "Last Year" : {
       "localizations" : {
@@ -12041,6 +11930,9 @@
         }
       }
     },
+    "No scheduled transactions are due on this date" : {
+
+    },
     "No transactions" : {
       "localizations" : {
         "de" : {
@@ -12152,6 +12044,9 @@
           }
         }
       }
+    },
+    "No transactions on %@" : {
+
     },
     "No transactions to reconcile" : {
       "localizations" : {
@@ -13469,7 +13364,7 @@
         }
       }
     },
-    "Premium" : {
+    "Premium (Development)" : {
 
     },
     "Premium Feature" : {
@@ -14145,6 +14040,9 @@
           }
         }
       }
+    },
+    "Ready" : {
+
     },
     "Ready to import" : {
       "localizations" : {
@@ -14832,6 +14730,9 @@
         }
       }
     },
+    "Retry Sync" : {
+
+    },
     "Review" : {
       "localizations" : {
         "de" : {
@@ -15089,9 +14990,6 @@
           }
         }
       }
-    },
-    "Scheduled limit reached" : {
-
     },
     "Search" : {
       "localizations" : {
@@ -15587,6 +15485,9 @@
         }
       }
     },
+    "Show all scheduled transactions" : {
+
+    },
     "Show amounts" : {
       "localizations" : {
         "de" : {
@@ -15888,12 +15789,6 @@
     "Subscribe" : {
 
     },
-    "Subscribe Now" : {
-
-    },
-    "Subscribe to Cash Premium to unlock %@ and other premium features." : {
-
-    },
     "Subscribe to unlock all premium features." : {
 
     },
@@ -16067,10 +15962,19 @@
         }
       }
     },
+    "Sync issue" : {
+
+    },
     "Sync your data across all your Apple devices using iCloud." : {
 
     },
     "Sync your data across all your devices." : {
+
+    },
+    "Syncing with iCloud..." : {
+
+    },
+    "Syncing..." : {
 
     },
     "System" : {
@@ -17425,16 +17329,7 @@
     "Unknown iCloud status" : {
 
     },
-    "Unlimited Accounts" : {
-
-    },
-    "Unlimited Categories" : {
-
-    },
-    "Unlimited Scheduled" : {
-
-    },
-    "Unlock Premium" : {
+    "Unlock Cash Premium" : {
 
     },
     "Unlock with Premium" : {
@@ -17495,6 +17390,9 @@
           }
         }
       }
+    },
+    "Up to date" : {
+
     },
     "Upcoming Transactions" : {
       "localizations" : {
@@ -17619,9 +17517,6 @@
           }
         }
       }
-    },
-    "Upgrade" : {
-
     },
     "Use Average" : {
       "localizations" : {
@@ -17825,12 +17720,12 @@
         }
       }
     },
-    "Version %@ (%@)" : {
+    "Version %@ (%@%@)" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Version %1$@ (%2$@)"
+            "value" : "Version %1$@ (%2$@%3$@)"
           }
         }
       }

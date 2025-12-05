@@ -20,9 +20,6 @@ enum PremiumFeature: String, CaseIterable, Identifiable {
     case budgeting = "budgeting"
     case reports = "reports"
     case loans = "loans"
-    case unlimitedAccounts = "unlimited_accounts"
-    case unlimitedCategories = "unlimited_categories"
-    case unlimitedScheduled = "unlimited_scheduled"
     
     var id: String { rawValue }
     
@@ -36,12 +33,6 @@ enum PremiumFeature: String, CaseIterable, Identifiable {
             return String(localized: "Advanced Reports")
         case .loans:
             return String(localized: "Loans & Mortgages")
-        case .unlimitedAccounts:
-            return String(localized: "Unlimited Accounts")
-        case .unlimitedCategories:
-            return String(localized: "Unlimited Categories")
-        case .unlimitedScheduled:
-            return String(localized: "Unlimited Scheduled")
         }
     }
     
@@ -55,12 +46,6 @@ enum PremiumFeature: String, CaseIterable, Identifiable {
             return String(localized: "Advanced reports and analytics for your finances.")
         case .loans:
             return String(localized: "Loan calculators, amortization schedules, and mortgage tools.")
-        case .unlimitedAccounts:
-            return String(localized: "Create unlimited accounts (free: up to 5).")
-        case .unlimitedCategories:
-            return String(localized: "Create unlimited income/expense categories (free: up to 10).")
-        case .unlimitedScheduled:
-            return String(localized: "Create unlimited scheduled transactions (free: up to 5).")
         }
     }
     
@@ -74,23 +59,8 @@ enum PremiumFeature: String, CaseIterable, Identifiable {
             return "chart.bar.doc.horizontal.fill"
         case .loans:
             return "house.fill"
-        case .unlimitedAccounts:
-            return "building.columns.fill"
-        case .unlimitedCategories:
-            return "folder.fill"
-        case .unlimitedScheduled:
-            return "calendar.badge.clock"
         }
     }
-}
-
-// MARK: - Free Tier Limits
-
-/// Limits for free tier users
-enum FreeTierLimits {
-    static let maxAccounts = 5
-    static let maxCategories = 10
-    static let maxScheduledTransactions = 5
 }
 
 // MARK: - Subscription Product
@@ -209,44 +179,6 @@ final class SubscriptionManager {
     /// Get yearly product if available
     var yearlyProduct: Product? {
         products.first { $0.id == SubscriptionProduct.yearly.id }
-    }
-    
-    // MARK: - Limit Checking
-    
-    /// Check if user can create more accounts
-    func canCreateAccount(currentCount: Int) -> Bool {
-        if isPremiumEnabled { return true }
-        return currentCount < FreeTierLimits.maxAccounts
-    }
-    
-    /// Check if user can create more categories (income/expense accounts)
-    func canCreateCategory(currentCount: Int) -> Bool {
-        if isPremiumEnabled { return true }
-        return currentCount < FreeTierLimits.maxCategories
-    }
-    
-    /// Check if user can create more scheduled transactions
-    func canCreateScheduled(currentCount: Int) -> Bool {
-        if isPremiumEnabled { return true }
-        return currentCount < FreeTierLimits.maxScheduledTransactions
-    }
-    
-    /// Get remaining accounts that can be created
-    func remainingAccounts(currentCount: Int) -> Int {
-        if isPremiumEnabled { return Int.max }
-        return max(0, FreeTierLimits.maxAccounts - currentCount)
-    }
-    
-    /// Get remaining categories that can be created
-    func remainingCategories(currentCount: Int) -> Int {
-        if isPremiumEnabled { return Int.max }
-        return max(0, FreeTierLimits.maxCategories - currentCount)
-    }
-    
-    /// Get remaining scheduled transactions that can be created
-    func remainingScheduled(currentCount: Int) -> Int {
-        if isPremiumEnabled { return Int.max }
-        return max(0, FreeTierLimits.maxScheduledTransactions - currentCount)
     }
     
     // MARK: - Initialization

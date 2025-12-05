@@ -2141,14 +2141,11 @@ struct DataExporterErrorTests {
 struct PremiumFeatureTests {
     
     @Test func allPremiumFeaturesExist() async throws {
-        #expect(PremiumFeature.allCases.count == 7)
+        #expect(PremiumFeature.allCases.count == 4)
         #expect(PremiumFeature.allCases.contains(.iCloudSync))
         #expect(PremiumFeature.allCases.contains(.budgeting))
         #expect(PremiumFeature.allCases.contains(.reports))
         #expect(PremiumFeature.allCases.contains(.loans))
-        #expect(PremiumFeature.allCases.contains(.unlimitedAccounts))
-        #expect(PremiumFeature.allCases.contains(.unlimitedCategories))
-        #expect(PremiumFeature.allCases.contains(.unlimitedScheduled))
     }
     
     @Test func premiumFeaturesHaveDisplayNames() async throws {
@@ -2192,16 +2189,5 @@ struct SubscriptionStatusTests {
         #expect(SubscriptionStatus.subscribed(expirationDate: futureDate, willRenew: true).isActive == true)
         #expect(SubscriptionStatus.inGracePeriod(expirationDate: futureDate).isActive == true)
         #expect(SubscriptionStatus.inBillingRetry.isActive == true)
-    }
-}
-
-// MARK: - Free Tier Limits Tests
-
-struct FreeTierLimitsTests {
-    
-    @Test func freeTierLimitsValues() async throws {
-        #expect(FreeTierLimits.maxAccounts == 5)
-        #expect(FreeTierLimits.maxCategories == 10)
-        #expect(FreeTierLimits.maxScheduledTransactions == 5)
     }
 }

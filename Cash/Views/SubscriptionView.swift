@@ -50,28 +50,39 @@ struct PremiumFeaturesList: View {
 
 // MARK: - Premium Promo Badge
 
-/// A badge/button that promotes premium features - opens Settings on Subscription tab
+/// A badge/button that promotes premium features - opens the paywall sheet
 struct PremiumPromoBadge: View {
     @State private var subscriptionManager = SubscriptionManager.shared
+    @State private var showingPaywall = false
     
     var body: some View {
         // Don't show if already premium
         if !subscriptionManager.isPremiumEnabled {
             Button {
-                // Post notification to open Settings and switch to subscription tab
-                NotificationCenter.default.post(name: .showSubscriptionTab, object: nil)
+                showingPaywall = true
             } label: {
                 HStack(spacing: 6) {
-                    Image(systemName: "crown")
+                    Image(systemName: "crown.fill")
+                        .foregroundStyle(.yellow)
                     Text("Go Premium")
                 }
-                .font(.subheadline)
+                .font(.subheadline.weight(.medium))
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
-                .background(.quaternary)
+                .background(
+                    LinearGradient(
+                        colors: [.purple.opacity(0.8), .blue.opacity(0.8)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .foregroundStyle(.white)
                 .clipShape(Capsule())
             }
             .buttonStyle(.plain)
+            .sheet(isPresented: $showingPaywall) {
+                SubscriptionPaywallView(feature: .iCloudSync)
+            }
         }
     }
 }
@@ -318,114 +329,196 @@ struct SubscriptionPaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var subscriptionManager = SubscriptionManager.shared
     @State private var selectedProduct: Product?
+    @State private var animateGradient = false
     
     let feature: PremiumFeature
     
     var body: some View {
-        VStack(spacing: 24) {
-            // Header
-            VStack(spacing: 12) {
-                Image(systemName: "crown.fill")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.yellow)
-                
-                Text("Unlock Premium")
-                    .font(.title)
-                    .fontWeight(.bold)
-                
-                Text("Subscribe to Cash Premium to unlock \(feature.displayName) and other premium features.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            .padding(.top, 20)
-            
-            // Features
-            VStack(alignment: .leading, spacing: 12) {
-                ForEach(PremiumFeature.allCases) { f in
-                    HStack(spacing: 12) {
-                        Image(systemName: f.iconName)
-                            .foregroundStyle(.blue)
-                            .frame(width: 24)
-                        Text(f.displayName)
-                        Spacer()
-                        Image(systemName: "checkmark")
-                            .foregroundStyle(.green)
-                    }
+        ZStack {
+            // Animated gradient background
+            LinearGradient(
+                colors: [
+                    Color.purple.opacity(0.15),
+                    Color.blue.opacity(0.1),
+                    Color.purple.opacity(0.1)
+                ],
+                startPoint: animateGradient ? .topLeading : .bottomTrailing,
+                endPoint: animateGradient ? .bottomTrailing : .topLeading
+            )
+            .ignoresSafeArea()
+            .onAppear {
+                withAnimation(.easeInOut(duration: 3).repeatForever(autoreverses: true)) {
+                    animateGradient.toggle()
                 }
             }
-            .padding()
-            .background(.quaternary.opacity(0.5))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
             
-            // Products
-            if subscriptionManager.isLoadingProducts {
-                ProgressView()
-            } else {
-                VStack(spacing: 8) {
-                    ForEach(subscriptionManager.products, id: \.id) { product in
-                        PaywallProductButton(product: product, isSelected: selectedProduct == product) {
-                            selectedProduct = product
+            ScrollView {
+                VStack(spacing: 28) {
+                    // Header with crown animation
+                    VStack(spacing: 16) {
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [.yellow, .orange],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 80, height: 80)
+                                .shadow(color: .yellow.opacity(0.5), radius: 20, x: 0, y: 10)
+                            
+                            Image(systemName: "crown.fill")
+                                .font(.system(size: 36))
+                                .foregroundStyle(.white)
+                        }
+                        
+                        VStack(spacing: 8) {
+                            Text("Unlock Cash Premium")
+                                .font(.title)
+                                .fontWeight(.bold)
+                            
+                            Text("Get the most out of Cash with powerful premium features")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
                         }
                     }
-                }
-            }
-            
-            Spacer()
-            
-            // Actions
-            VStack(spacing: 12) {
-                Button {
-                    guard let product = selectedProduct else { return }
-                    Task {
-                        let success = await subscriptionManager.purchase(product)
-                        if success {
-                            dismiss()
-                        }
-                    }
-                } label: {
-                    if subscriptionManager.isPurchasing {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                    } else {
-                        Text("Subscribe Now")
-                            .frame(maxWidth: .infinity)
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                .controlSize(.large)
-                .disabled(selectedProduct == nil || subscriptionManager.isPurchasing)
-                
-                HStack(spacing: 16) {
-                    Button("Restore Purchases") {
-                        Task {
-                            await subscriptionManager.restorePurchases()
-                            if subscriptionManager.status.isActive {
-                                dismiss()
+                    .padding(.top, 24)
+                    
+                    // Features grid
+                    VStack(spacing: 0) {
+                        ForEach(Array(PremiumFeature.allCases.enumerated()), id: \.element.id) { index, f in
+                            HStack(spacing: 16) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .fill(featureColor(for: index).opacity(0.15))
+                                        .frame(width: 44, height: 44)
+                                    
+                                    Image(systemName: f.iconName)
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(featureColor(for: index))
+                                }
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(f.displayName)
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                    Text(f.description)
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(2)
+                                }
+                                
+                                Spacer()
+                                
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.title3)
+                                    .foregroundStyle(.green)
+                            }
+                            .padding(.vertical, 12)
+                            .padding(.horizontal, 16)
+                            
+                            if index < PremiumFeature.allCases.count - 1 {
+                                Divider()
+                                    .padding(.leading, 76)
                             }
                         }
                     }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.secondary)
+                    .background(Color(nsColor: .controlBackgroundColor))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: 5)
                     
-                    Button("Not Now") {
-                        dismiss()
+                    // Products
+                    if subscriptionManager.isLoadingProducts {
+                        ProgressView()
+                            .padding()
+                    } else {
+                        VStack(spacing: 10) {
+                            ForEach(subscriptionManager.products, id: \.id) { product in
+                                PaywallProductButton(
+                                    product: product,
+                                    isSelected: selectedProduct == product,
+                                    isBestValue: product.id == subscriptionManager.yearlyProduct?.id
+                                ) {
+                                    selectedProduct = product
+                                }
+                            }
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .foregroundStyle(.secondary)
+                    
+                    // Actions
+                    VStack(spacing: 16) {
+                        Button {
+                            guard let product = selectedProduct else { return }
+                            Task {
+                                let success = await subscriptionManager.purchase(product)
+                                if success {
+                                    dismiss()
+                                }
+                            }
+                        } label: {
+                            Group {
+                                if subscriptionManager.isPurchasing {
+                                    ProgressView()
+                                        .tint(.white)
+                                } else {
+                                    Text("Continue")
+                                        .fontWeight(.semibold)
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 20)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(
+                            LinearGradient(
+                                colors: [.purple, .blue],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            ).opacity(1)
+                        )
+                        .controlSize(.large)
+                        .disabled(selectedProduct == nil || subscriptionManager.isPurchasing)
+                        
+                        HStack(spacing: 20) {
+                            Button("Restore Purchases") {
+                                Task {
+                                    await subscriptionManager.restorePurchases()
+                                    if subscriptionManager.status.isActive {
+                                        dismiss()
+                                    }
+                                }
+                            }
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            
+                            Button("Not Now") {
+                                dismiss()
+                            }
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .padding(.bottom, 8)
                 }
-                .font(.caption)
+                .padding(.horizontal, 24)
             }
         }
-        .padding(30)
-        .frame(width: 400, height: 550)
+        .frame(width: 420, height: 620)
         .onAppear {
             Task {
                 await subscriptionManager.loadProducts()
-                // Auto-select yearly as default
+                // Auto-select yearly as default (best value)
                 selectedProduct = subscriptionManager.yearlyProduct ?? subscriptionManager.products.first
             }
         }
+    }
+    
+    private func featureColor(for index: Int) -> Color {
+        let colors: [Color] = [.blue, .purple, .orange, .green, .pink, .cyan]
+        return colors[index % colors.count]
     }
 }
 
@@ -434,14 +527,47 @@ struct SubscriptionPaywallView: View {
 struct PaywallProductButton: View {
     let product: Product
     let isSelected: Bool
+    var isBestValue: Bool = false
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(product.displayName)
-                        .fontWeight(.semibold)
+            HStack(spacing: 12) {
+                // Selection indicator
+                ZStack {
+                    Circle()
+                        .strokeBorder(isSelected ? Color.blue : Color.secondary.opacity(0.3), lineWidth: 2)
+                        .frame(width: 24, height: 24)
+                    
+                    if isSelected {
+                        Circle()
+                            .fill(Color.blue)
+                            .frame(width: 14, height: 14)
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        Text(product.displayName)
+                            .font(.headline)
+                        
+                        if isBestValue {
+                            Text("BEST VALUE")
+                                .font(.system(size: 9, weight: .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(
+                                    LinearGradient(
+                                        colors: [.orange, .pink],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .clipShape(Capsule())
+                        }
+                    }
+                    
                     if let subscription = product.subscription {
                         Text(priceDescription(for: product, subscription: subscription))
                             .font(.caption)
@@ -451,18 +577,32 @@ struct PaywallProductButton: View {
                 
                 Spacer()
                 
-                Text(product.displayPrice)
-                    .fontWeight(.bold)
-                
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isSelected ? .blue : .secondary)
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(product.displayPrice)
+                        .font(.title3)
+                        .fontWeight(.bold)
+                        .foregroundStyle(isSelected ? .blue : .primary)
+                    
+                    if let subscription = product.subscription, subscription.subscriptionPeriod.unit == .year {
+                        if let monthlyPrice = calculateMonthlyPrice(for: product, subscription: subscription) {
+                            Text("\(monthlyPrice)/mo")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
             }
-            .padding()
-            .background(isSelected ? Color.blue.opacity(0.1) : Color.clear)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(isSelected ? Color.blue.opacity(0.08) : Color(nsColor: .controlBackgroundColor))
+            )
             .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .strokeBorder(isSelected ? Color.blue : Color.secondary.opacity(0.3), lineWidth: isSelected ? 2 : 1)
+                RoundedRectangle(cornerRadius: 12)
+                    .strokeBorder(
+                        isSelected ? Color.blue : Color.secondary.opacity(0.2),
+                        lineWidth: isSelected ? 2 : 1
+                    )
             )
         }
         .buttonStyle(.plain)
@@ -473,10 +613,17 @@ struct PaywallProductButton: View {
         case .month:
             return String(localized: "Billed monthly")
         case .year:
-            return String(localized: "Billed annually")
+            return String(localized: "Billed annually • Save 33%")
         default:
             return ""
         }
+    }
+    
+    private func calculateMonthlyPrice(for product: Product, subscription: Product.SubscriptionInfo) -> String? {
+        guard subscription.subscriptionPeriod.unit == .year else { return nil }
+        let yearlyPrice = product.price
+        let monthlyPrice = yearlyPrice / 12
+        return monthlyPrice.formatted(.currency(code: product.priceFormatStyle.currencyCode))
     }
 }
 

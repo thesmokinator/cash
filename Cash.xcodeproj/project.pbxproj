@@ -264,7 +264,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "GIT_HASH=$(/usr/bin/git -C \"${SRCROOT}\" rev-parse --short HEAD)\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $GIT_HASH\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n";
+			shellScript = "GIT_HASH=$(/usr/bin/git -C \"${SRCROOT}\" rev-parse --short HEAD)\nGIT_COMMIT_COUNT=$(/usr/bin/git -C \"${SRCROOT}\" rev-list --count HEAD)\n# Set CFBundleVersion to a numeric build number derived from the commit count\nif /usr/libexec/PlistBuddy -c \"Print :CFBundleVersion\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" &> /dev/null; then\n  /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $GIT_COMMIT_COUNT\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nelse\n  /usr/libexec/PlistBuddy -c \"Add :CFBundleVersion string $GIT_COMMIT_COUNT\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n# Store the short git hash as a separate key for display in the app\nif /usr/libexec/PlistBuddy -c \"Print :GitShortHash\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" &> /dev/null; then\n  /usr/libexec/PlistBuddy -c \"Set :GitShortHash $GIT_HASH\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nelse\n  /usr/libexec/PlistBuddy -c \"Add :GitShortHash string $GIT_HASH\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -430,9 +430,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 932KJJ3UZK;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -448,19 +450,19 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Cash;
+				INFOPLIST_KEY_CFBundleDisplayName = "Cash Personal Finance";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.thesmokinator.Cash;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) ENABLE_ICLOUD";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) ENABLE_ICLOUD ENABLE_PREMIUM";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -475,9 +477,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 932KJJ3UZK;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_FILE_ACCESS_DOWNLOADS_FOLDER = readwrite;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
@@ -493,14 +497,14 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Cash;
+				INFOPLIST_KEY_CFBundleDisplayName = "Cash Personal Finance";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.thesmokinator.Cash;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;

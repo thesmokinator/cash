@@ -97,6 +97,10 @@ struct CashApp: App {
                     showingSettingsSheet = true
                     // The SettingsView will handle switching to the subscription tab
                 }
+                .onAppear {
+                    // Start iCloud sync monitoring
+                    CloudKitManager.shared.startListeningForRemoteChanges()
+                }
         }
         .modelContainer(sharedModelContainer)
         .environment(settings)

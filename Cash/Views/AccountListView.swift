@@ -117,6 +117,8 @@ struct AccountListView: View {
             .navigationSplitViewColumnWidth(min: 280, ideal: 320)
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
+                    SyncStatusIndicator()
+                    
                     Button {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             settings.privacyMode.toggle()

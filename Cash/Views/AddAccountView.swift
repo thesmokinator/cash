@@ -14,7 +14,6 @@ struct AddAccountView: View {
     @Environment(AppSettings.self) private var settings
     @Query(sort: \Account.accountNumber) private var accounts: [Account]
     
-    @State private var subscriptionManager = SubscriptionManager.shared
     @State private var name: String = ""
     @State private var accountNumber: String = ""
     @State private var selectedCurrency: String = "EUR"
@@ -26,8 +25,6 @@ struct AddAccountView: View {
     
     @State private var showingValidationError = false
     @State private var validationMessage: LocalizedStringKey = ""
-    @State private var showingPaywall = false
-    @State private var paywallFeature: PremiumFeature = .unlimitedAccounts
     
     private var availableTypes: [AccountType] {
         AccountType.types(for: selectedClass)
@@ -37,65 +34,9 @@ struct AddAccountView: View {
         accounts.first { $0.accountType == .openingBalance && $0.isSystem }
     }
     
-    /// Count of real accounts (asset/liability, excluding system accounts)
-    private var realAccountsCount: Int {
-        accounts.filter { ($0.accountClass == .asset || $0.accountClass == .liability) && !$0.isSystem }.count
-    }
-    
-    /// Count of category accounts (income/expense)
-    private var categoriesCount: Int {
-        accounts.filter { $0.accountClass == .income || $0.accountClass == .expense }.count
-    }
-    
-    /// Whether user can create the selected account type
-    private var canCreateSelectedType: Bool {
-        if selectedClass == .asset || selectedClass == .liability {
-            return subscriptionManager.canCreateAccount(currentCount: realAccountsCount)
-        } else if selectedClass == .income || selectedClass == .expense {
-            return subscriptionManager.canCreateCategory(currentCount: categoriesCount)
-        }
-        return true // equity accounts are always allowed
-    }
-    
     var body: some View {
         NavigationStack {
             Form {
-                // Premium limit warning
-                if !canCreateSelectedType {
-                    Section {
-                        HStack(spacing: 12) {
-                            Image(systemName: "crown.fill")
-                                .font(.title2)
-                                .foregroundStyle(.yellow)
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                if selectedClass == .asset || selectedClass == .liability {
-                                    Text("Account limit reached")
-                                        .font(.headline)
-                                    Text("Free users can create up to \(FreeTierLimits.maxAccounts) accounts.")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                } else {
-                                    Text("Category limit reached")
-                                        .font(.headline)
-                                    Text("Free users can create up to \(FreeTierLimits.maxCategories) categories.")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                            
-                            Spacer()
-                            
-                            Button("Upgrade") {
-                                paywallFeature = (selectedClass == .asset || selectedClass == .liability) ? .unlimitedAccounts : .unlimitedCategories
-                                showingPaywall = true
-                            }
-                            .buttonStyle(.borderedProminent)
-                        }
-                        .padding(.vertical, 4)
-                    }
-                }
-                
                 Section("Account information") {
                     TextField("Account name", text: $name)
                     TextField("Account number", text: $accountNumber)
@@ -171,16 +112,13 @@ struct AddAccountView: View {
                     Button("Save") {
                         saveAccount()
                     }
-                    .disabled(name.isEmpty || !canCreateSelectedType)
+                    .disabled(name.isEmpty)
                 }
             }
             .alert("Validation error", isPresented: $showingValidationError) {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(validationMessage)
-            }
-            .sheet(isPresented: $showingPaywall) {
-                SubscriptionPaywallView(feature: paywallFeature)
             }
             .onAppear {
                 if let firstType = availableTypes.first {

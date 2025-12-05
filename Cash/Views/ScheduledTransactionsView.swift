@@ -20,15 +20,28 @@ struct ScheduledTransactionsView: View {
     @State private var dummyDateFilter: TransactionDateFilter = .thisMonth
     @State private var isLoading = true
     @State private var displayedTransactions: [Transaction] = []
+    @State private var selectedDate: Date? = nil
+    @State private var currentMonth: Date = Date()
     
     var body: some View {
         VStack(spacing: 0) {
+            // Calendar Section
+            ScheduledCalendarView(
+                scheduledTransactions: scheduledTransactions,
+                selectedDate: $selectedDate,
+                currentMonth: $currentMonth
+            )
+            .padding(.horizontal)
+            .padding(.top, 8)
+            
             TransactionFilterBar(
                 dateFilter: $dummyDateFilter,
                 searchText: $searchText,
                 showDateFilter: false,
                 onAddTransaction: { showingAddScheduled = true }
             )
+            
+            Divider()
                         
             if isLoading {
                 VStack {
@@ -40,14 +53,24 @@ struct ScheduledTransactionsView: View {
             } else if displayedTransactions.isEmpty {
                 VStack {
                     ContentUnavailableView {
-                        Label(scheduledTransactions.isEmpty ? "No scheduled transactions" : "No results", systemImage: scheduledTransactions.isEmpty ? "calendar.badge.clock" : "magnifyingglass")
+                        Label(emptyStateTitle, systemImage: emptyStateIcon)
                     } description: {
-                        Text(scheduledTransactions.isEmpty ? "Add a recurring transaction to see it here" : "No transactions match your search")
+                        Text(emptyStateDescription)
                     }
                     Spacer()
                 }
             } else {
                 List {
+                    if selectedDate != nil {
+                        Button("Show all scheduled transactions") {
+                            selectedDate = nil
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .foregroundStyle(.blue)
+                        .listRowSeparator(.hidden)
+                        .padding(.bottom, 8)
+                    }
+                    
                     ForEach(displayedTransactions) { transaction in
                         ScheduledTransactionRow(transaction: transaction)
                             .contentShape(Rectangle())
@@ -152,6 +175,39 @@ struct ScheduledTransactionsView: View {
         .onChange(of: scheduledTransactions) { _, _ in
             Task { await loadTransactions() }
         }
+        .onChange(of: selectedDate) { _, _ in
+            Task { await loadTransactions() }
+        }
+    }
+    
+    private var emptyStateTitle: String {
+        if let date = selectedDate {
+            return String(localized: "No transactions on \(date.formatted(date: .abbreviated, time: .omitted))")
+        } else if scheduledTransactions.isEmpty {
+            return String(localized: "No scheduled transactions")
+        } else {
+            return String(localized: "No results")
+        }
+    }
+    
+    private var emptyStateIcon: String {
+        if selectedDate != nil {
+            return "calendar"
+        } else if scheduledTransactions.isEmpty {
+            return "calendar.badge.clock"
+        } else {
+            return "magnifyingglass"
+        }
+    }
+    
+    private var emptyStateDescription: String {
+        if selectedDate != nil {
+            return String(localized: "No scheduled transactions are due on this date")
+        } else if scheduledTransactions.isEmpty {
+            return String(localized: "Add a recurring transaction to see it here")
+        } else {
+            return String(localized: "No transactions match your search")
+        }
     }
     
     private func loadTransactions() async {
@@ -161,19 +217,83 @@ struct ScheduledTransactionsView: View {
         
         let allTxns = scheduledTransactions
         let currentSearchText = searchText
+        let filterDate = selectedDate
         
         var result: [Transaction]
         
-        if currentSearchText.isEmpty {
+        if let filterDate = filterDate {
+            // Filter by selected date - check if transaction occurs on this date
+            result = allTxns.filter { transaction in
+                transactionOccursOnDate(transaction, date: filterDate)
+            }
+        } else if currentSearchText.isEmpty {
             result = allTxns
         } else {
             result = allTxns.filter { $0.descriptionText.localizedCaseInsensitiveContains(currentSearchText) }
+        }
+        
+        // Also apply search filter if both date and search are set
+        if filterDate != nil && !currentSearchText.isEmpty {
+            result = result.filter { $0.descriptionText.localizedCaseInsensitiveContains(currentSearchText) }
         }
         
         await MainActor.run {
             displayedTransactions = result
             isLoading = false
         }
+    }
+    
+    private func transactionOccursOnDate(_ transaction: Transaction, date: Date) -> Bool {
+        guard let rule = transaction.recurrenceRule else { return false }
+        
+        let calendar = Calendar.current
+        let targetDay = calendar.startOfDay(for: date)
+        
+        // Generate occurrences for the month and check if any match the target date
+        let occurrences = generateOccurrences(for: rule, in: calendar.dateInterval(of: .month, for: date)!)
+        
+        return occurrences.contains { occurrence in
+            calendar.isDate(occurrence, inSameDayAs: targetDay)
+        }
+    }
+    
+    private func generateOccurrences(for rule: RecurrenceRule, in interval: DateInterval) -> [Date] {
+        var occurrences: [Date] = []
+        var currentDate = rule.startDate
+        let calendar = Calendar.current
+        
+        // Limit iterations for safety
+        var iterations = 0
+        let maxIterations = 366
+        
+        while currentDate <= interval.end && iterations < maxIterations {
+            if let nextOccurrence = rule.calculateNextOccurrence(from: currentDate, includeDate: true) {
+                if nextOccurrence >= interval.start && nextOccurrence <= interval.end {
+                    occurrences.append(nextOccurrence)
+                }
+                
+                if nextOccurrence > interval.end {
+                    break
+                }
+                
+                // Move to next occurrence (use nextOccurrence as base to handle weekend adjustments)
+                switch rule.frequency {
+                case .daily:
+                    currentDate = calendar.date(byAdding: .day, value: rule.interval, to: nextOccurrence) ?? nextOccurrence
+                case .weekly:
+                    currentDate = calendar.date(byAdding: .weekOfYear, value: rule.interval, to: nextOccurrence) ?? nextOccurrence
+                case .monthly:
+                    currentDate = calendar.date(byAdding: .month, value: rule.interval, to: nextOccurrence) ?? nextOccurrence
+                case .yearly:
+                    currentDate = calendar.date(byAdding: .year, value: rule.interval, to: nextOccurrence) ?? nextOccurrence
+                }
+            } else {
+                break
+            }
+            iterations += 1
+        }
+        
+        return occurrences
     }
     
     private func executeTransaction(_ template: Transaction) {
@@ -204,6 +324,233 @@ struct ScheduledTransactionsView: View {
         }
         
         transactionToExecute = nil
+    }
+}
+
+// MARK: - Scheduled Calendar View
+
+struct ScheduledCalendarView: View {
+    let scheduledTransactions: [Transaction]
+    @Binding var selectedDate: Date?
+    @Binding var currentMonth: Date
+    
+    private let calendar = Calendar.current
+    private let daysOfWeek = Calendar.current.shortWeekdaySymbols
+    
+    private var monthInterval: DateInterval {
+        calendar.dateInterval(of: .month, for: currentMonth)!
+    }
+    
+    private var daysInMonth: [Date] {
+        let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentMonth))!
+        let range = calendar.range(of: .day, in: .month, for: currentMonth)!
+        
+        return range.compactMap { day in
+            calendar.date(byAdding: .day, value: day - 1, to: startOfMonth)
+        }
+    }
+    
+    private var firstWeekdayOffset: Int {
+        let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentMonth))!
+        let weekday = calendar.component(.weekday, from: startOfMonth)
+        return weekday - 1
+    }
+    
+    private var isCurrentMonth: Bool {
+        calendar.isDate(currentMonth, equalTo: Date(), toGranularity: .month)
+    }
+    
+    private var scheduledDates: Set<Date> {
+        var dates = Set<Date>()
+        
+        for transaction in scheduledTransactions {
+            guard let rule = transaction.recurrenceRule else { continue }
+            
+            // Generate occurrences for current month
+            var currentDate = rule.startDate
+            var iterations = 0
+            let maxIterations = 366
+            
+            while currentDate <= monthInterval.end && iterations < maxIterations {
+                if let nextOccurrence = rule.calculateNextOccurrence(from: currentDate, includeDate: true) {
+                    if nextOccurrence >= monthInterval.start && nextOccurrence <= monthInterval.end {
+                        dates.insert(calendar.startOfDay(for: nextOccurrence))
+                    }
+                    
+                    if nextOccurrence > monthInterval.end {
+                        break
+                    }
+                    
+                    // Move to next occurrence
+                    switch rule.frequency {
+                    case .daily:
+                        currentDate = calendar.date(byAdding: .day, value: rule.interval, to: nextOccurrence) ?? nextOccurrence
+                    case .weekly:
+                        currentDate = calendar.date(byAdding: .weekOfYear, value: rule.interval, to: nextOccurrence) ?? nextOccurrence
+                    case .monthly:
+                        currentDate = calendar.date(byAdding: .month, value: rule.interval, to: nextOccurrence) ?? nextOccurrence
+                    case .yearly:
+                        currentDate = calendar.date(byAdding: .year, value: rule.interval, to: nextOccurrence) ?? nextOccurrence
+                    }
+                } else {
+                    break
+                }
+                iterations += 1
+            }
+        }
+        
+        return dates
+    }
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            // Month navigation
+            HStack {
+                Button {
+                    withAnimation {
+                        currentMonth = calendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
+                    }
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .frame(width: 32, height: 32)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                
+                Spacer()
+                
+                Text(currentMonth.formatted(.dateTime.month(.wide).year()))
+                    .font(.headline)
+                
+                Spacer()
+                
+                Button {
+                    withAnimation {
+                        currentMonth = Date()
+                        selectedDate = nil
+                    }
+                } label: {
+                    Text("Today")
+                        .font(.caption)
+                }
+                .buttonStyle(.bordered)
+                .disabled(isCurrentMonth)
+                
+                Button {
+                    withAnimation {
+                        currentMonth = calendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
+                    }
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .frame(width: 32, height: 32)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+            .padding(.horizontal, 4)
+            
+            // Days of week header
+            HStack(spacing: 1) {
+                ForEach(daysOfWeek, id: \.self) { day in
+                    Text(day)
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 4)
+                }
+            }
+            .background(Color(nsColor: .separatorColor).opacity(0.3))
+            .clipShape(RoundedRectangle(cornerRadius: 4))
+            
+            // Calendar grid
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 1), count: 7), spacing: 1) {
+                // Empty cells for offset
+                ForEach(0..<firstWeekdayOffset, id: \.self) { _ in
+                    Rectangle()
+                        .fill(Color(nsColor: .windowBackgroundColor))
+                        .frame(height: 36)
+                }
+                
+                // Day cells
+                ForEach(daysInMonth, id: \.self) { date in
+                    CalendarDayCell(
+                        date: date,
+                        isSelected: selectedDate.map { calendar.isDate($0, inSameDayAs: date) } ?? false,
+                        isToday: calendar.isDateInToday(date),
+                        hasScheduled: scheduledDates.contains(calendar.startOfDay(for: date))
+                    ) {
+                        if selectedDate.map({ calendar.isDate($0, inSameDayAs: date) }) ?? false {
+                            selectedDate = nil
+                        } else {
+                            selectedDate = date
+                        }
+                    }
+                }
+            }
+            .background(Color(nsColor: .separatorColor).opacity(0.3))
+            .clipShape(RoundedRectangle(cornerRadius: 4))
+        }
+        .padding(12)
+        .background(Color(nsColor: .controlBackgroundColor))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+}
+
+// MARK: - Calendar Day Cell
+
+struct CalendarDayCell: View {
+    let date: Date
+    let isSelected: Bool
+    let isToday: Bool
+    let hasScheduled: Bool
+    let action: () -> Void
+    
+    private let calendar = Calendar.current
+    
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 2) {
+                Text("\(calendar.component(.day, from: date))")
+                    .font(.system(size: 13, weight: isToday ? .bold : .regular))
+                    .foregroundStyle(foregroundColor)
+                
+                if hasScheduled {
+                    Circle()
+                        .fill(isSelected ? .white : .blue)
+                        .frame(width: 5, height: 5)
+                } else {
+                    Circle()
+                        .fill(.clear)
+                        .frame(width: 5, height: 5)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 36)
+            .background(backgroundColor)
+        }
+        .buttonStyle(.plain)
+        .contentShape(Rectangle())
+    }
+    
+    private var foregroundColor: Color {
+        if isSelected {
+            return .white
+        } else if isToday {
+            return .blue
+        } else {
+            return .primary
+        }
+    }
+    
+    private var backgroundColor: Color {
+        if isSelected {
+            return .blue
+        } else if isToday {
+            return Color.blue.opacity(0.1)
+        } else {
+            return Color(nsColor: .windowBackgroundColor)
+        }
     }
 }
 
@@ -268,9 +615,7 @@ struct AddScheduledTransactionView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppSettings.self) private var settings
     @Query(sort: \Account.accountNumber) private var accounts: [Account]
-    @Query(filter: #Predicate<Transaction> { $0.isRecurring == true }) private var scheduledTransactions: [Transaction]
     
-    @State private var subscriptionManager = SubscriptionManager.shared
     @State private var transactionType: SimpleTransactionType = .expense
     @State private var descriptionText: String = ""
     @State private var amountText: String = ""
@@ -293,11 +638,6 @@ struct AddScheduledTransactionView: View {
     
     @State private var showingValidationError = false
     @State private var validationMessage: LocalizedStringKey = ""
-    @State private var showingPaywall = false
-    
-    private var canCreateScheduled: Bool {
-        subscriptionManager.canCreateScheduled(currentCount: scheduledTransactions.count)
-    }
     
     private var assetAndLiabilityAccounts: [Account] {
         accounts.filter { ($0.accountClass == .asset || $0.accountClass == .liability) && $0.isActive }
@@ -327,7 +667,6 @@ struct AddScheduledTransactionView: View {
     }
     
     private var isValid: Bool {
-        guard canCreateScheduled else { return false }
         guard !amountText.isEmpty, amount > 0 else { return false }
         
         switch transactionType {
@@ -343,33 +682,6 @@ struct AddScheduledTransactionView: View {
     var body: some View {
         NavigationStack {
             Form {
-                // Premium limit warning
-                if !canCreateScheduled {
-                    Section {
-                        HStack(spacing: 12) {
-                            Image(systemName: "crown.fill")
-                                .font(.title2)
-                                .foregroundStyle(.yellow)
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Scheduled limit reached")
-                                    .font(.headline)
-                                Text("Free users can create up to \(FreeTierLimits.maxScheduledTransactions) scheduled transactions.")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            
-                            Spacer()
-                            
-                            Button("Upgrade") {
-                                showingPaywall = true
-                            }
-                            .buttonStyle(.borderedProminent)
-                        }
-                        .padding(.vertical, 4)
-                    }
-                }
-                
                 Section("Transaction type") {
                     Picker("Type", selection: $transactionType) {
                         ForEach(SimpleTransactionType.allCases) { type in
@@ -424,9 +736,6 @@ struct AddScheduledTransactionView: View {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(validationMessage)
-            }
-            .sheet(isPresented: $showingPaywall) {
-                SubscriptionPaywallView(feature: .unlimitedScheduled)
             }
             .id(settings.refreshID)
         }
