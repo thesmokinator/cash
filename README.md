@@ -4,7 +4,7 @@ A simplified macOS financial management application inspired by Gnucash, built w
 
 ## Screenshots
 
-![Main Screenshot](AppStore/Screenshots/001.png)
+![Main Screenshot](Screenshots/001.png)
 
 See all screenshots [here](SCREENSHOT.md).
 
@@ -51,52 +51,8 @@ xcodebuild -scheme Cash -configuration Release \
 - Apple Developer account with CloudKit enabled
 - Configure the iCloud container identifier in `Cash.entitlements`
 - Sign the app with a valid provisioning profile
-- Active subscription OR `ENABLE_PREMIUM` flag enabled
 
 When iCloud is enabled, a new "iCloud" tab appears in Settings where users can enable/disable sync.
-
-### Premium Features
-
-Cash offers a freemium model with the following premium features available through subscription:
-
-| Feature | Free | Premium |
-|---------|------|---------|
-| **iCloud Sync** | ❌ | ✅ |
-| **Budgeting** | ❌ | ✅ |
-| **Advanced Reports** | ❌ | ✅ |
-| **Loans & Mortgages** | ❌ | ✅ |
-| **Accounts** | Up to 5 | Unlimited |
-| **Categories** | Up to 10 | Unlimited |
-| **Scheduled Transactions** | Up to 5 | Unlimited |
-
-### Premium Features (Development)
-
-For development and testing, you can enable all premium features without a subscription:
-
-1. In Xcode, select the **Cash** target
-2. Go to **Build Settings** → **Swift Compiler - Custom Flags**
-3. Add `ENABLE_PREMIUM` to **Active Compilation Conditions** for Debug configuration
-
-Or via command line:
-```bash
-xcodebuild -scheme Cash -configuration Debug \
-  SWIFT_ACTIVE_COMPILATION_CONDITIONS='$(inherited) ENABLE_ICLOUD ENABLE_PREMIUM' \
-  build
-```
-
-When `ENABLE_PREMIUM` is set, all premium features are unlocked regardless of subscription status. The Settings subscription tab will show a "DEV" badge to indicate development mode.
-
-### In-App Purchases Setup
-
-To test in-app purchases:
-
-1. The project includes a StoreKit Configuration file (`Cash/Resources/Products.storekit`)
-2. Configure the scheme to use the StoreKit Configuration (Edit Scheme → Run → Options → StoreKit Configuration)
-3. Select `Products.storekit` from the dropdown
-
-Subscription products:
-- `com.thesmokinator.cash.premium.monthly` - Monthly Premium ($2.99/month)
-- `com.thesmokinator.cash.premium.yearly` - Yearly Premium ($24.99/year, ~30% savings)
 
 ## Development
 

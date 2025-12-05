@@ -1,0 +1,115 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up code signing
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          # Create temporary keychain
+          KEYCHAIN_PATH=$RUNNER_TEMP/build.keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security default-keychain -s $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          
+          # Import certificate
+          echo $BUILD_CERTIFICATE_BASE64 | base64 --decode --output $RUNNER_TEMP/certificate.p12
+          security import $RUNNER_TEMP/certificate.p12 \
+            -k $KEYCHAIN_PATH \
+            -P "$P12_PASSWORD" \
+            -T /usr/bin/codesign \
+            -T /usr/bin/security
+          
+          rm $RUNNER_TEMP/certificate.p12
+          
+          # Set key partition list
+          security set-key-partition-list \
+            -S apple-tool:,apple: \
+            -s \
+            -k "$KEYCHAIN_PASSWORD" \
+            $KEYCHAIN_PATH
+      
+      - name: Build application
+        run: |
+          xcodebuild \
+            -scheme Cash \
+            -configuration Release \
+            -derivedDataPath build \
+            -archivePath build/Cash.xcarchive \
+            archive
+      
+      - name: Export app
+        run: |
+          mkdir -p build/export
+          xcodebuild \
+            -exportArchive \
+            -archivePath build/Cash.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath build/export
+      
+      - name: Code sign and notarize
+        env:
+          DEVELOPER_ID: ${{ secrets.DEVELOPER_ID }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          TEAM_ID: ${{ secrets.TEAM_ID }}
+        run: |
+          # Sign the app
+          codesign -v --deep --strict --options runtime \
+            -s "$DEVELOPER_ID" \
+            "build/export/Cash.app"
+          
+          # Create DMG
+          mkdir -p build/dmg
+          cp -r "build/export/Cash.app" build/dmg/
+          
+          hdiutil create -volname "Cash" \
+            -srcfolder build/dmg \
+            -ov -format UDZO \
+            "build/Cash.dmg"
+          
+          # Notarize DMG
+          echo "Uploading DMG for notarization..."
+          NOTARIZE_UUID=$(xcrun notarytool submit "build/Cash.dmg" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_ID_PASSWORD" \
+            --team-id "$TEAM_ID" \
+            --wait \
+            --output-format json | jq -r '.id')
+          
+          echo "Notarization ID: $NOTARIZE_UUID"
+          
+          # Staple the notarization
+          xcrun stapler staple "build/Cash.dmg"
+      
+      - name: Create release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            "build/Cash.dmg" \
+            --generate-notes \
+            --title "Cash ${{ github.ref_name }}"
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Cash.dmg
+          path: build/Cash.dmg
+          retention-days: 7
