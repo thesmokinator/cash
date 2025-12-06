@@ -59,17 +59,17 @@ enum WeekendAdjustment: String, CaseIterable, Identifiable, Codable {
 
 @Model
 final class RecurrenceRule {
-    var id: UUID
-    var frequencyRawValue: String
-    var interval: Int // every N days/weeks/months/years
-    var dayOfMonth: Int? // for monthly: 1-31
-    var dayOfWeek: Int? // for weekly: 1=Sunday, 7=Saturday
-    var monthOfYear: Int? // for yearly: 1-12
-    var weekendAdjustmentRawValue: String
-    var startDate: Date
+    var id: UUID = UUID()
+    var frequencyRawValue: String = RecurrenceFrequency.monthly.rawValue
+    var interval: Int = 1
+    var dayOfMonth: Int?
+    var dayOfWeek: Int?
+    var monthOfYear: Int?
+    var weekendAdjustmentRawValue: String = WeekendAdjustment.none.rawValue
+    var startDate: Date = Date()
     var endDate: Date?
     var nextOccurrence: Date?
-    var isActive: Bool
+    var isActive: Bool = true
     
     var transaction: Transaction?
     

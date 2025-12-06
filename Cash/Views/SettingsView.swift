@@ -448,6 +448,12 @@ struct DataSettingsTabContent: View {
                 Text("Sync your data across all your devices.")
             }
         }
+        .onAppear {
+            Task {
+                await cloudManager.checkAccountStatus()
+                await cloudManager.fetchStorageUsed()
+            }
+        }
         .alert("Restart required", isPresented: $showingRestartAlert) {
             Button("Later") {
                 cloudManager.needsRestart = false

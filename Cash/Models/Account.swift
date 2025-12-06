@@ -273,15 +273,15 @@ enum AccountType: String, Codable, CaseIterable, Identifiable {
 
 @Model
 final class Account {
-    var id: UUID
-    var name: String
-    var accountNumber: String
-    var currency: String
-    var accountClassRawValue: String
-    var accountTypeRawValue: String
-    var isActive: Bool
-    var isSystem: Bool
-    var createdAt: Date
+    var id: UUID = UUID()
+    var name: String = ""
+    var accountNumber: String = ""
+    var currency: String = "USD"
+    var accountClassRawValue: String = AccountClass.asset.rawValue
+    var accountTypeRawValue: String = AccountType.bank.rawValue
+    var isActive: Bool = true
+    var isSystem: Bool = false
+    var createdAt: Date = Date()
     var includedInBudget: Bool = false
     var lastReconciledBalance: Decimal?
     var lastReconciledDate: Date?

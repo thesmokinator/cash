@@ -179,32 +179,27 @@ struct AmortizationEntry: Identifiable {
 
 @Model
 final class Loan {
-    var id: UUID
-    var name: String
-    var loanTypeRawValue: String
-    var interestRateTypeRawValue: String
-    var paymentFrequencyRawValue: String
+    var id: UUID = UUID()
+    var name: String = ""
+    var loanTypeRawValue: String = LoanType.other.rawValue
+    var interestRateTypeRawValue: String = InterestRateType.fixed.rawValue
+    var paymentFrequencyRawValue: String = PaymentFrequency.monthly.rawValue
     var amortizationTypeRawValue: String?
     
-    // Financial details
-    var principalAmount: Decimal
-    var currentInterestRate: Decimal  // TAN as percentage (e.g., 3.5 for 3.5%)
-    var taeg: Decimal?  // TAEG as percentage
-    var totalPayments: Int  // Total number of payments
-    var monthlyPayment: Decimal
+    var principalAmount: Decimal = 0
+    var currentInterestRate: Decimal = 0
+    var taeg: Decimal?
+    var totalPayments: Int = 0
+    var monthlyPayment: Decimal = 0
     
-    // Dates
-    var startDate: Date
-    var createdAt: Date
+    var startDate: Date = Date()
+    var createdAt: Date = Date()
     
-    // For existing loans
-    var isExisting: Bool  // true if this is an existing loan being tracked
-    var paymentsMade: Int  // Number of payments already made
+    var isExisting: Bool = false
+    var paymentsMade: Int = 0
     
-    // Currency
-    var currency: String
+    var currency: String = "USD"
     
-    // Optional link to recurring transaction
     var linkedRecurringTransactionId: UUID?
     
     // Computed properties

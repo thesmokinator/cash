@@ -162,10 +162,12 @@ final class Envelope {
     var colorHex: String = "#007AFF"
     var sortOrder: Int = 0
     var rolloverAmount: Decimal = 0
+    var categoryAccountId: UUID? // Store Account ID for CloudKit compatibility
     
     var budget: Budget?
     
-    @Relationship
+    // MARK: - Transient Properties
+    @Transient
     var category: Account?
     
     // MARK: - Computed Properties
@@ -247,6 +249,7 @@ final class Envelope {
         self.id = UUID()
         self.name = name
         self.budgetedAmount = budgetedAmount
+        self.categoryAccountId = category?.id
         self.category = category
         self.colorHex = colorHex
         self.sortOrder = sortOrder

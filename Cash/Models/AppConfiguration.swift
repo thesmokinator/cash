@@ -8,13 +8,11 @@
 import Foundation
 import SwiftData
 
-/// Singleton configuration stored in the database.
-/// Used to track app state like whether initial setup is needed.
 @Model
 final class AppConfiguration {
-    var id: UUID
-    var needsSetup: Bool
-    var createdAt: Date
+    var id: UUID = UUID()
+    var needsSetup: Bool = true
+    var createdAt: Date = Date()
     
     init(needsSetup: Bool = true) {
         self.id = UUID()

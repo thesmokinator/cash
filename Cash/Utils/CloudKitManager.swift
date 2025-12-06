@@ -69,7 +69,11 @@ final class CloudKitManager {
     
     var isAvailable: Bool {
         #if ENABLE_ICLOUD
-        return FileManager.default.ubiquityIdentityToken != nil
+        let available = FileManager.default.ubiquityIdentityToken != nil
+        if !available {
+            print("⚠️ CloudKit unavailable: ubiquityIdentityToken is nil")
+        }
+        return available
         #else
         return false
         #endif

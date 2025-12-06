@@ -59,9 +59,9 @@ enum ReconciliationStatus: String, Codable, CaseIterable, Identifiable {
 /// that balance to zero.
 @Model
 final class Entry {
-    var id: UUID
-    var entryTypeRawValue: String
-    var amount: Decimal
+    var id: UUID = UUID()
+    var entryTypeRawValue: String = EntryType.debit.rawValue
+    var amount: Decimal = 0
     
     var account: Account?
     var transaction: Transaction?
@@ -89,15 +89,15 @@ final class Entry {
 /// The fundamental rule: Total Debits = Total Credits
 @Model
 final class Transaction {
-    var id: UUID
-    var date: Date
-    var descriptionText: String
-    var reference: String
-    var createdAt: Date
-    var isRecurring: Bool // Recurring transactions are templates not counted in balances
-    var reconciliationStatusRawValue: String?
+    var id: UUID = UUID()
+    var date: Date = Date()
+    var descriptionText: String = ""
+    var reference: String = ""
+    var createdAt: Date = Date()
+    var isRecurring: Bool = false
+    var reconciliationStatusRawValue: String = ReconciliationStatus.notReconciled.rawValue
     var reconciledDate: Date?
-    var linkedLoanId: UUID?  // Link to Loan for loan payment transactions
+    var linkedLoanId: UUID?
     
     @Relationship(deleteRule: .cascade, inverse: \Entry.transaction)
     var entries: [Entry]? = []
@@ -169,7 +169,7 @@ final class Transaction {
         self.reference = reference
         self.createdAt = Date()
         self.isRecurring = isRecurring
-        self.reconciliationStatusRawValue = nil
+        self.reconciliationStatusRawValue = ReconciliationStatus.notReconciled.rawValue
         self.reconciledDate = nil
     }
     

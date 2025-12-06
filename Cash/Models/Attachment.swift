@@ -10,11 +10,11 @@ import SwiftData
 
 @Model
 final class Attachment {
-    var id: UUID
-    var filename: String
-    var mimeType: String
-    var data: Data
-    var createdAt: Date
+    var id: UUID = UUID()
+    var filename: String = ""
+    var mimeType: String = ""
+    var data: Data = Data()
+    var createdAt: Date = Date()
     
     var transaction: Transaction?
     
