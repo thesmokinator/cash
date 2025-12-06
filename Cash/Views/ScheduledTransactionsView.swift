@@ -33,6 +33,7 @@ struct ScheduledTransactionsView: View {
             )
             .padding(.horizontal)
             .padding(.top, 8)
+            .navigationTitle("Scheduled Transactions")
             
             TransactionFilterBar(
                 dateFilter: $dummyDateFilter,

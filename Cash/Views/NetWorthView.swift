@@ -35,7 +35,7 @@ struct NetWorthView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                // Net Worth Card with Premium button
+                // Net Worth Card
                 VStack(spacing: 8) {
                     // Header
                     HStack {

@@ -502,15 +502,6 @@ struct AboutSettingsTabContent: View {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
     }
     
-    private var buildNumber: String {
-        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
-    }
-
-    // Optional short git hash provided during build (set via build script)
-    private var gitShortHash: String? {
-        Bundle.main.infoDictionary?["GitShortHash"] as? String
-    }
-    
     var body: some View {
         Section {
             VStack(spacing: 16) {
@@ -523,7 +514,7 @@ struct AboutSettingsTabContent: View {
                         .font(.title2)
                         .fontWeight(.semibold)
                     
-                    Text("Version \(appVersion) (\(buildNumber)\(gitShortHash.map { " • \($0)" } ?? ""))")
+                    Text("Version \(appVersion)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
