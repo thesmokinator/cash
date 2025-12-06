@@ -129,6 +129,7 @@ struct ForecastView: View {
                 .labelsHidden()
                 .padding(.horizontal)
                 .disabled(isCalculating)
+                .accessibilityIdentifier("forecastPeriodSelector")
                 .onChange(of: selectedPeriod) { _, newPeriod in
                     calculateForecast(for: newPeriod)
                 }

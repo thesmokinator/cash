@@ -46,18 +46,23 @@ struct AccountListView: View {
                         Section {
                             Label("Net Worth", systemImage: "chart.pie.fill")
                                 .tag(SidebarSelection.patrimony)
+                                .accessibilityIdentifier("netWorthItem")
                             
                             Label("Forecast", systemImage: "chart.line.uptrend.xyaxis")
                                 .tag(SidebarSelection.forecast)
+                                .accessibilityIdentifier("forecastItem")
                             
                             Label("Budget", systemImage: "envelope.fill")
                                 .tag(SidebarSelection.budget)
+                                .accessibilityIdentifier("budgetItem")
                             
                             Label("Loans & Mortgages", systemImage: "house.fill")
                                 .tag(SidebarSelection.loans)
+                                .accessibilityIdentifier("loansItem")
                             
                             Label("Reports", systemImage: "chart.bar.fill")
                                 .tag(SidebarSelection.reports)
+                                .accessibilityIdentifier("reportsItem")
                         }
                     }
                     
@@ -82,6 +87,7 @@ struct AccountListView: View {
                                         }
                                     }
                                     .tag(SidebarSelection.scheduled)
+                                    .accessibilityIdentifier("scheduledItem")
                                 }
                                 
                                 // Show all accounts flat, sorted by type then name
