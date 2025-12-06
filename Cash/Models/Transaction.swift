@@ -109,7 +109,7 @@ final class Transaction {
     var recurrenceRule: RecurrenceRule?
     
     var reconciliationStatus: ReconciliationStatus {
-        get { ReconciliationStatus(rawValue: reconciliationStatusRawValue ?? "n") ?? .notReconciled }
+        get { ReconciliationStatus(rawValue: reconciliationStatusRawValue) ?? .notReconciled }
         set { reconciliationStatusRawValue = newValue.rawValue }
     }
     
