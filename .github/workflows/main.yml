@@ -50,7 +50,7 @@ jobs:
           <plist version="1.0">
           <dict>
               <key>method</key>
-              <string>ad-hoc</string>
+              <string>developer-id</string>
               <key>teamID</key>
               <string>${{ secrets.APPLE_TEAM_ID }}</string>
           </dict>
@@ -59,11 +59,24 @@ jobs:
 
       - name: Build and archive
         run: |
-          xcodebuild -project Cash.xcodeproj -scheme Cash clean archive -configuration Release -destination generic/platform=iOS -archivePath build/Cash.xcarchive
+          xcodebuild -project Cash.xcodeproj -scheme Cash clean archive -configuration Release -destination generic/platform=macOS -archivePath build/Cash.xcarchive
 
       - name: Export IPA
         run: |
           xcodebuild -exportArchive -archivePath build/Cash.xcarchive -exportPath build -exportOptionsPlist exportOptions.plist
+
+      - name: Prepare notary key
+        run: |
+          echo "${{ secrets.APP_STORE_CONNECT_PRIVATE_KEY }}" > build/private_key.p8
+
+      - name: Notarize app
+        run: |
+          xcrun notarytool submit build/Cash.app --key-id ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }} --issuer ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }} --key build/private_key.p8 --wait
+          xcrun stapler staple build/Cash.app
+
+      - name: Create DMG
+        run: |
+          hdiutil create -volname Cash -srcfolder build/Cash.app -ov -format UDZO build/Cash.dmg
 
       - name: Create Release
         id: create_release
@@ -82,6 +95,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: build/Cash.ipa
-          asset_name: Cash.ipa
+          asset_path: build/Cash.dmg
+          asset_name: Cash.dmg
           asset_content_type: application/octet-stream
