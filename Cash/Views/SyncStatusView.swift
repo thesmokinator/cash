@@ -166,13 +166,128 @@ struct SyncStatusPopover: View {
     }
 }
 
-#Preview("Sync Indicator") {
-    SyncStatusIndicator()
-        .padding()
+// MARK: - Sidebar Sync Status Box
+
+/// A compact sync status box for the sidebar bottom
+struct SidebarSyncStatusBox: View {
+    @State private var cloudManager = CloudKitManager.shared
+    
+    var body: some View {
+        if cloudManager.shouldShowSyncIndicator {
+            HStack(spacing: 12) {
+                // Icon with background
+                ZStack {
+                    Circle()
+                        .fill(iconBackgroundColor.opacity(0.15))
+                        .frame(width: 36, height: 36)
+                    
+                    syncIcon
+                }
+                
+                // Status info
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("iCloud Sync")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                    
+                    // Last sync or error
+                    if case .error(let message) = cloudManager.syncState {
+                        Text(message)
+                            .font(.caption2)
+                            .foregroundStyle(.orange)
+                            .lineLimit(1)
+                    } else if let lastSync = cloudManager.lastSyncDate {
+                        Text(lastSync.formatted(.relative(presentation: .named)))
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                
+                Spacer(minLength: 0)
+                
+                statusPill
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(.ultraThinMaterial)
+            .onAppear {
+                cloudManager.startListeningForRemoteChanges()
+            }
+        }
+    }
+    
+    private var iconBackgroundColor: Color {
+        switch cloudManager.syncState {
+        case .idle: return .secondary
+        case .syncing: return .blue
+        case .synced: return .green
+        case .error: return .orange
+        }
+    }
+    
+    @ViewBuilder
+    private var syncIcon: some View {
+        Group {
+            switch cloudManager.syncState {
+            case .idle:
+                Image(systemName: "icloud")
+                    .foregroundStyle(.secondary)
+            case .syncing:
+                Image(systemName: "arrow.triangle.2.circlepath.icloud")
+                    .foregroundStyle(.blue)
+                    .symbolEffect(.rotate, isActive: true)
+            case .synced:
+                Image(systemName: "checkmark.icloud")
+                    .foregroundStyle(.green)
+            case .error:
+                Image(systemName: "exclamationmark.icloud")
+                    .foregroundStyle(.orange)
+            }
+        }
+        .font(.system(size: 16, weight: .medium))
+    }
+    
+    @ViewBuilder
+    private var statusPill: some View {
+        Text(statusText)
+            .font(.caption2)
+            .fontWeight(.medium)
+            .foregroundStyle(pillTextColor)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(pillBackgroundColor.opacity(0.15))
+            .clipShape(Capsule())
+    }
+    
+    private var statusText: String {
+        switch cloudManager.syncState {
+        case .idle: return String(localized: "Ready")
+        case .syncing: return String(localized: "Syncing")
+        case .synced: return String(localized: "Synced")
+        case .error: return String(localized: "Error")
+        }
+    }
+    
+    private var pillTextColor: Color {
+        switch cloudManager.syncState {
+        case .idle: return .secondary
+        case .syncing: return .blue
+        case .synced: return .green
+        case .error: return .orange
+        }
+    }
+    
+    private var pillBackgroundColor: Color {
+        switch cloudManager.syncState {
+        case .idle: return .secondary
+        case .syncing: return .blue
+        case .synced: return .green
+        case .error: return .orange
+        }
+    }
 }
 
-#Preview("Sync Popover") {
-    SyncStatusPopover()
+#Preview("Sidebar Sync Box") {
+    SidebarSyncStatusBox()
         .frame(width: 280)
-        .padding()
 }

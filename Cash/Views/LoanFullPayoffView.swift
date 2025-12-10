@@ -84,13 +84,18 @@ struct LoanFullPayoffView: View {
                 }
                 
                 Section("Early Termination Penalty") {
-                    HStack {
-                        TextField("Penalty %", text: $penaltyPercentageText)
-                            .frame(width: 100)
-                        Text("%")
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        if penaltyAmount > 0 {
+                    LabeledContent("Penalty") {
+                        HStack(spacing: 4) {
+                            TextField("", text: $penaltyPercentageText)
+                                .multilineTextAlignment(.trailing)
+                                .frame(width: 60)
+                            Text("%")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
+                    if penaltyAmount > 0 {
+                        LabeledContent("Penalty Amount") {
                             Text(CurrencyFormatter.format(penaltyAmount, currency: loan.currency))
                                 .foregroundStyle(.orange)
                         }

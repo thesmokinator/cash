@@ -112,10 +112,12 @@ struct AccountListView: View {
             }
             .listStyle(.sidebar)
             .navigationTitle("Chart of accounts")
-            .navigationSplitViewColumnWidth(min: 280, ideal: 320)
+            .navigationSplitViewColumnWidth(min: 300, ideal: 300, max: 300)
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
-                    SyncStatusIndicator()
+                    Button(action: { showingAddAccount = true }) {
+                        Label("Add account", systemImage: "plus")
+                    }
                     
                     Button {
                         withAnimation(.easeInOut(duration: 0.2)) {
@@ -128,11 +130,10 @@ struct AccountListView: View {
                         )
                     }
                     .help(settings.privacyMode ? "Show amounts" : "Hide amounts")
-                    
-                    Button(action: { showingAddAccount = true }) {
-                        Label("Add account", systemImage: "plus")
-                    }
                 }
+            }
+            .safeAreaInset(edge: .bottom) {
+                SidebarSyncStatusBox()
             }
             .sheet(isPresented: $showingAddAccount) {
                 AddAccountView()
@@ -140,26 +141,40 @@ struct AccountListView: View {
             .id(settings.refreshID)
         } detail: {
             Group {
-                switch selection {
-                case .patrimony:
-                    NetWorthView()
-                case .forecast:
-                    ForecastView()
-                case .budget:
-                    BudgetView()
-                case .loans:
-                    LoansView()
-                case .reports:
-                    ReportsView()
-                case .scheduled:
-                    ScheduledTransactionsView()
-                case .account(let account):
-                    AccountDetailView(account: account, showingAddTransaction: $showingAddTransaction)
-                case nil:
+                if !hasAccounts {
+                    // No accounts configured - show empty state
                     ContentUnavailableView {
-                        Label("Select an account", systemImage: "building.columns")
+                        Label("No accounts", systemImage: "building.columns")
                     } description: {
-                        Text("Choose an account from the sidebar to view details")
+                        Text("Create your first account to get started.")
+                    } actions: {
+                        Button(action: { showingAddAccount = true }) {
+                            Text("Add Account")
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                } else {
+                    switch selection {
+                    case .patrimony:
+                        NetWorthView()
+                    case .forecast:
+                        ForecastView()
+                    case .budget:
+                        BudgetView()
+                    case .loans:
+                        LoansView()
+                    case .reports:
+                        ReportsView()
+                    case .scheduled:
+                        ScheduledTransactionsView()
+                    case .account(let account):
+                        AccountDetailView(account: account, showingAddTransaction: $showingAddTransaction)
+                    case nil:
+                        ContentUnavailableView {
+                            Label("Select an account", systemImage: "building.columns")
+                        } description: {
+                            Text("Choose an account from the sidebar to view details")
+                        }
                     }
                 }
             }
@@ -178,6 +193,23 @@ struct AccountListView: View {
                 navigationState.isViewingAccount = false
                 navigationState.isViewingScheduled = false
                 navigationState.currentAccount = nil
+            }
+        }
+        .onChange(of: accounts) { _, newAccounts in
+            // Handle account deletion - check if selected account still exists
+            if case .account(let selectedAccount) = selection {
+                let accountExists = newAccounts.contains { $0.id == selectedAccount.id }
+                if !accountExists {
+                    // Account was deleted - navigate appropriately
+                    let activeAccounts = newAccounts.filter { $0.isActive && !$0.isSystem }
+                    if activeAccounts.isEmpty {
+                        // No accounts left - show empty state
+                        selection = nil
+                    } else {
+                        // Other accounts exist - go to Net Worth
+                        selection = .patrimony
+                    }
+                }
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .addNewAccount)) { _ in

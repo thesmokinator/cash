@@ -313,6 +313,12 @@ struct SettingsView: View {
         
         let accts = (try? modelContext.fetch(FetchDescriptor<Account>())) ?? []
         for acct in accts { modelContext.delete(acct) }
+        
+        let budgets = (try? modelContext.fetch(FetchDescriptor<Budget>())) ?? []
+        for budget in budgets { modelContext.delete(budget) }
+        
+        let loans = (try? modelContext.fetch(FetchDescriptor<Loan>())) ?? []
+        for loan in loans { modelContext.delete(loan) }
     }
     
     // MARK: - Reset
