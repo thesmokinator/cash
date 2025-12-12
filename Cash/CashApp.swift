@@ -94,6 +94,7 @@ struct CashApp: App {
         }
         .modelContainer(sharedModelContainer)
         .environment(settings)
+        #if os(macOS)
         .commands {
             // Replace default New Window command with contextual actions
             CommandGroup(replacing: .newItem) {
@@ -136,5 +137,6 @@ struct CashApp: App {
                 .keyboardShortcut(",", modifiers: .command)
             }
         }
+        #endif
     }
 }

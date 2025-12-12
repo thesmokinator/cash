@@ -150,6 +150,9 @@
         }
       }
     },
+    "(Current)" : {
+
+    },
     "/" : {
       "localizations" : {
         "de" : {
@@ -261,6 +264,9 @@
           }
         }
       }
+    },
+    "#%lld" : {
+
     },
     "%" : {
       "localizations" : {
@@ -1259,6 +1265,9 @@
           }
         }
       }
+    },
+    "A simplified financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
+
     },
     "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
       "localizations" : {
@@ -14315,6 +14324,9 @@
           }
         }
       }
+    },
+    "Rate: %@%%" : {
+
     },
     "ratio" : {
       "localizations" : {

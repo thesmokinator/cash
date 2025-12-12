@@ -137,7 +137,7 @@ struct CreateLoanRecurringView: View {
                 }
             }
         }
-        .frame(minWidth: 450, minHeight: 500)
+        .adaptiveSheetFrame(minWidth: 450, minHeight: 500)
     }
     
     private func createRecurringTransaction() {

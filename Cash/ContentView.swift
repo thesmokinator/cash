@@ -8,7 +8,10 @@
 import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
+
+#if os(macOS)
 import AppKit
+#endif
 
 // MARK: - App Notifications
 
@@ -196,6 +199,7 @@ struct WelcomeSheet: View {
                     showingImportPicker = true
                 }
                 
+                #if os(macOS)
                 WelcomeOptionButton(
                     title: "Quit",
                     subtitle: "Exit the application",
@@ -204,13 +208,18 @@ struct WelcomeSheet: View {
                 ) {
                     exit(0)
                 }
+                #endif
             }
             .padding(.horizontal, 20)
             
             Spacer()
         }
         .padding(40)
+        #if os(macOS)
         .frame(width: 450, height: 560)
+        #else
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        #endif
         .overlay {
             if appState.isLoading {
                 LoadingOverlayView(message: appState.loadingMessage)

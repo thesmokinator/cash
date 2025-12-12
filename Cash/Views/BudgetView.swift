@@ -518,7 +518,7 @@ struct CreateBudgetView: View {
                 }
             }
         }
-        .frame(minWidth: 400, minHeight: 300)
+        .adaptiveSheetFrame(minWidth: 400, minHeight: 300)
     }
     
     private var formattedEndDate: String {
@@ -640,7 +640,7 @@ struct AddEnvelopeView: View {
                 }
             }
         }
-        .frame(minWidth: 400, minHeight: 350)
+        .adaptiveSheetFrame(minWidth: 400, minHeight: 350)
     }
     
     private func calculateAverageSpending(for category: Account) -> Decimal {
@@ -741,7 +741,7 @@ struct EditEnvelopeView: View {
                 amountString = "\(envelope.budgetedAmount)"
             }
         }
-        .frame(minWidth: 400, minHeight: 250)
+        .adaptiveSheetFrame(minWidth: 400, minHeight: 250)
     }
     
     private func saveChanges() {
@@ -842,7 +842,7 @@ struct TransferBetweenEnvelopesView: View {
                 }
             }
         }
-        .frame(minWidth: 400, minHeight: 300)
+        .adaptiveSheetFrame(minWidth: 400, minHeight: 300)
     }
     
     private func executeTransfer() {

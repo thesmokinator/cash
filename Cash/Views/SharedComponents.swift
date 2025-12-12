@@ -7,6 +7,83 @@
 
 import SwiftUI
 
+// MARK: - Platform Adaptive Frame Modifier
+
+/// Modifier that applies different frame sizes for macOS and iOS
+struct AdaptiveSheetFrame: ViewModifier {
+    let macWidth: CGFloat?
+    let macHeight: CGFloat?
+    let macMinWidth: CGFloat?
+    let macMinHeight: CGFloat?
+    
+    func body(content: Content) -> some View {
+        #if os(macOS)
+        if let width = macWidth, let height = macHeight {
+            content.frame(width: width, height: height)
+        } else if let minWidth = macMinWidth, let minHeight = macMinHeight {
+            content.frame(minWidth: minWidth, minHeight: minHeight)
+        } else {
+            content
+        }
+        #else
+        // iOS: Use full available space, system handles sheet sizing
+        content
+        #endif
+    }
+}
+
+extension View {
+    /// Apply fixed frame on macOS, full size on iOS
+    func adaptiveSheetFrame(width: CGFloat, height: CGFloat) -> some View {
+        modifier(AdaptiveSheetFrame(macWidth: width, macHeight: height, macMinWidth: nil, macMinHeight: nil))
+    }
+    
+    /// Apply minimum frame on macOS, full size on iOS
+    func adaptiveSheetFrame(minWidth: CGFloat, minHeight: CGFloat) -> some View {
+        modifier(AdaptiveSheetFrame(macWidth: nil, macHeight: nil, macMinWidth: minWidth, macMinHeight: minHeight))
+    }
+}
+
+// MARK: - Adaptive Segmented Picker
+
+/// A picker that uses segmented style on macOS and menu style on iOS (both iPhone and iPad)
+/// Use this for pickers with many options that don't fit well in segmented on mobile screens
+struct AdaptiveSegmentedPicker<SelectionValue: Hashable, Content: View>: View {
+    @Binding var selection: SelectionValue
+    var forceMenuOnIOS: Bool = true
+    @ViewBuilder let content: () -> Content
+    
+    #if os(iOS)
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    #endif
+    
+    var body: some View {
+        #if os(macOS)
+        Picker(selection: $selection, label: EmptyView()) {
+            content()
+        }
+        .pickerStyle(.segmented)
+        .labelsHidden()
+        #else
+        if forceMenuOnIOS || horizontalSizeClass == .compact {
+            // iOS (iPhone and iPad): use menu picker for better touch experience
+            Picker(selection: $selection, label: EmptyView()) {
+                content()
+            }
+            .pickerStyle(.menu)
+            .labelsHidden()
+        } else {
+            // iPad with regular width and forceMenuOnIOS = false: use segmented
+            Picker(selection: $selection, label: EmptyView()) {
+                content()
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+        }
+        #endif
+    }
+}
+
 // MARK: - Currency Formatting
 
 struct CurrencyFormatter {
@@ -160,9 +237,16 @@ struct CloseButton: View {
 
 struct AppUtilities {
     static func quitApp() {
+        #if os(macOS)
         NSApplication.shared.terminate(nil)
+        #endif
+        // On iOS, apps should not programmatically quit
     }
 }
+
+#if os(macOS)
+import AppKit
+#endif
 
 // MARK: - Privacy Amount View
 

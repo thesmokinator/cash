@@ -7,8 +7,11 @@
 
 import SwiftUI
 import SwiftData
-import AppKit
 import UniformTypeIdentifiers
+
+#if os(macOS)
+import AppKit
+#endif
 
 #if ENABLE_ICLOUD
 import CloudKit
@@ -66,6 +69,10 @@ struct SettingsView: View {
     @State private var errorMessage = ""
     @State private var importResult: (accountsCount: Int, transactionsCount: Int) = (0, 0)
     
+    // iOS export state
+    @State private var exportedFileURL: URL?
+    @State private var showingShareSheet = false
+    
     @Query private var accounts: [Account]
     @Query private var transactions: [Transaction]
     
@@ -90,7 +97,9 @@ struct SettingsView: View {
                 }
             }
         }
+        #if os(macOS)
         .frame(width: 580, height: 520)
+        #endif
         .id(settings.refreshID)
         .overlay {
             if appState.isLoading {
@@ -148,6 +157,13 @@ struct SettingsView: View {
         } message: {
             Text(errorMessage)
         }
+        #if os(iOS)
+        .sheet(isPresented: $showingShareSheet) {
+            if let url = exportedFileURL {
+                ShareSheet(activityItems: [url])
+            }
+        }
+        #endif
     }
     
     // MARK: - Tab Bar
@@ -160,7 +176,11 @@ struct SettingsView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
+        #if os(macOS)
         .background(Color(nsColor: .windowBackgroundColor))
+        #else
+        .background(Color(uiColor: .systemGroupedBackground))
+        #endif
     }
     
     private func tabButton(for tab: SettingsTab) -> some View {
@@ -224,6 +244,7 @@ struct SettingsView: View {
             
             let filename = DataExporter.generateFilename(for: format)
             
+            #if os(macOS)
             let savePanel = NSSavePanel()
             savePanel.nameFieldStringValue = filename
             savePanel.canCreateDirectories = true
@@ -239,6 +260,18 @@ struct SettingsView: View {
                     }
                 }
             }
+            #else
+            // iOS: Save to temp directory and share
+            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
+            do {
+                try data.write(to: tempURL)
+                exportedFileURL = tempURL
+                showingShareSheet = true
+            } catch {
+                errorMessage = error.localizedDescription
+                showingError = true
+            }
+            #endif
         } catch {
             errorMessage = error.localizedDescription
             showingError = true
@@ -517,9 +550,16 @@ struct AboutSettingsTabContent: View {
     var body: some View {
         Section {
             VStack(spacing: 16) {
+                #if os(macOS)
                 Image(nsImage: NSApp.applicationIconImage)
                     .resizable()
                     .frame(width: 80, height: 80)
+                #else
+                Image("AppIcon")
+                    .resizable()
+                    .frame(width: 80, height: 80)
+                    .clipShape(RoundedRectangle(cornerRadius: 18))
+                #endif
                 
                 VStack(spacing: 4) {
                     Text("Cash")
@@ -531,10 +571,17 @@ struct AboutSettingsTabContent: View {
                         .foregroundStyle(.secondary)
                 }
                 
+                #if os(macOS)
                 Text("A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
+                #else
+                Text("A simplified financial management application inspired by Gnucash, built with SwiftUI and SwiftData.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                #endif
                 
                 Button {
                     showingLicense = true
@@ -599,7 +646,9 @@ struct LicenseView: View {
             .keyboardShortcut(.defaultAction)
         }
         .padding(20)
+        #if os(macOS)
         .frame(width: 450, height: 350)
+        #endif
     }
 }
 
@@ -634,7 +683,12 @@ struct ExportFormatPickerView: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
+                        #if os(macOS)
                         .frame(width: 120, height: 100)
+                        #else
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                        #endif
                     }
                     .buttonStyle(.bordered)
                 }
@@ -646,9 +700,25 @@ struct ExportFormatPickerView: View {
             .buttonStyle(.plain)
         }
         .padding(30)
+        #if os(macOS)
         .frame(width: 340)
+        #endif
     }
 }
+
+// MARK: - iOS Share Sheet
+
+#if os(iOS)
+struct ShareSheet: UIViewControllerRepresentable {
+    let activityItems: [Any]
+    
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+    }
+    
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+#endif
 
 #Preview {
     SettingsView(appState: AppState(), dismissSettings: {})

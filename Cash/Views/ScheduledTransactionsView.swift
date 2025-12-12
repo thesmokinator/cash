@@ -461,7 +461,11 @@ struct ScheduledCalendarView: View {
                         .padding(.vertical, 4)
                 }
             }
+            #if os(macOS)
             .background(Color(nsColor: .separatorColor).opacity(0.3))
+            #else
+            .background(Color(uiColor: .separator).opacity(0.3))
+            #endif
             .clipShape(RoundedRectangle(cornerRadius: 4))
             
             // Calendar grid
@@ -469,7 +473,11 @@ struct ScheduledCalendarView: View {
                 // Empty cells for offset
                 ForEach(0..<firstWeekdayOffset, id: \.self) { _ in
                     Rectangle()
+                        #if os(macOS)
                         .fill(Color(nsColor: .windowBackgroundColor))
+                        #else
+                        .fill(Color(uiColor: .systemBackground))
+                        #endif
                         .frame(height: 36)
                 }
                 
@@ -489,11 +497,19 @@ struct ScheduledCalendarView: View {
                     }
                 }
             }
+            #if os(macOS)
             .background(Color(nsColor: .separatorColor).opacity(0.3))
+            #else
+            .background(Color(uiColor: .separator).opacity(0.3))
+            #endif
             .clipShape(RoundedRectangle(cornerRadius: 4))
         }
         .padding(12)
+        #if os(macOS)
         .background(Color(nsColor: .controlBackgroundColor))
+        #else
+        .background(Color(uiColor: .secondarySystemGroupedBackground))
+        #endif
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
@@ -550,7 +566,11 @@ struct CalendarDayCell: View {
         } else if isToday {
             return Color.blue.opacity(0.1)
         } else {
+            #if os(macOS)
             return Color(nsColor: .windowBackgroundColor)
+            #else
+            return Color(uiColor: .systemBackground)
+            #endif
         }
     }
 }
@@ -740,7 +760,7 @@ struct AddScheduledTransactionView: View {
             }
             .id(settings.refreshID)
         }
-        .frame(minWidth: 450, minHeight: 500)
+        .adaptiveSheetFrame(minWidth: 450, minHeight: 500)
     }
     
     @ViewBuilder
@@ -890,7 +910,7 @@ struct EditScheduledTransactionView: View {
             .onAppear { loadTransaction() }
             .id(settings.refreshID)
         }
-        .frame(minWidth: 400, minHeight: 400)
+        .adaptiveSheetFrame(minWidth: 400, minHeight: 400)
     }
     
     private func loadTransaction() {

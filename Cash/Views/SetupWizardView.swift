@@ -119,7 +119,7 @@ struct SetupWizardView: View {
             .padding()
             .opacity(currentStep == .welcome ? 0 : 1)
         }
-        .frame(width: 650, height: 580)
+        .adaptiveSheetFrame(width: 650, height: 580)
         .onChange(of: currentStep) { oldValue, newValue in
             // Initialize account list when entering the accounts step
             if newValue == .accounts {
@@ -302,7 +302,9 @@ struct SetupWizardView: View {
                     } label: {
                         Text("Language")
                     }
+                    #if os(macOS)
                     .pickerStyle(.radioGroup)
+                    #endif
                     .labelsHidden()
                 } header: {
                     Text("Language")
@@ -331,7 +333,9 @@ struct SetupWizardView: View {
                     } label: {
                         Text("Theme")
                     }
+                    #if os(macOS)
                     .pickerStyle(.radioGroup)
+                    #endif
                     .labelsHidden()
                 } header: {
                     Text("Theme")
@@ -519,7 +523,7 @@ struct SetupWizardView: View {
             .padding(.horizontal)
         }
         .padding()
-        .frame(width: 350, height: 280)
+        .adaptiveSheetFrame(width: 350, height: 280)
     }
     
     // MARK: - Complete Setup

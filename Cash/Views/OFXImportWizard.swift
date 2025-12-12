@@ -107,7 +107,7 @@ struct OFXImportWizard: View {
                 navigationButtons
             }
             .navigationTitle("Import OFX")
-            .frame(minWidth: 600, minHeight: 500)
+            .adaptiveSheetFrame(minWidth: 600, minHeight: 500)
         }
     }
     

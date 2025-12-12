@@ -249,7 +249,7 @@ struct LoanCalculatorView: View {
                 }
             }
         }
-        .frame(minWidth: 500, minHeight: 650)
+        .adaptiveSheetFrame(minWidth: 500, minHeight: 650)
     }
     
     private func calculate() {
@@ -331,7 +331,7 @@ struct AmortizationHelpView: View {
                 }
             }
         }
-        .frame(minWidth: 400, minHeight: 300)
+        .adaptiveSheetFrame(minWidth: 400, minHeight: 300)
     }
 }
 

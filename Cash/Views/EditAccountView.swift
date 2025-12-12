@@ -125,7 +125,7 @@ struct EditAccountView: View {
             }
             .id(settings.refreshID)
         }
-        .frame(minWidth: 400, minHeight: 550)
+        .adaptiveSheetFrame(minWidth: 400, minHeight: 550)
     }
     
     private func loadAccountData() {

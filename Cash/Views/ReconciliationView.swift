@@ -223,7 +223,7 @@ struct ReconciliationView: View {
             .padding()
             .background(.regularMaterial)
         }
-        .frame(minWidth: 700, minHeight: 500)
+        .adaptiveSheetFrame(minWidth: 700, minHeight: 500)
         .task {
             await loadTransactions()
         }

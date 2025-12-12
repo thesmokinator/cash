@@ -26,7 +26,9 @@ struct AccountListView: View {
     @Query(filter: #Predicate<Transaction> { $0.isRecurring == true }) private var scheduledTransactions: [Transaction]
     @State private var showingAddAccount = false
     @State private var showingAddTransaction = false
+    @State private var showingSettings = false
     @State private var selection: SidebarSelection? = .patrimony
+    @State private var appState = AppState()
     
     private var hasAccounts: Bool {
         !accounts.filter { $0.isActive && !$0.isSystem }.isEmpty
@@ -112,7 +114,9 @@ struct AccountListView: View {
             }
             .listStyle(.sidebar)
             .navigationTitle("Chart of accounts")
+            #if os(macOS)
             .navigationSplitViewColumnWidth(min: 300, ideal: 300, max: 300)
+            #endif
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
                     Button(action: { showingAddAccount = true }) {
@@ -130,6 +134,14 @@ struct AccountListView: View {
                         )
                     }
                     .help(settings.privacyMode ? "Show amounts" : "Hide amounts")
+                    
+                    #if os(iOS)
+                    Button {
+                        showingSettings = true
+                    } label: {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+                    #endif
                 }
             }
             .safeAreaInset(edge: .bottom) {
@@ -138,6 +150,12 @@ struct AccountListView: View {
             .sheet(isPresented: $showingAddAccount) {
                 AddAccountView()
             }
+            #if os(iOS)
+            .sheet(isPresented: $showingSettings) {
+                SettingsView(appState: appState, dismissSettings: { showingSettings = false })
+                    .environment(settings)
+            }
+            #endif
             .id(settings.refreshID)
         } detail: {
             Group {
@@ -179,6 +197,9 @@ struct AccountListView: View {
                 }
             }
         }
+        #if os(iOS)
+        .navigationSplitViewStyle(.balanced)
+        #endif
         .onChange(of: selection) { _, newValue in
             switch newValue {
             case .account(let account):

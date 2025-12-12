@@ -7,6 +7,13 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import PDFKit
+
+#if os(macOS)
+import AppKit
+#elseif os(iOS)
+import UIKit
+#endif
 
 struct AttachmentPickerView: View {
     @Binding var attachments: [AttachmentData]
@@ -146,6 +153,7 @@ struct AttachmentThumbnail: View {
         ZStack(alignment: .topTrailing) {
             Button(action: onTap) {
                 VStack(spacing: 4) {
+                    #if os(macOS)
                     if attachment.isImage, let nsImage = NSImage(data: attachment.data) {
                         Image(nsImage: nsImage)
                             .resizable()
@@ -159,6 +167,21 @@ struct AttachmentThumbnail: View {
                             .background(Color.secondary.opacity(0.1))
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
+                    #else
+                    if attachment.isImage, let uiImage = UIImage(data: attachment.data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    } else {
+                        Image(systemName: attachment.iconName)
+                            .font(.title)
+                            .frame(width: 60, height: 60)
+                            .background(Color.secondary.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                    #endif
                     
                     Text(attachment.filename)
                         .font(.caption2)
@@ -186,6 +209,7 @@ struct AttachmentPreviewView: View {
     var body: some View {
         NavigationStack {
             Group {
+                #if os(macOS)
                 if attachment.isImage, let nsImage = NSImage(data: attachment.data) {
                     Image(nsImage: nsImage)
                         .resizable()
@@ -204,8 +228,31 @@ struct AttachmentPreviewView: View {
                         Label("Preview unavailable", systemImage: "doc")
                     }
                 }
+                #else
+                if attachment.isImage, let uiImage = UIImage(data: attachment.data) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                } else if attachment.isPDF {
+                    PDFPreviewView(data: attachment.data)
+                } else if let text = String(data: attachment.data, encoding: .utf8) {
+                    ScrollView {
+                        Text(text)
+                            .font(.system(.body, design: .monospaced))
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                } else {
+                    ContentUnavailableView {
+                        Label("Preview unavailable", systemImage: "doc")
+                    }
+                }
+                #endif
             }
             .navigationTitle(attachment.filename)
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
@@ -214,10 +261,15 @@ struct AttachmentPreviewView: View {
                 }
             }
         }
+        #if os(macOS)
         .frame(minWidth: 500, minHeight: 400)
+        #endif
     }
 }
 
+// MARK: - PDF Preview
+
+#if os(macOS)
 struct PDFPreviewView: NSViewRepresentable {
     let data: Data
     
@@ -227,8 +279,6 @@ struct PDFPreviewView: NSViewRepresentable {
     
     func updateNSView(_ nsView: PDFViewWrapper, context: Context) {}
 }
-
-import PDFKit
 
 class PDFViewWrapper: NSView {
     init(data: Data) {
@@ -249,6 +299,22 @@ class PDFViewWrapper: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+#else
+struct PDFPreviewView: UIViewRepresentable {
+    let data: Data
+    
+    func makeUIView(context: Context) -> PDFView {
+        let pdfView = PDFView()
+        pdfView.autoScales = true
+        if let document = PDFDocument(data: data) {
+            pdfView.document = document
+        }
+        return pdfView
+    }
+    
+    func updateUIView(_ uiView: PDFView, context: Context) {}
+}
+#endif
 
 // View for existing attachments from database
 struct ExistingAttachmentRow: View {
@@ -289,6 +355,7 @@ struct ExistingAttachmentView: View {
                 showingPreview = true
             } label: {
                 VStack(spacing: 4) {
+                    #if os(macOS)
                     if attachment.isImage, let nsImage = NSImage(data: attachment.data) {
                         Image(nsImage: nsImage)
                             .resizable()
@@ -302,6 +369,21 @@ struct ExistingAttachmentView: View {
                             .background(Color.secondary.opacity(0.1))
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
+                    #else
+                    if attachment.isImage, let uiImage = UIImage(data: attachment.data) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    } else {
+                        Image(systemName: attachment.iconName)
+                            .font(.title)
+                            .frame(width: 60, height: 60)
+                            .background(Color.secondary.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                    #endif
                     
                     Text(attachment.filename)
                         .font(.caption2)
@@ -332,6 +414,7 @@ struct ExistingAttachmentPreviewView: View {
     var body: some View {
         NavigationStack {
             Group {
+                #if os(macOS)
                 if attachment.isImage, let nsImage = NSImage(data: attachment.data) {
                     Image(nsImage: nsImage)
                         .resizable()
@@ -350,8 +433,31 @@ struct ExistingAttachmentPreviewView: View {
                         Label("Preview unavailable", systemImage: "doc")
                     }
                 }
+                #else
+                if attachment.isImage, let uiImage = UIImage(data: attachment.data) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                } else if attachment.isPDF {
+                    PDFPreviewView(data: attachment.data)
+                } else if let text = String(data: attachment.data, encoding: .utf8) {
+                    ScrollView {
+                        Text(text)
+                            .font(.system(.body, design: .monospaced))
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                } else {
+                    ContentUnavailableView {
+                        Label("Preview unavailable", systemImage: "doc")
+                    }
+                }
+                #endif
             }
             .navigationTitle(attachment.filename)
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
@@ -360,6 +466,8 @@ struct ExistingAttachmentPreviewView: View {
                 }
             }
         }
+        #if os(macOS)
         .frame(minWidth: 500, minHeight: 400)
+        #endif
     }
 }

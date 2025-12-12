@@ -111,15 +111,11 @@ struct ExpenseByCategoryReportView: View {
             // Header with controls
             HStack {
                 // Period picker
-                Picker(selection: $selectedPeriod) {
+                AdaptiveSegmentedPicker(selection: $selectedPeriod) {
                     ForEach(ReportPeriod.allCases) { period in
                         Text(period.localizedName).tag(period)
                     }
-                } label: {
-                    EmptyView()
                 }
-                .pickerStyle(.segmented)
-                .labelsHidden()
                 .frame(maxWidth: 400)
                 
                 Spacer()

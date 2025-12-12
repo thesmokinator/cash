@@ -110,7 +110,8 @@ struct AmortizationScheduleView: View {
                     ProgressView("Calculating...")
                     Spacer()
                 } else {
-                    // Table
+                    #if os(macOS)
+                    // Table for macOS
                     Table(schedule) {
                         TableColumn("#") { entry in
                             Text("\(entry.paymentNumber)")
@@ -165,6 +166,13 @@ struct AmortizationScheduleView: View {
                         }
                         .width(120)
                     }
+                    #else
+                    // List for iOS
+                    List(schedule) { entry in
+                        AmortizationRowView(entry: entry, currency: currency, privacyMode: settings.privacyMode)
+                    }
+                    .listStyle(.plain)
+                    #endif
                 }
             }
             .navigationTitle("Amortization Schedule")
@@ -177,7 +185,7 @@ struct AmortizationScheduleView: View {
                 await generateSchedule()
             }
         }
-        .frame(minWidth: 700, minHeight: 500)
+        .adaptiveSheetFrame(minWidth: 700, minHeight: 500)
     }
     
     private func generateSchedule() async {
@@ -214,3 +222,90 @@ struct AmortizationScheduleView: View {
     )
     .environment(AppSettings.shared)
 }
+
+// MARK: - iOS Amortization Row View
+
+#if os(iOS)
+struct AmortizationRowView: View {
+    let entry: AmortizationEntry
+    let currency: String
+    let privacyMode: Bool
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Header row: number and date
+            HStack {
+                Text("#\(entry.paymentNumber)")
+                    .font(.headline)
+                    .monospacedDigit()
+                Spacer()
+                Text(entry.date.formatted(date: .abbreviated, time: .omitted))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            
+            // Payment details grid
+            HStack(spacing: 16) {
+                // Payment
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Payment")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    PrivacyAmountView(
+                        amount: CurrencyFormatter.format(entry.payment, currency: currency),
+                        isPrivate: privacyMode,
+                        font: .subheadline,
+                        fontWeight: .medium
+                    )
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                // Principal
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Principal")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    PrivacyAmountView(
+                        amount: CurrencyFormatter.format(entry.principal, currency: currency),
+                        isPrivate: privacyMode,
+                        font: .subheadline,
+                        fontWeight: .medium,
+                        color: .green
+                    )
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                // Interest
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Interest")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    PrivacyAmountView(
+                        amount: CurrencyFormatter.format(entry.interest, currency: currency),
+                        isPrivate: privacyMode,
+                        font: .subheadline,
+                        fontWeight: .medium,
+                        color: .orange
+                    )
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            
+            // Balance row
+            HStack {
+                Text("Remaining Balance")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                PrivacyAmountView(
+                    amount: CurrencyFormatter.format(entry.remainingBalance, currency: currency),
+                    isPrivate: privacyMode,
+                    font: .subheadline,
+                    fontWeight: .semibold
+                )
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+#endif

@@ -294,7 +294,11 @@ struct TransactionFilterBar: View {
                 }
             }
             .padding(8)
+            #if os(macOS)
             .background(Color(nsColor: .controlBackgroundColor))
+            #else
+            .background(Color(uiColor: .secondarySystemGroupedBackground))
+            #endif
             .clipShape(RoundedRectangle(cornerRadius: 8))
             
             if showDateFilter {
@@ -315,7 +319,11 @@ struct TransactionFilterBar: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
+        #if os(macOS)
         .background(Color(nsColor: .windowBackgroundColor))
+        #else
+        .background(Color(uiColor: .systemGroupedBackground))
+        #endif
     }
 }
 

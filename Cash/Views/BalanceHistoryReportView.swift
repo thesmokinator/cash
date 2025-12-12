@@ -117,15 +117,11 @@ struct BalanceHistoryReportView: View {
         VStack(spacing: 0) {
             // Period picker
             HStack {
-                Picker(selection: $selectedPeriod) {
+                AdaptiveSegmentedPicker(selection: $selectedPeriod) {
                     ForEach(HistoryPeriod.allCases) { period in
                         Text(period.localizedName).tag(period)
                     }
-                } label: {
-                    EmptyView()
                 }
-                .pickerStyle(.segmented)
-                .labelsHidden()
                 .frame(maxWidth: 400)
                 
                 Spacer()

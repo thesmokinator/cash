@@ -234,7 +234,7 @@ struct LoanDetailView: View {
                 }
             }
         }
-        .frame(minWidth: 600, minHeight: 500)
+        .adaptiveSheetFrame(minWidth: 600, minHeight: 500)
     }
     
     private func deleteLoan() {

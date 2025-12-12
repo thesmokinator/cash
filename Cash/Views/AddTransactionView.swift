@@ -180,7 +180,7 @@ struct AddTransactionView: View {
             .onAppear { setupPreselectedAccount() }
             .id(settings.refreshID)
         }
-        .frame(minWidth: 450, minHeight: 550)
+        .adaptiveSheetFrame(minWidth: 450, minHeight: 550)
     }
     
     @ViewBuilder

@@ -44,7 +44,11 @@ struct LoanAffordabilityView: View {
                     }
                 }
                 .padding()
+                #if os(macOS)
                 .background(Color(nsColor: .controlBackgroundColor))
+                #else
+                .background(Color(uiColor: .secondarySystemGroupedBackground))
+                #endif
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             } else {
                 ContentUnavailableView(

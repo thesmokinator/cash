@@ -228,7 +228,7 @@ struct AddExistingLoanView: View {
                 }
             }
         }
-        .frame(minWidth: 500, minHeight: 550)
+        .adaptiveSheetFrame(minWidth: 500, minHeight: 550)
     }
     
     private func addLoan() {

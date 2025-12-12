@@ -96,7 +96,8 @@ struct LoanScenariosView: View {
                     ProgressView("Calculating scenarios...")
                     Spacer()
                 } else {
-                    // Scenarios table
+                    #if os(macOS)
+                    // Scenarios table for macOS
                     Table(scenarios) { 
                         TableColumn("Change") { s in
                             HStack {
@@ -173,6 +174,19 @@ struct LoanScenariosView: View {
                         }
                         .width(120)
                     }
+                    #else
+                    // List for iOS
+                    List(scenarios) { scenario in
+                        RateScenarioRowView(
+                            scenario: scenario,
+                            basePayment: basePayment,
+                            baseTotalInterest: baseTotalInterest,
+                            currency: currency,
+                            privacyMode: settings.privacyMode
+                        )
+                    }
+                    .listStyle(.plain)
+                    #endif
                 }
             }
             .navigationTitle("Rate Scenarios")
@@ -185,7 +199,7 @@ struct LoanScenariosView: View {
                 await calculateScenarios()
             }
         }
-        .frame(minWidth: 750, minHeight: 450)
+        .adaptiveSheetFrame(minWidth: 750, minHeight: 450)
     }
     
     private func calculateScenarios() async {
@@ -219,3 +233,108 @@ struct LoanScenariosView: View {
     )
     .environment(AppSettings.shared)
 }
+
+// MARK: - iOS Rate Scenario Row View
+
+#if os(iOS)
+struct RateScenarioRowView: View {
+    let scenario: RateScenario
+    let basePayment: Decimal
+    let baseTotalInterest: Decimal
+    let currency: String
+    let privacyMode: Bool
+    
+    private var paymentDiff: Decimal {
+        scenario.payment - basePayment
+    }
+    
+    private var interestDiff: Decimal {
+        scenario.totalInterest - baseTotalInterest
+    }
+    
+    private var isBaseScenario: Bool {
+        scenario.rateChange == 0
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Header: rate change indicator
+            HStack {
+                if scenario.rateChange > 0 {
+                    Image(systemName: "arrow.up.circle.fill")
+                        .foregroundStyle(.red)
+                } else if scenario.rateChange < 0 {
+                    Image(systemName: "arrow.down.circle.fill")
+                        .foregroundStyle(.green)
+                } else {
+                    Image(systemName: "circle.fill")
+                        .foregroundStyle(.blue)
+                }
+                
+                Text(scenario.rateChange >= 0 ? "+\(scenario.rateChange.formatted())%" : "\(scenario.rateChange.formatted())%")
+                    .font(.headline)
+                    .fontWeight(isBaseScenario ? .bold : .medium)
+                
+                if isBaseScenario {
+                    Text("(Current)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                
+                Spacer()
+                
+                Text("Rate: \(scenario.newRate.formatted())%")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            
+            // Payment and Interest details
+            HStack(spacing: 16) {
+                // Payment
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Payment")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    HStack(spacing: 4) {
+                        PrivacyAmountView(
+                            amount: CurrencyFormatter.format(scenario.payment, currency: currency),
+                            isPrivate: privacyMode,
+                            font: .subheadline,
+                            fontWeight: .medium
+                        )
+                        if !isBaseScenario {
+                            Text("(\(paymentDiff >= 0 ? "+" : "")\(CurrencyFormatter.format(paymentDiff, currency: currency)))")
+                                .font(.caption)
+                                .foregroundStyle(paymentDiff > 0 ? .red : .green)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                // Total Interest
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Total Interest")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    HStack(spacing: 4) {
+                        PrivacyAmountView(
+                            amount: CurrencyFormatter.format(scenario.totalInterest, currency: currency),
+                            isPrivate: privacyMode,
+                            font: .subheadline,
+                            fontWeight: .medium
+                        )
+                        if !isBaseScenario {
+                            Text("(\(interestDiff >= 0 ? "+" : "")\(CurrencyFormatter.format(interestDiff, currency: currency)))")
+                                .font(.caption)
+                                .foregroundStyle(interestDiff > 0 ? .red : .green)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .padding(.vertical, 4)
+        .background(isBaseScenario ? Color.blue.opacity(0.05) : Color.clear)
+    }
+}
+#endif

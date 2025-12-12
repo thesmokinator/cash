@@ -118,15 +118,11 @@ struct ForecastView: View {
         ScrollView {
             VStack(spacing: 24) {
                 // Period Selector
-                Picker(selection: $selectedPeriod) {
+                AdaptiveSegmentedPicker(selection: $selectedPeriod) {
                     ForEach(ForecastPeriod.allCases) { period in
                         Text(period.localizedName).tag(period)
                     }
-                } label: {
-                    EmptyView()
                 }
-                .pickerStyle(.segmented)
-                .labelsHidden()
                 .padding(.horizontal)
                 .disabled(isCalculating)
                 .accessibilityIdentifier("forecastPeriodSelector")

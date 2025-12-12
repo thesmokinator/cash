@@ -7,7 +7,12 @@
 
 import Foundation
 import SwiftUI
+
+#if os(macOS)
 import AppKit
+#elseif os(iOS)
+import UIKit
+#endif
 
 enum AppTheme: String, CaseIterable, Identifiable {
     case system = "system"
@@ -152,6 +157,7 @@ final class AppSettings {
     }
     
     private func applyTheme() {
+        #if os(macOS)
         DispatchQueue.main.async {
             switch self.theme {
             case .system:
@@ -162,6 +168,8 @@ final class AppSettings {
                 NSApp.appearance = NSAppearance(named: .darkAqua)
             }
         }
+        #endif
+        // On iOS, theme is handled via preferredColorScheme modifier
     }
     
     private func applyLanguage() {
@@ -183,6 +191,7 @@ final class AppSettings {
     }
     
     func restartApp() {
+        #if os(macOS)
         let url = URL(fileURLWithPath: Bundle.main.resourcePath!)
         let path = url.deletingLastPathComponent().deletingLastPathComponent().absoluteString
         let task = Process()
@@ -191,5 +200,10 @@ final class AppSettings {
         task.launch()
         
         NSApp.terminate(nil)
+        #else
+        // On iOS, we can't restart the app programmatically
+        // The user needs to manually close and reopen the app
+        needsRestart = true
+        #endif
     }
 }
