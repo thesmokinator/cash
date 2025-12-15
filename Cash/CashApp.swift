@@ -33,6 +33,7 @@ struct CashApp: App {
     @State private var menuAppState = AppState()
     @State private var navigationState = NavigationState()
     @State private var showingSettingsSheet = false
+    @Environment(\.openWindow) private var openWindow
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -76,7 +77,7 @@ struct CashApp: App {
     }()
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: "main") {
             ContentView()
                 .environment(navigationState)
                 .sheet(isPresented: $showingSettingsSheet) {
@@ -95,9 +96,23 @@ struct CashApp: App {
         .modelContainer(sharedModelContainer)
         .environment(settings)
         .commands {
+            // Add Window menu with option to show main window
+            CommandGroup(after: .windowList) {
+                Button("Show Main Window") {
+                    if let window = NSApplication.shared.windows.first(where: { $0.identifier?.rawValue == "main" }) {
+                        window.makeKeyAndOrderFront(nil)
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                    } else {
+                        openWindow(id: "main")
+                    }
+                }
+                .keyboardShortcut("0", modifiers: .command)
+            }
+            
             // Replace default New Window command with contextual actions
             CommandGroup(replacing: .newItem) {
                 Button {
+                    ensureMainWindowOpen()
                     if navigationState.isViewingAccount {
                         NotificationCenter.default.post(name: .addNewTransaction, object: nil)
                     } else if navigationState.isViewingScheduled {
@@ -120,6 +135,7 @@ struct CashApp: App {
             // Import menu
             CommandGroup(replacing: .importExport) {
                 Button {
+                    ensureMainWindowOpen()
                     NotificationCenter.default.post(name: .importOFX, object: nil)
                 } label: {
                     Label("Import OFX...", systemImage: "doc.badge.arrow.up")
@@ -129,6 +145,7 @@ struct CashApp: App {
             // Settings menu item (replaces system Preferences)
             CommandGroup(replacing: .appSettings) {
                 Button {
+                    ensureMainWindowOpen()
                     showingSettingsSheet = true
                 } label: {
                     Text("Settings...")
@@ -136,5 +153,14 @@ struct CashApp: App {
                 .keyboardShortcut(",", modifiers: .command)
             }
         }
+    }
+    
+    private func ensureMainWindowOpen() {
+        if let window = NSApplication.shared.windows.first(where: { $0.isVisible && $0.identifier?.rawValue.contains("main") == true }) {
+            window.makeKeyAndOrderFront(nil)
+        } else {
+            openWindow(id: "main")
+        }
+        NSApplication.shared.activate(ignoringOtherApps: true)
     }
 }
