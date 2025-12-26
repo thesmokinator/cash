@@ -71,6 +71,7 @@ enum TransactionDateFilter: String, CaseIterable, Identifiable {
 struct TransactionListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppSettings.self) private var settings
+    @Query(sort: \Account.accountNumber) private var accounts: [Account]
     @Query(filter: #Predicate<Transaction> { $0.isRecurring == false }, sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
     @State private var showingAddTransaction = false
     @State private var transactionToEdit: Transaction?
@@ -81,6 +82,10 @@ struct TransactionListView: View {
     @State private var displayedTransactions: [(String, [Transaction])] = []
     
     var account: Account?
+    
+    private var currency: String {
+        account?.currency ?? CurrencyHelper.defaultCurrency(from: accounts)
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -112,7 +117,7 @@ struct TransactionListView: View {
                         ForEach(displayedTransactions, id: \.0) { dateString, dayTransactions in
                             Section(dateString) {
                                 ForEach(dayTransactions) { transaction in
-                                    TransactionRowView(transaction: transaction, highlightAccount: account)
+                                    TransactionRowView(transaction: transaction, highlightAccount: account, currency: currency)
                                         .contentShape(Rectangle())
                                         .onTapGesture {
                                             transactionToEdit = transaction
@@ -323,6 +328,7 @@ struct TransactionRowView: View {
     @Environment(AppSettings.self) private var settings
     let transaction: Transaction
     var highlightAccount: Account? = nil
+    let currency: String
     
     var body: some View {
         HStack(spacing: 12) {
@@ -357,7 +363,7 @@ struct TransactionRowView: View {
             
             VStack(alignment: .trailing, spacing: 2) {
                 PrivacyAmountView(
-                    amount: CurrencyFormatter.format(transaction.amount),
+                    amount: CurrencyFormatter.format(transaction.amount, currency: currency),
                     isPrivate: settings.privacyMode,
                     font: .subheadline,
                     fontWeight: .semibold

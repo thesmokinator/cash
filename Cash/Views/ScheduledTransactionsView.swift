@@ -11,6 +11,7 @@ import SwiftData
 struct ScheduledTransactionsView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppSettings.self) private var settings
+    @Query(sort: \Account.accountNumber) private var accounts: [Account]
     @Query(filter: #Predicate<Transaction> { $0.isRecurring == true }, sort: \Transaction.date) private var scheduledTransactions: [Transaction]
     @State private var showingAddScheduled = false
     @State private var transactionToEdit: Transaction?
@@ -22,6 +23,10 @@ struct ScheduledTransactionsView: View {
     @State private var displayedTransactions: [Transaction] = []
     @State private var selectedDate: Date? = nil
     @State private var currentMonth: Date = Date()
+    
+    private var currency: String {
+        CurrencyHelper.defaultCurrency(from: accounts)
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -73,7 +78,7 @@ struct ScheduledTransactionsView: View {
                     }
                     
                     ForEach(displayedTransactions) { transaction in
-                        ScheduledTransactionRow(transaction: transaction)
+                        ScheduledTransactionRow(transaction: transaction, currency: currency)
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 transactionToEdit = transaction
@@ -558,6 +563,7 @@ struct CalendarDayCell: View {
 struct ScheduledTransactionRow: View {
     @Environment(AppSettings.self) private var settings
     let transaction: Transaction
+    let currency: String
     
     var body: some View {
         HStack(spacing: 12) {
@@ -599,7 +605,7 @@ struct ScheduledTransactionRow: View {
             Spacer()
             
             PrivacyAmountView(
-                amount: CurrencyFormatter.format(transaction.amount),
+                amount: CurrencyFormatter.format(transaction.amount, currency: currency),
                 isPrivate: settings.privacyMode,
                 font: .subheadline,
                 fontWeight: .semibold
@@ -843,6 +849,7 @@ struct EditScheduledTransactionView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Environment(AppSettings.self) private var settings
+    @Query(sort: \Account.accountNumber) private var accounts: [Account]
     
     @State private var descriptionText: String = ""
     @State private var amountText: String = ""
@@ -853,6 +860,10 @@ struct EditScheduledTransactionView: View {
     @State private var recurrenceWeekendAdjustment: WeekendAdjustment = .none
     @State private var recurrenceStartDate: Date = Date()
     @State private var recurrenceEndDate: Date? = nil
+    
+    private var currency: String {
+        CurrencyHelper.defaultCurrency(from: accounts)
+    }
     
     var body: some View {
         NavigationStack {
@@ -895,7 +906,7 @@ struct EditScheduledTransactionView: View {
     
     private func loadTransaction() {
         descriptionText = transaction.descriptionText
-        amountText = CurrencyFormatter.format(transaction.amount)
+        amountText = CurrencyFormatter.format(transaction.amount, currency: currency)
         
         if let rule = transaction.recurrenceRule {
             recurrenceFrequency = rule.frequency

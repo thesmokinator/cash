@@ -511,7 +511,7 @@ struct AboutSettingsTabContent: View {
     @State private var showingLicense = false
     
     private var appVersion: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     }
     
     var body: some View {

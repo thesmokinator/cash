@@ -114,6 +114,10 @@ struct ForecastView: View {
         projectedTransactions.filter { $0.isExpense }.reduce(Decimal.zero) { $0 + $1.amount }
     }
     
+    private var currency: String {
+        CurrencyHelper.defaultCurrency(from: accounts)
+    }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
@@ -203,6 +207,7 @@ struct ForecastView: View {
                         amount: currentBalance,
                         color: currentBalance >= 0 ? .blue : .red,
                         icon: "banknote",
+                        currency: currency,
                         privacyMode: settings.privacyMode
                     )
                     
@@ -211,6 +216,7 @@ struct ForecastView: View {
                         amount: projectedEndBalance,
                         color: projectedEndBalance >= 0 ? .green : .red,
                         icon: "chart.line.uptrend.xyaxis",
+                        currency: currency,
                         privacyMode: settings.privacyMode
                     )
                 }
@@ -221,6 +227,7 @@ struct ForecastView: View {
                         amount: totalProjectedIncome,
                         color: .green,
                         icon: "arrow.down.circle.fill",
+                        currency: currency,
                         privacyMode: settings.privacyMode
                     )
                     
@@ -229,6 +236,7 @@ struct ForecastView: View {
                         amount: totalProjectedExpenses,
                         color: .red,
                         icon: "arrow.up.circle.fill",
+                        currency: currency,
                         privacyMode: settings.privacyMode
                     )
                 }
@@ -240,7 +248,7 @@ struct ForecastView: View {
                             .font(.headline)
                         
                         ForEach(projectedTransactions.prefix(20)) { transaction in
-                            ProjectedTransactionRow(transaction: transaction, privacyMode: settings.privacyMode)
+                            ProjectedTransactionRow(transaction: transaction, currency: currency, privacyMode: settings.privacyMode)
                         }
                         
                         if projectedTransactions.count > 20 {
@@ -377,7 +385,7 @@ struct ForecastView: View {
     }
     
     private func formatCurrencyCompact(_ amount: Decimal) -> String {
-        CurrencyFormatter.formatCompact(amount)
+        CurrencyFormatter.formatCompact(amount, currency: currency)
     }
 }
 
@@ -388,6 +396,7 @@ struct ForecastSummaryCard: View {
     let amount: Decimal
     let color: Color
     let icon: String
+    let currency: String
     var privacyMode: Bool = false
     
     var body: some View {
@@ -401,7 +410,7 @@ struct ForecastSummaryCard: View {
             .font(.subheadline)
             
             PrivacyAmountView(
-                amount: CurrencyFormatter.format(amount),
+                amount: CurrencyFormatter.format(amount, currency: currency),
                 isPrivate: privacyMode,
                 font: .title3,
                 fontWeight: .semibold,
@@ -419,6 +428,7 @@ struct ForecastSummaryCard: View {
 
 struct ProjectedTransactionRow: View {
     let transaction: ProjectedTransaction
+    let currency: String
     var privacyMode: Bool = false
     
     var body: some View {
@@ -451,7 +461,7 @@ struct ProjectedTransactionRow: View {
     }
     
     private func formatAmount(_ amount: Decimal, isExpense: Bool) -> String {
-        let formatted = CurrencyFormatter.format(amount)
+        let formatted = CurrencyFormatter.format(amount, currency: currency)
         return isExpense ? "-\(formatted)" : "+\(formatted)"
     }
 }
