@@ -212,11 +212,11 @@ struct AddInvestmentTransactionView: View {
                     .frame(width: 350)
             }
             .onAppear { setupPreselectedAccount() }
-            .onChange(of: selectedInvestmentAccount) { 
-                Task { await loadQuoteForSelectedAccount() } 
+            .task(id: selectedInvestmentAccount) { 
+                await loadQuoteForSelectedAccount() 
             }
-            .onChange(of: transactionType) { 
-                Task { await loadQuoteForSelectedAccount() } 
+            .task(id: transactionType) { 
+                await loadQuoteForSelectedAccount() 
             }
         }
         .frame(minWidth: 500, minHeight: 550)
@@ -429,10 +429,7 @@ struct AddInvestmentTransactionView: View {
             selectedIncomeAccount = incomeAccounts.first
         }
         
-        // Load quote if account is preselected
-        if selectedInvestmentAccount != nil {
-            Task { await loadQuoteForSelectedAccount() }
-        }
+        // Load quote if account is preselected - handled by .task modifier
     }
     
     private func loadQuoteForSelectedAccount() async {
