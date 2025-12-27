@@ -318,6 +318,9 @@
         }
       }
     },
+    "%@" : {
+
+    },
     "%@ - %@" : {
       "localizations" : {
         "de" : {
@@ -348,6 +351,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ - %2$@"
+          }
+        }
+      }
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
           }
         }
       }
@@ -5071,6 +5084,9 @@
         }
       }
     },
+    "Current Price" : {
+
+    },
     "Current Status" : {
       "localizations" : {
         "de" : {
@@ -5309,6 +5325,9 @@
           }
         }
       }
+    },
+    "Day Change" : {
+
     },
     "Day of week" : {
       "localizations" : {
@@ -6679,6 +6698,9 @@
           }
         }
       }
+    },
+    "Error loading quote: %@" : {
+
     },
     "Español" : {
       "localizations" : {
@@ -10144,6 +10166,9 @@
         }
       }
     },
+    "Live Quote" : {
+
+    },
     "Loan" : {
       "localizations" : {
         "de" : {
@@ -12133,6 +12158,9 @@
           }
         }
       }
+    },
+    "No quote data available" : {
+
     },
     "No recurring transactions" : {
       "localizations" : {
@@ -17748,6 +17776,9 @@
           }
         }
       }
+    },
+    "Trading Venue: %@" : {
+
     },
     "Transaction" : {
       "localizations" : {

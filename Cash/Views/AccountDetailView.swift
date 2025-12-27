@@ -16,6 +16,9 @@ struct AccountDetailView: View {
     @State private var showingDeleteConfirmation = false
     @State private var showingReconciliation = false
     @Binding var showingAddTransaction: Bool
+    @State private var etfQuote: ETFQuote?
+    @State private var isLoadingQuote = false
+    @State private var quoteError: String?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -77,6 +80,57 @@ struct AccountDetailView: View {
                             DetailPill(label: "Ticker", value: ticker)
                         }
                     }
+                    
+                    // Live ETF Quote
+                    if account.isin != nil {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Live Quote")
+                                .font(.headline)
+                                .foregroundStyle(.secondary)
+                            
+                            if isLoadingQuote {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                            } else if let error = quoteError {
+                                Text("Error loading quote: \(error)")
+                                    .font(.caption)
+                                    .foregroundStyle(.red)
+                            } else if let quote = etfQuote {
+                                HStack(spacing: 16) {
+                                    VStack(alignment: .leading) {
+                                        Text("Current Price")
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Text("\(quote.latestQuote.localized) \(account.currency)")
+                                            .font(.title3)
+                                            .fontWeight(.bold)
+                                    }
+                                    
+                                    if let change = quote.dtdAmt {
+                                        VStack(alignment: .trailing) {
+                                            Text("Day Change")
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                            Text("\(change.localized)")
+                                                .font(.subheadline)
+                                                .foregroundStyle(change.raw >= 0 ? .green : .red)
+                                        }
+                                    }
+                                }
+                                
+                                if let venue = quote.quoteTradingVenue {
+                                    Text("Trading Venue: \(venue)")
+                                        .font(.caption)
+                                        .foregroundStyle(.tertiary)
+                                }
+                            } else {
+                                Text("No quote data available")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.top, 8)
+                    }
                 }
             }
             .padding()
@@ -131,6 +185,9 @@ struct AccountDetailView: View {
         } message: {
             Text("Are you sure you want to delete this account? This action cannot be undone.")
         }
+        .task {
+            await loadETFQuoteIfNeeded()
+        }
         .id(settings.refreshID)
     }
     
@@ -150,6 +207,27 @@ struct AccountDetailView: View {
         case .equity:
             return .primary
         }
+    }
+    
+    private func loadETFQuoteIfNeeded() async {
+        guard account.accountType == .investment,
+              let isin = account.isin,
+              !isin.isEmpty else {
+            return
+        }
+        
+        isLoadingQuote = true
+        quoteError = nil
+        
+        do {
+            let locale = ETFAPIHelper.getUserLocale()
+            let quote = try await ETFAPIHelper.shared.fetchQuote(isin: isin, locale: locale, currency: account.currency)
+            etfQuote = quote
+        } catch {
+            quoteError = error.localizedDescription
+        }
+        
+        isLoadingQuote = false
     }
 }
 
