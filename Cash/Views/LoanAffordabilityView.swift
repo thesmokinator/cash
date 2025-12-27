@@ -44,7 +44,7 @@ struct LoanAffordabilityView: View {
                     }
                 }
                 .padding()
-                .background(Color(nsColor: .controlBackgroundColor))
+                .background(Color.platformControlBackground)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             } else {
                 ContentUnavailableView(

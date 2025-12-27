@@ -1406,7 +1406,11 @@
         }
       }
     },
+    "A personal finance management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
+
+    },
     "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -18132,35 +18136,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Frazionamento azionario"
-          }
-        }
-      }
-    },
-    "Stock splits do not create accounting entries." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bei Aktiensplits werden keine Buchhaltungseinträge erstellt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Las divisiones de acciones no crean asientos contables."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les fractionnements d'actions ne créent pas d'écritures comptables."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I frazionamenti azionari non creano scritture contabili."
           }
         }
       }

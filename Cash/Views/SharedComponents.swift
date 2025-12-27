@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+#if os(macOS)
+import AppKit
+#endif
+
 // MARK: - Currency Formatting
 
 struct CurrencyFormatter {
@@ -205,7 +209,12 @@ struct CloseButton: View {
 
 struct AppUtilities {
     static func quitApp() {
+        #if os(macOS)
         NSApplication.shared.terminate(nil)
+        #else
+        // On iOS/iPadOS, apps cannot programmatically quit
+        // This is intentionally a no-op as iOS manages app lifecycle
+        #endif
     }
 }
 

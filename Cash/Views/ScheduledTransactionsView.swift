@@ -470,7 +470,7 @@ struct ScheduledCalendarView: View {
                         .padding(.vertical, 4)
                 }
             }
-            .background(Color(nsColor: .separatorColor).opacity(0.3))
+            .background(Color.platformSeparator.opacity(0.3))
             .clipShape(RoundedRectangle(cornerRadius: 4))
             
             // Calendar grid
@@ -478,7 +478,7 @@ struct ScheduledCalendarView: View {
                 // Empty cells for offset
                 ForEach(0..<firstWeekdayOffset, id: \.self) { _ in
                     Rectangle()
-                        .fill(Color(nsColor: .windowBackgroundColor))
+                        .fill(Color.platformWindowBackground)
                         .frame(height: 36)
                 }
                 
@@ -498,11 +498,11 @@ struct ScheduledCalendarView: View {
                     }
                 }
             }
-            .background(Color(nsColor: .separatorColor).opacity(0.3))
+            .background(Color.platformSeparator.opacity(0.3))
             .clipShape(RoundedRectangle(cornerRadius: 4))
         }
         .padding(12)
-        .background(Color(nsColor: .controlBackgroundColor))
+        .background(Color.platformControlBackground)
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
@@ -559,7 +559,7 @@ struct CalendarDayCell: View {
         } else if isToday {
             return Color.blue.opacity(0.1)
         } else {
-            return Color(nsColor: .windowBackgroundColor)
+            return Color.platformWindowBackground
         }
     }
 }

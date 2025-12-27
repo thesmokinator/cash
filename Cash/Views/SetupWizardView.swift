@@ -302,7 +302,9 @@ struct SetupWizardView: View {
                     } label: {
                         Text("Language")
                     }
+                    #if os(macOS)
                     .pickerStyle(.radioGroup)
+                    #endif
                     .labelsHidden()
                 } header: {
                     Text("Language")
@@ -331,7 +333,9 @@ struct SetupWizardView: View {
                     } label: {
                         Text("Theme")
                     }
+                    #if os(macOS)
                     .pickerStyle(.radioGroup)
+                    #endif
                     .labelsHidden()
                 } header: {
                     Text("Theme")

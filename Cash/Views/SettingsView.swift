@@ -7,7 +7,11 @@
 
 import SwiftUI
 import SwiftData
+
+#if os(macOS)
 import AppKit
+#endif
+
 import UniformTypeIdentifiers
 
 #if ENABLE_ICLOUD
@@ -160,7 +164,7 @@ struct SettingsView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-        .background(Color(nsColor: .windowBackgroundColor))
+        .background(Color.platformWindowBackground)
     }
     
     private func tabButton(for tab: SettingsTab) -> some View {
@@ -224,6 +228,7 @@ struct SettingsView: View {
             
             let filename = DataExporter.generateFilename(for: format)
             
+            #if os(macOS)
             let savePanel = NSSavePanel()
             savePanel.nameFieldStringValue = filename
             savePanel.canCreateDirectories = true
@@ -239,6 +244,11 @@ struct SettingsView: View {
                     }
                 }
             }
+            #else
+            // iOS export not implemented yet
+            errorMessage = "Export is not available on iOS yet"
+            showingError = true
+            #endif
         } catch {
             errorMessage = error.localizedDescription
             showingError = true
@@ -525,9 +535,10 @@ struct AboutSettingsTabContent: View {
     var body: some View {
         Section {
             VStack(spacing: 16) {
-                Image(nsImage: NSApp.applicationIconImage)
+                Image("AppIcon")
                     .resizable()
                     .frame(width: 80, height: 80)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 
                 VStack(spacing: 4) {
                     Text("Cash")
@@ -539,7 +550,7 @@ struct AboutSettingsTabContent: View {
                         .foregroundStyle(.secondary)
                 }
                 
-                Text("A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData.")
+                Text("A personal finance management application inspired by Gnucash, built with SwiftUI and SwiftData.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
