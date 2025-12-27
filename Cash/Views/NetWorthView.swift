@@ -133,7 +133,7 @@ struct NetWorthView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 
-                // Assets Section - grouped by currency
+                // Assets Section - grouped by currency and type
                 if !assetAccounts.isEmpty {
                     ForEach(currencies, id: \.self) { currency in
                         let currencyAssets = assetAccounts(for: currency)
@@ -151,11 +151,53 @@ struct NetWorthView: View {
                                     }
                                 }
                                 
-                                ForEach(currencyAssets) { account in
-                                    AccountBalanceRow(account: account, privacyMode: settings.privacyMode)
+                                // Group by account type
+                                let groupedAssets = Dictionary(grouping: currencyAssets) { $0.accountType }
+                                let sortedTypes = groupedAssets.keys.sorted { $0.localizedName < $1.localizedName }
+                                
+                                ForEach(sortedTypes, id: \.self) { accountType in
+                                    if let accountsOfType = groupedAssets[accountType] {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            // Type header
+                                            HStack {
+                                                Image(systemName: accountType.iconName)
+                                                    .foregroundStyle(.secondary)
+                                                    .font(.subheadline)
+                                                Text(accountType.localizedName)
+                                                    .font(.subheadline)
+                                                    .fontWeight(.medium)
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                            .padding(.top, sortedTypes.first == accountType ? 0 : 8)
+                                            
+                                            // Accounts of this type
+                                            ForEach(accountsOfType) { account in
+                                                AccountBalanceRow(account: account, privacyMode: settings.privacyMode, showIcon: false)
+                                            }
+                                            
+                                            // Subtotal for this type
+                                            HStack {
+                                                Text("Subtotal")
+                                                    .font(.caption)
+                                                    .foregroundStyle(.tertiary)
+                                                Spacer()
+                                                PrivacyAmountView(
+                                                    amount: CurrencyFormatter.format(
+                                                        accountsOfType.reduce(0) { $0 + $1.balance },
+                                                        currency: currency
+                                                    ),
+                                                    isPrivate: settings.privacyMode,
+                                                    font: .caption,
+                                                    fontWeight: .semibold,
+                                                    color: .green
+                                                )
+                                            }
+                                            .padding(.vertical, 2)
+                                        }
+                                    }
                                 }
                                 
-                                // Subtotal for this currency
+                                // Total for this currency
                                 if netWorthByCurrency.count > 1 {
                                     Divider()
                                     HStack {
@@ -183,7 +225,7 @@ struct NetWorthView: View {
                     }
                 }
                 
-                // Liabilities Section - grouped by currency
+                // Liabilities Section - grouped by currency and type
                 if !liabilityAccounts.isEmpty {
                     ForEach(currencies, id: \.self) { currency in
                         let currencyLiabilities = liabilityAccounts(for: currency)
@@ -201,11 +243,53 @@ struct NetWorthView: View {
                                     }
                                 }
                                 
-                                ForEach(currencyLiabilities) { account in
-                                    AccountBalanceRow(account: account, privacyMode: settings.privacyMode)
+                                // Group by account type
+                                let groupedLiabilities = Dictionary(grouping: currencyLiabilities) { $0.accountType }
+                                let sortedTypes = groupedLiabilities.keys.sorted { $0.localizedName < $1.localizedName }
+                                
+                                ForEach(sortedTypes, id: \.self) { accountType in
+                                    if let accountsOfType = groupedLiabilities[accountType] {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            // Type header
+                                            HStack {
+                                                Image(systemName: accountType.iconName)
+                                                    .foregroundStyle(.secondary)
+                                                    .font(.subheadline)
+                                                Text(accountType.localizedName)
+                                                    .font(.subheadline)
+                                                    .fontWeight(.medium)
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                            .padding(.top, sortedTypes.first == accountType ? 0 : 8)
+                                            
+                                            // Accounts of this type
+                                            ForEach(accountsOfType) { account in
+                                                AccountBalanceRow(account: account, privacyMode: settings.privacyMode, showIcon: false)
+                                            }
+                                            
+                                            // Subtotal for this type
+                                            HStack {
+                                                Text("Subtotal")
+                                                    .font(.caption)
+                                                    .foregroundStyle(.tertiary)
+                                                Spacer()
+                                                PrivacyAmountView(
+                                                    amount: CurrencyFormatter.format(
+                                                        accountsOfType.reduce(0) { $0 + $1.balance },
+                                                        currency: currency
+                                                    ),
+                                                    isPrivate: settings.privacyMode,
+                                                    font: .caption,
+                                                    fontWeight: .semibold,
+                                                    color: .red
+                                                )
+                                            }
+                                            .padding(.vertical, 2)
+                                        }
+                                    }
                                 }
                                 
-                                // Subtotal for this currency
+                                // Total for this currency
                                 if netWorthByCurrency.count > 1 {
                                     Divider()
                                     HStack {
@@ -353,12 +437,15 @@ struct CurrencyNetWorthCard: View {
 struct AccountBalanceRow: View {
     let account: Account
     var privacyMode: Bool = false
+    var showIcon: Bool = true
     
     var body: some View {
         HStack {
-            Image(systemName: account.accountType.iconName)
-                .foregroundStyle(.secondary)
-                .frame(width: 24)
+            if showIcon {
+                Image(systemName: account.accountType.iconName)
+                    .foregroundStyle(.secondary)
+                    .frame(width: 24)
+            }
             
             Text(account.displayName)
             
