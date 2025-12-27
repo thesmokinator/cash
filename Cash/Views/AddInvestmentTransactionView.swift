@@ -317,7 +317,10 @@ struct AddInvestmentTransactionView: View {
                 HStack {
                     if isLoadingQuote {
                         ProgressView()
-                            .scaleEffect(0.6)
+                            .frame(width: 16, height: 16)
+                    } else {
+                        Spacer()
+                            .frame(width: 16)
                     }
                     Text(CurrencyList.symbol(forCode: currentCurrency))
                         .foregroundStyle(.secondary)
