@@ -1,0 +1,8 @@
+# Requirements for Cash App localization scripts
+# Install with: pip install -r requirements.txt
+
+# Progress bar for better UX
+tqdm>=4.66.0
+
+# Translation API wrapper (supports Google Translate and others)
+deep-translator>=1.11.0
