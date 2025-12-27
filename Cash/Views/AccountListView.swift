@@ -240,7 +240,7 @@ struct AccountRowView: View {
     
     var body: some View {
         HStack {
-            Image(systemName: account.accountType.iconName)
+            Image(systemName: account.effectiveIconName)
                 .foregroundStyle(.secondary)
                 .frame(width: 24)
             

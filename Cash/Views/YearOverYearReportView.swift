@@ -321,7 +321,7 @@ struct CategoryComparisonRow: View {
     var body: some View {
         HStack(spacing: 12) {
             // Icon
-            Image(systemName: comparison.account.accountType.iconName)
+            Image(systemName: comparison.account.effectiveIconName)
                 .foregroundStyle(.secondary)
                 .frame(width: 24)
             

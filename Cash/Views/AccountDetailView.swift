@@ -22,7 +22,7 @@ struct AccountDetailView: View {
             // Header Card
             VStack(spacing: 12) {
                 HStack {
-                    Image(systemName: account.accountType.iconName)
+                    Image(systemName: account.effectiveIconName)
                         .font(.title)
                         .foregroundStyle(.tint)
                     
@@ -65,6 +65,18 @@ struct AccountDetailView: View {
                     DetailPill(label: "Class", value: account.accountClass.localizedName)
                     DetailPill(label: "Type", value: account.accountType.localizedName)
                     DetailPill(label: "Currency", value: account.currency)
+                }
+                
+                // Investment-specific information
+                if account.accountType == .investment && (account.isin != nil || account.ticker != nil) {
+                    HStack(spacing: 16) {
+                        if let isin = account.isin {
+                            DetailPill(label: "ISIN", value: isin)
+                        }
+                        if let ticker = account.ticker {
+                            DetailPill(label: "Ticker", value: ticker)
+                        }
+                    }
                 }
             }
             .padding()

@@ -23,6 +23,14 @@ struct AddAccountView: View {
     @State private var createOpeningBalance: Bool = false
     @State private var includedInBudget: Bool = false
     
+    // Investment-specific fields
+    @State private var isin: String = ""
+    @State private var ticker: String = ""
+    
+    // Custom icon
+    @State private var showingIconPicker = false
+    @State private var customIconName: String?
+    
     @State private var showingValidationError = false
     @State private var validationMessage: LocalizedStringKey = ""
     
@@ -79,6 +87,51 @@ struct AddAccountView: View {
                     }
                 }
                 
+                // Investment-specific fields
+                if selectedType == .investment {
+                    Section {
+                        TextField("ISIN", text: $isin)
+                            .help("International Securities Identification Number (e.g., IE00B4L5Y983)")
+                        
+                        TextField("Ticker", text: $ticker)
+                            .help("Stock ticker symbol (e.g., IWDA)")
+                    } header: {
+                        Text("Investment Details")
+                    } footer: {
+                        Text("Optional: Add ISIN and ticker for better tracking of your investments.")
+                    }
+                }
+                
+                // Custom icon picker
+                if selectedType == .otherExpense || selectedType == .otherIncome {
+                    Section {
+                        HStack {
+                            Image(systemName: customIconName ?? selectedType.iconName)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 24)
+                            
+                            Text("Icon")
+                            
+                            Spacer()
+                            
+                            Button(customIconName == nil ? "Choose Icon" : "Change Icon") {
+                                showingIconPicker = true
+                            }
+                        }
+                        
+                        if customIconName != nil {
+                            Button("Reset to Default") {
+                                customIconName = nil
+                            }
+                            .foregroundStyle(.secondary)
+                        }
+                    } header: {
+                        Text("Personalization")
+                    } footer: {
+                        Text("Customize the icon to better represent this category.")
+                    }
+                }
+                
                 if selectedClass == .asset || selectedClass == .liability {
                     Section("Opening balance") {
                         Toggle("Set opening balance", isOn: $createOpeningBalance)
@@ -125,6 +178,9 @@ struct AddAccountView: View {
                     selectedType = firstType
                 }
             }
+            .sheet(isPresented: $showingIconPicker) {
+                IconPickerView(selectedIcon: $customIconName)
+            }
             .id(settings.refreshID)
         }
         .frame(minWidth: 400, minHeight: 550)
@@ -157,6 +213,15 @@ struct AddAccountView: View {
             accountType: selectedType,
             includedInBudget: selectedClass == .expense ? includedInBudget : false
         )
+        
+        // Set investment-specific fields
+        if selectedType == .investment {
+            account.isin = isin.trimmingCharacters(in: .whitespacesAndNewlines).uppercased().isEmpty ? nil : isin.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+            account.ticker = ticker.trimmingCharacters(in: .whitespacesAndNewlines).uppercased().isEmpty ? nil : ticker.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        }
+        
+        // Set custom icon if selected
+        account.customIconName = customIconName
         
         modelContext.insert(account)
         

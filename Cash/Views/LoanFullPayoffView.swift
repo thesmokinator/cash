@@ -141,7 +141,7 @@ struct LoanFullPayoffView: View {
                                 Text("Select account").tag(nil as Account?)
                                 ForEach(bankAccounts) { account in
                                     HStack {
-                                        Image(systemName: account.accountType.iconName)
+                                        Image(systemName: account.effectiveIconName)
                                         Text(account.displayName)
                                     }
                                     .tag(account as Account?)

@@ -125,13 +125,13 @@ struct AccountPicker: View {
             ForEach(accounts) { account in
                 if showClass {
                     HStack {
-                        Label(account.displayName, systemImage: account.accountType.iconName)
+                        Label(account.displayName, systemImage: account.effectiveIconName)
                         Text("(\(account.accountClass.localizedName))")
                             .foregroundStyle(.secondary)
                     }
                     .tag(account as Account?)
                 } else {
-                    Label(account.displayName, systemImage: account.accountType.iconName)
+                    Label(account.displayName, systemImage: account.effectiveIconName)
                         .tag(account as Account?)
                 }
             }
@@ -296,5 +296,127 @@ struct LabeledAmountRow: View {
                 color: valueColor
             )
         }
+    }
+}
+
+// MARK: - Icon Picker View
+
+struct IconPickerView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var selectedIcon: String?
+    
+    @State private var searchText = ""
+    @State private var selectedCategory: IconCategory = .all
+    
+    enum IconCategory: String, CaseIterable, Identifiable {
+        case all = "All"
+        case finance = "Finance"
+        case shopping = "Shopping"
+        case food = "Food & Dining"
+        case transportation = "Transportation"
+        case home = "Home & Living"
+        case health = "Health & Fitness"
+        case entertainment = "Entertainment"
+        case work = "Work & Education"
+        case travel = "Travel"
+        case other = "Other"
+        
+        var id: String { rawValue }
+        
+        var icons: [String] {
+            switch self {
+            case .all:
+                return IconCategory.allCases.filter { $0 != .all }.flatMap { $0.icons }
+            case .finance:
+                return ["dollarsign.circle", "creditcard", "banknote", "chart.line.uptrend.xyaxis", "chart.pie", "percent", "chart.bar", "bitcoinsign.circle"]
+            case .shopping:
+                return ["bag", "cart", "basket", "giftcard", "tag", "storefront", "shippingbox"]
+            case .food:
+                return ["fork.knife", "cup.and.saucer", "mug", "wineglass", "birthday.cake", "takeoutbag.and.cup.and.straw", "popcorn"]
+            case .transportation:
+                return ["car", "bus", "tram", "bicycle", "scooter", "fuelpump", "parkingsign", "ev.charger"]
+            case .home:
+                return ["house", "lightbulb", "fanblades", "washer", "toilet", "bed.double", "sofa", "lamp.table"]
+            case .health:
+                return ["heart", "figure.walk", "figure.run", "dumbbell", "cross.case", "pills", "syringe", "stethoscope"]
+            case .entertainment:
+                return ["tv", "film", "music.note", "gamecontroller", "sportscourt", "theatermasks", "ticket", "party.popper"]
+            case .work:
+                return ["briefcase", "laptopcomputer", "book", "graduationcap", "pencil", "folder", "doc.text", "calendar"]
+            case .travel:
+                return ["airplane", "suitcase.rolling", "globe", "map", "location", "camera", "bed.double", "tent"]
+            case .other:
+                return ["questionmark.circle", "ellipsis.circle", "circle", "square", "triangle", "star", "heart", "flag"]
+            }
+        }
+    }
+    
+    private var filteredIcons: [String] {
+        let categoryIcons = selectedCategory.icons
+        if searchText.isEmpty {
+            return categoryIcons
+        }
+        return categoryIcons.filter { $0.localizedCaseInsensitiveContains(searchText) }
+    }
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                // Search bar
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundStyle(.secondary)
+                    TextField("Search icons", text: $searchText)
+                        .textFieldStyle(.plain)
+                }
+                .padding(8)
+                .background(.quaternary.opacity(0.5))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .padding()
+                
+                // Category picker
+                Picker("Category", selection: $selectedCategory) {
+                    ForEach(IconCategory.allCases) { category in
+                        Text(category.rawValue).tag(category)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                
+                // Icons grid
+                ScrollView {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 6), spacing: 12) {
+                        ForEach(filteredIcons, id: \.self) { iconName in
+                            Button {
+                                selectedIcon = iconName
+                                dismiss()
+                            } label: {
+                                VStack(spacing: 4) {
+                                    Image(systemName: iconName)
+                                        .font(.title2)
+                                        .frame(width: 44, height: 44)
+                                        .background(selectedIcon == iconName ? Color.accentColor.opacity(0.2) : Color.clear)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    
+                                    Text(iconName.split(separator: ".").first?.capitalized ?? iconName)
+                                        .font(.caption2)
+                                        .lineLimit(1)
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    .padding()
+                }
+            }
+            .navigationTitle("Choose Icon")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
+        .frame(width: 600, height: 500)
     }
 }

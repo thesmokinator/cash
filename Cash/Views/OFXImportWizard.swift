@@ -180,7 +180,7 @@ struct OFXImportWizard: View {
             Picker("Bank Account", selection: $selectedBankAccount) {
                 Text("Select an account").tag(nil as Account?)
                 ForEach(bankAccounts) { account in
-                    Label(account.displayName, systemImage: account.accountType.iconName)
+                    Label(account.displayName, systemImage: account.effectiveIconName)
                         .tag(account as Account?)
                 }
             }

@@ -286,6 +286,13 @@ final class Account {
     var lastReconciledBalance: Decimal?
     var lastReconciledDate: Date?
     
+    // Investment-specific fields
+    var isin: String?
+    var ticker: String?
+    
+    // Custom icon for personalization (especially for "other" account types)
+    var customIconName: String?
+    
     @Relationship(deleteRule: .cascade, inverse: \Entry.account)
     var entries: [Entry]? = []
     
@@ -361,6 +368,11 @@ final class Account {
     /// Returns the display name - uses account name
     var displayName: String {
         name
+    }
+    
+    /// Returns the effective icon name - uses custom icon if set, otherwise account type icon
+    var effectiveIconName: String {
+        customIconName ?? accountType.iconName
     }
     
     init(
