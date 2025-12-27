@@ -85,7 +85,6 @@ struct AddExistingLoanView: View {
             Form {
                 Section("Loan Information") {
                     TextField("Name", text: $loanName)
-                        .textFieldStyle(.roundedBorder)
                     
                     Picker("Type", selection: $loanType) {
                         ForEach(LoanType.allCases) { type in
@@ -106,11 +105,26 @@ struct AddExistingLoanView: View {
                         }
                     }
                     
+                    #if os(iOS)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Amortization Type")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        Picker("Amortization Type", selection: $amortizationType) {
+                            ForEach(AmortizationType.allCases) { type in
+                                Text(type.localizedName).tag(type)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .labelsHidden()
+                    }
+                    #else
                     Picker("Amortization Type", selection: $amortizationType) {
                         ForEach(AmortizationType.allCases) { type in
                             Text(type.localizedName).tag(type)
                         }
                     }
+                    #endif
                     
                     Picker("Currency", selection: $currency) {
                         ForEach(CurrencyList.currencies) { curr in
@@ -125,7 +139,9 @@ struct AddExistingLoanView: View {
                             .foregroundStyle(.secondary)
                         TextField("Original Principal", text: $principalText)
                     }
-                    
+                }
+                
+                Section {
                     HStack {
                         TextField("Interest Rate (TAN)", text: $interestRateText)
                         Text("%")
