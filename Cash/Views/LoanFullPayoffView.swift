@@ -141,7 +141,7 @@ struct LoanFullPayoffView: View {
                                 Text("Select account").tag(nil as Account?)
                                 ForEach(bankAccounts) { account in
                                     HStack {
-                                        Image(systemName: account.accountType.iconName)
+                                        Image(systemName: account.effectiveIconName)
                                         Text(account.displayName)
                                     }
                                     .tag(account as Account?)
@@ -198,9 +198,24 @@ struct LoanFullPayoffView: View {
     }
     
     private func executePayoff() {
+        var affectedAccountIDs = Set<UUID>()
+        
         // Create payoff transaction if requested
         if createTransaction, let paymentAccount = selectedPaymentAccount {
             createPayoffTransaction(from: paymentAccount)
+            affectedAccountIDs.insert(paymentAccount.id)
+            
+            // Find the expense category used
+            let expenseCategory = expenseCategories.first {
+                $0.displayName.localizedCaseInsensitiveContains("loan") ||
+                $0.displayName.localizedCaseInsensitiveContains("mortgage") ||
+                $0.displayName.localizedCaseInsensitiveContains("mutuo") ||
+                $0.displayName.localizedCaseInsensitiveContains("prestito")
+            } ?? expenseCategories.first
+            
+            if let category = expenseCategory {
+                affectedAccountIDs.insert(category.id)
+            }
         }
         
         // Remove linked recurring transaction
@@ -208,6 +223,9 @@ struct LoanFullPayoffView: View {
         
         // Mark loan as fully paid
         loan.paymentsMade = loan.totalPayments
+        
+        // Signal balance update for affected accounts
+        BalanceUpdateSignal.send(for: affectedAccountIDs)
         
         dismiss()
         onPayoff()

@@ -74,6 +74,8 @@ struct TransactionListView: View {
     @Query(sort: \Account.accountNumber) private var accounts: [Account]
     @Query(filter: #Predicate<Transaction> { $0.isRecurring == false }, sort: \Transaction.date, order: .reverse) private var transactions: [Transaction]
     @State private var showingAddTransaction = false
+    @State private var showingAddInvestmentTransaction = false
+    @State private var showingReconciliation = false
     @State private var transactionToEdit: Transaction?
     @State private var transactionToDelete: Transaction?
     @State private var dateFilter: TransactionDateFilter = .thisMonth
@@ -87,12 +89,25 @@ struct TransactionListView: View {
         account?.currency ?? CurrencyHelper.defaultCurrency(from: accounts)
     }
     
+    private var canReconcile: Bool {
+        guard let account = account else { return false }
+        return (account.accountClass == .asset || account.accountClass == .liability) && account.accountType != .investment
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             TransactionFilterBar(
                 dateFilter: $dateFilter,
                 searchText: $searchText,
-                onAddTransaction: { showingAddTransaction = true }
+                onAddTransaction: {
+                    if account?.accountType == .investment {
+                        showingAddInvestmentTransaction = true
+                    } else {
+                        showingAddTransaction = true
+                    }
+                },
+                onReconcile: canReconcile ? { showingReconciliation = true } : nil,
+                showReconcile: canReconcile
             )
             
             Group {
@@ -180,6 +195,16 @@ struct TransactionListView: View {
         .navigationTitle(account?.name ?? String(localized: "All transactions"))
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionView(preselectedAccount: account)
+        }
+        .sheet(isPresented: $showingAddInvestmentTransaction) {
+            if let account = account {
+                AddInvestmentTransactionView(preselectedInvestmentAccount: account)
+            }
+        }
+        .sheet(isPresented: $showingReconciliation) {
+            if let account = account {
+                ReconciliationView(account: account)
+            }
         }
         .sheet(item: $transactionToEdit) { transaction in
             EditTransactionView(transaction: transaction)
@@ -269,8 +294,16 @@ struct TransactionListView: View {
     }
     
     private func deleteTransaction(_ transaction: Transaction) {
+        // Collect affected account IDs before deletion
+        let affectedAccountIDs = Set((transaction.entries ?? []).compactMap { $0.account?.id })
+        
         withAnimation {
             modelContext.delete(transaction)
+        }
+        
+        // Signal balance update for affected accounts
+        if !affectedAccountIDs.isEmpty {
+            BalanceUpdateSignal.send(for: affectedAccountIDs)
         }
     }
 }
@@ -280,6 +313,8 @@ struct TransactionFilterBar: View {
     @Binding var searchText: String
     var showDateFilter: Bool = true
     var onAddTransaction: (() -> Void)?
+    var onReconcile: (() -> Void)?
+    var showReconcile: Bool = false
     
     var body: some View {
         HStack(spacing: 12) {
@@ -315,6 +350,12 @@ struct TransactionFilterBar: View {
             if let onAdd = onAddTransaction {
                 Button(action: onAdd) {
                     Label("Add", systemImage: "plus")
+                }
+            }
+            
+            if showReconcile, let onReconcileAction = onReconcile {
+                Button(action: onReconcileAction) {
+                    Label("Reconcile", systemImage: "checkmark.shield")
                 }
             }
         }

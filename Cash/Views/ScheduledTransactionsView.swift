@@ -329,6 +329,10 @@ struct ScheduledTransactionsView: View {
             rule.nextOccurrence = rule.calculateNextOccurrence(from: Date())
         }
         
+        // Signal balance update for affected accounts
+        let affectedAccountIDs = Set((newTransaction.entries ?? []).compactMap { $0.account?.id })
+        BalanceUpdateSignal.send(for: affectedAccountIDs)
+        
         transactionToExecute = nil
     }
 }

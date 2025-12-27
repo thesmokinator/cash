@@ -379,6 +379,14 @@ struct GeneralSettingsTabContent: View {
                 }
             }
         }
+        
+        Section {
+            Toggle("Show live ETF quotes", isOn: $settings.showLiveQuotes)
+        } header: {
+            Text("Investments")
+        } footer: {
+            Text("When enabled, displays real-time price quotes for investment accounts with an ISIN code. This setting syncs across your devices via iCloud.")
+        }
         .alert("Restart required", isPresented: $showingRestartAlert) {
             Button("Later") {
                 settings.needsRestart = false

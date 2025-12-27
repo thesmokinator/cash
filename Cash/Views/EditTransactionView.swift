@@ -261,6 +261,10 @@ struct EditTransactionView: View {
             }
         }
         
+        // Signal balance update for affected accounts
+        let affectedAccountIDs = Set((transaction.entries ?? []).compactMap { $0.account?.id })
+        BalanceUpdateSignal.send(for: affectedAccountIDs)
+        
         dismiss()
     }
 }

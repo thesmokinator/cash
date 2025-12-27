@@ -10,14 +10,14 @@ import SwiftUI
 // MARK: - Currency Formatting
 
 struct CurrencyFormatter {
-    static func format(_ amount: Decimal, currency: String = "EUR") -> String {
+    static nonisolated func format(_ amount: Decimal, currency: String = "EUR") -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = currency
         return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
     
-    static func formatCompact(_ amount: Decimal, currency: String = "EUR") -> String {
+    static nonisolated func formatCompact(_ amount: Decimal, currency: String = "EUR") -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = currency
@@ -25,7 +25,7 @@ struct CurrencyFormatter {
         return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
     
-    static func parse(_ text: String) -> Decimal {
+    static nonisolated func parse(_ text: String) -> Decimal {
         let cleaned = text.replacingOccurrences(of: ",", with: ".")
         return Decimal(string: cleaned) ?? 0
     }
@@ -111,6 +111,51 @@ struct JournalEntryPreview: View {
     }
 }
 
+// MARK: - Account Balance Preview
+
+struct AccountBalancePreview: View {
+    let accounts: [(account: Account, newBalance: Decimal)]
+    let emptyMessage: String?
+    
+    init(accounts: [(account: Account, newBalance: Decimal)], emptyMessage: String? = nil) {
+        self.accounts = accounts
+        self.emptyMessage = emptyMessage
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if accounts.isEmpty {
+                Text(emptyMessage ?? "Select accounts to see preview")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(accounts, id: \.account.id) { item in
+                    let balanceChange = item.newBalance - item.account.balance
+                    let isGaining = balanceChange > 0
+                    HStack {
+                        Text(item.account.displayName)
+                            .font(.subheadline)
+                        Spacer()
+                        Text(CurrencyFormatter.format(item.newBalance, currency: item.account.currency))
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .monospacedDigit()
+                            .foregroundStyle(isGaining ? .green : .red)
+                    }
+                    .padding(.vertical, 4)
+                }
+                .padding(12)
+                .background(Color.accentColor.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .strokeBorder(Color.accentColor.opacity(0.2), lineWidth: 1)
+                )
+            }
+        }
+    }
+}
+
 // MARK: - Account Picker
 
 struct AccountPicker: View {
@@ -125,13 +170,13 @@ struct AccountPicker: View {
             ForEach(accounts) { account in
                 if showClass {
                     HStack {
-                        Label(account.displayName, systemImage: account.accountType.iconName)
+                        Label(account.displayName, systemImage: account.effectiveIconName)
                         Text("(\(account.accountClass.localizedName))")
                             .foregroundStyle(.secondary)
                     }
                     .tag(account as Account?)
                 } else {
-                    Label(account.displayName, systemImage: account.accountType.iconName)
+                    Label(account.displayName, systemImage: account.effectiveIconName)
                         .tag(account as Account?)
                 }
             }
@@ -296,5 +341,138 @@ struct LabeledAmountRow: View {
                 color: valueColor
             )
         }
+    }
+}
+
+// MARK: - Icon Picker View
+
+struct IconPickerView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var selectedIcon: String?
+    
+    @State private var searchText = ""
+    @State private var selectedCategory: IconCategory = .all
+    
+    enum IconCategory: String, CaseIterable, Identifiable {
+        case all = "All"
+        case finance = "Finance"
+        case shopping = "Shopping"
+        case food = "Food & Dining"
+        case transportation = "Transportation"
+        case home = "Home & Living"
+        case health = "Health & Fitness"
+        case entertainment = "Entertainment"
+        case work = "Work & Education"
+        case travel = "Travel"
+        case other = "Other"
+        
+        var id: String { rawValue }
+        
+        var icons: [String] {
+            switch self {
+            case .all:
+                return IconCategory.allCases.filter { $0 != .all }.flatMap { $0.icons }
+            case .finance:
+                return ["dollarsign.circle.fill", "creditcard.fill", "banknote.fill", "chart.line.uptrend.xyaxis", "chart.pie.fill", "percent", "chart.bar.fill", "bitcoinsign.circle.fill"]
+            case .shopping:
+                return ["bag.fill", "cart.fill", "basket.fill", "giftcard.fill", "tag.fill", "storefront.fill", "shippingbox.fill"]
+            case .food:
+                return ["fork.knife", "cup.and.saucer.fill", "mug.fill", "wineglass.fill", "birthday.cake.fill", "takeoutbag.and.cup.and.straw.fill", "popcorn.fill"]
+            case .transportation:
+                return ["car.fill", "bus.fill", "tram.fill", "bicycle", "scooter", "fuelpump.fill", "parkingsign", "bolt.car.fill"]
+            case .home:
+                return ["house.fill", "lightbulb.fill", "fan.fill", "washer.fill", "toilet.fill", "bed.double.fill", "sofa.fill", "lamp.table.fill"]
+            case .health:
+                return ["heart.fill", "figure.walk", "figure.run", "dumbbell.fill", "cross.case.fill", "pills.fill", "syringe.fill", "stethoscope"]
+            case .entertainment:
+                return ["tv.fill", "film.fill", "music.note", "gamecontroller.fill", "sportscourt.fill", "theatermasks.fill", "ticket.fill", "party.popper.fill"]
+            case .work:
+                return ["briefcase.fill", "laptopcomputer", "book.fill", "graduationcap.fill", "pencil", "folder.fill", "doc.text.fill", "calendar"]
+            case .travel:
+                return ["airplane", "suitcase.rolling.fill", "globe", "map.fill", "location.fill", "camera.fill", "building.2.fill", "tent.fill"]
+            case .other:
+                return ["questionmark.circle.fill", "ellipsis.circle.fill", "circle.fill", "square.fill", "triangle.fill", "star.fill", "heart.fill", "flag.fill"]
+            }
+        }
+    }
+    
+    private var filteredIcons: [String] {
+        let categoryIcons = selectedCategory.icons
+        if searchText.isEmpty {
+            return categoryIcons
+        }
+        return categoryIcons.filter { $0.localizedCaseInsensitiveContains(searchText) }
+    }
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                // Search and category in compact header
+                VStack(spacing: 8) {
+                    // Search bar
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundStyle(.secondary)
+                            .font(.body)
+                        TextField("Search icons", text: $searchText)
+                            .textFieldStyle(.plain)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(.quaternary.opacity(0.5))
+                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                    
+                    // Category picker as menu
+                    HStack {
+                        Text("Category:")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                        
+                        Picker("", selection: $selectedCategory) {
+                            ForEach(IconCategory.allCases) { category in
+                                Text(category.rawValue).tag(category)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(.regularMaterial)
+                
+                Divider()
+                
+                // Icons grid with tighter spacing
+                ScrollView {
+                    LazyVGrid(columns: Array(repeating: GridItem(.fixed(70), spacing: 0), count: 8), spacing: 0) {
+                        ForEach(filteredIcons, id: \.self) { iconName in
+                            Button {
+                                selectedIcon = iconName
+                                dismiss()
+                            } label: {
+                                Image(systemName: iconName)
+                                    .font(.title3)
+                                    .frame(width: 70, height: 60)
+                                    .background(selectedIcon == iconName ? Color.accentColor.opacity(0.2) : Color.clear)
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .help(iconName)
+                        }
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 8)
+                }
+            }
+            .navigationTitle("Choose Icon")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
+        .frame(width: 600, height: 500)
     }
 }

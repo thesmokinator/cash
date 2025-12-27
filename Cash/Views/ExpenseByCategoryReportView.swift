@@ -254,7 +254,7 @@ struct CategoryExpenseRow: View {
     var body: some View {
         HStack(spacing: 12) {
             // Icon
-            Image(systemName: expense.account.accountType.iconName)
+            Image(systemName: expense.account.effectiveIconName)
                 .foregroundStyle(.secondary)
                 .frame(width: 24)
             

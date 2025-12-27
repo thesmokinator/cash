@@ -286,6 +286,20 @@ final class Account {
     var lastReconciledBalance: Decimal?
     var lastReconciledDate: Date?
     
+    // Cached balance for fast sidebar display
+    var cachedBalance: Decimal = 0
+    // Cached formatted balance string for even faster sidebar display
+    var cachedFormattedBalance: String = ""
+    // Track if balance has been calculated to enable lazy loading
+    var balanceCalculated: Bool = false
+    
+    // Investment-specific fields
+    var isin: String?
+    var ticker: String?
+    
+    // Custom icon for personalization (especially for "other" account types)
+    var customIconName: String?
+    
     @Relationship(deleteRule: .cascade, inverse: \Entry.account)
     var entries: [Entry]? = []
     
@@ -363,6 +377,19 @@ final class Account {
         name
     }
     
+    /// Returns the effective icon name - uses custom icon if set, otherwise account type icon
+    var effectiveIconName: String {
+        customIconName ?? accountType.iconName
+    }
+    
+    /// Recalculate and update the cached balance
+    /// Call this after transactions are added/modified/deleted
+    func recalculateBalance() {
+        cachedBalance = balance
+        cachedFormattedBalance = CurrencyFormatter.format(cachedBalance, currency: currency)
+        balanceCalculated = true
+    }
+    
     init(
         name: String,
         accountNumber: String = "",
@@ -385,10 +412,40 @@ final class Account {
         self.includedInBudget = includedInBudget
         self.lastReconciledBalance = nil
         self.lastReconciledDate = nil
+        self.cachedBalance = 0
+        self.cachedFormattedBalance = CurrencyFormatter.format(0, currency: currency)
+        self.balanceCalculated = false
     }
 }
 
-// MARK: - Default Chart of Accounts
+// MARK: - Balance Update Signal
+
+extension Notification.Name {
+    /// Posted when account balances need to be recalculated
+    /// userInfo contains "accountIDs": Set<UUID> of affected accounts, or nil for all accounts
+    static let accountBalancesNeedUpdate = Notification.Name("accountBalancesNeedUpdate")
+}
+
+/// Helper to post balance update signals
+struct BalanceUpdateSignal {
+    /// Signal that specific accounts need balance recalculation
+    static func send(for accountIDs: Set<UUID>) {
+        NotificationCenter.default.post(
+            name: .accountBalancesNeedUpdate,
+            object: nil,
+            userInfo: ["accountIDs": accountIDs]
+        )
+    }
+    
+    /// Signal that all accounts need balance recalculation
+    static func sendForAll() {
+        NotificationCenter.default.post(
+            name: .accountBalancesNeedUpdate,
+            object: nil,
+            userInfo: nil
+        )
+    }
+}
 
 struct ChartOfAccounts {
     /// Creates a default set of accounts for a new user

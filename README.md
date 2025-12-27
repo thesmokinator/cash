@@ -6,8 +6,6 @@ A simplified macOS financial management application inspired by Gnucash, built w
 
 ![Main Screenshot](Screenshots/001.png)
 
-See all screenshots [here](SCREENSHOT.md).
-
 ## Getting Started
 
 ### Prerequisites

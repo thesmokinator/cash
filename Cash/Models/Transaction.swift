@@ -99,6 +99,41 @@ final class Transaction {
     var reconciledDate: Date?
     var linkedLoanId: UUID?
     
+    // MARK: - Investment Properties
+    
+    /// Type of investment transaction (buy, sell, dividend, split)
+    var investmentTypeRawValue: String?
+    
+    /// Number of shares involved in the transaction
+    var shares: Decimal?
+    
+    /// Price per share at time of transaction
+    var pricePerShare: Decimal?
+    
+    /// Transaction fees (broker fees, commissions)
+    var fees: Decimal?
+    
+    /// The investment transaction type
+    var investmentType: InvestmentTransactionType? {
+        get {
+            guard let rawValue = investmentTypeRawValue else { return nil }
+            return InvestmentTransactionType(rawValue: rawValue)
+        }
+        set { investmentTypeRawValue = newValue?.rawValue }
+    }
+    
+    /// Whether this is an investment transaction
+    var isInvestmentTransaction: Bool {
+        investmentType != nil
+    }
+    
+    /// Total transaction value (shares * price + fees)
+    var investmentTotalValue: Decimal? {
+        guard let shares = shares, let price = pricePerShare else { return nil }
+        let baseValue = shares * price
+        return baseValue + (fees ?? 0)
+    }
+    
     @Relationship(deleteRule: .cascade, inverse: \Entry.transaction)
     var entries: [Entry]? = []
     
@@ -317,6 +352,190 @@ struct TransactionBuilder {
         }
         
         context.insert(transaction)
+        context.insert(debitEntry)
+        context.insert(creditEntry)
+        
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        
+        return transaction
+    }
+    
+    // MARK: - Investment Transactions
+    
+    /// Create an investment buy transaction
+    /// - Parameters:
+    ///   - date: Transaction date
+    ///   - description: Transaction description
+    ///   - shares: Number of shares purchased
+    ///   - pricePerShare: Price per share
+    ///   - fees: Broker fees/commissions
+    ///   - investmentAccount: The investment account receiving shares
+    ///   - cashAccount: The cash account paying for the purchase
+    ///   - context: Model context
+    /// - Returns: The created transaction
+    static func createInvestmentBuy(
+        date: Date = Date(),
+        description: String,
+        shares: Decimal,
+        pricePerShare: Decimal,
+        fees: Decimal = 0,
+        investmentAccount: Account,
+        cashAccount: Account,
+        context: ModelContext
+    ) -> Transaction {
+        let totalCost = (shares * pricePerShare) + fees
+        
+        let transaction = Transaction(
+            date: date,
+            descriptionText: description,
+            reference: ""
+        )
+        
+        // Set investment-specific properties
+        transaction.investmentType = .buy
+        transaction.shares = shares
+        transaction.pricePerShare = pricePerShare
+        transaction.fees = fees
+        
+        // Double-entry: Debit investment (asset increases), Credit cash (asset decreases)
+        let debitEntry = Entry(entryType: .debit, amount: totalCost, account: investmentAccount)
+        let creditEntry = Entry(entryType: .credit, amount: totalCost, account: cashAccount)
+        
+        context.insert(transaction)
+        context.insert(debitEntry)
+        context.insert(creditEntry)
+        
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        
+        return transaction
+    }
+    
+    /// Create an investment sell transaction
+    /// - Parameters:
+    ///   - date: Transaction date
+    ///   - description: Transaction description
+    ///   - shares: Number of shares sold
+    ///   - pricePerShare: Price per share
+    ///   - fees: Broker fees/commissions
+    ///   - investmentAccount: The investment account selling shares
+    ///   - cashAccount: The cash account receiving proceeds
+    ///   - context: Model context
+    /// - Returns: The created transaction
+    static func createInvestmentSell(
+        date: Date = Date(),
+        description: String,
+        shares: Decimal,
+        pricePerShare: Decimal,
+        fees: Decimal = 0,
+        investmentAccount: Account,
+        cashAccount: Account,
+        context: ModelContext
+    ) -> Transaction {
+        let proceeds = (shares * pricePerShare) - fees
+        
+        let transaction = Transaction(
+            date: date,
+            descriptionText: description,
+            reference: ""
+        )
+        
+        // Set investment-specific properties
+        transaction.investmentType = .sell
+        transaction.shares = shares
+        transaction.pricePerShare = pricePerShare
+        transaction.fees = fees
+        
+        // Double-entry: Debit cash (asset increases), Credit investment (asset decreases)
+        let debitEntry = Entry(entryType: .debit, amount: proceeds, account: cashAccount)
+        let creditEntry = Entry(entryType: .credit, amount: proceeds, account: investmentAccount)
+        
+        context.insert(transaction)
+        context.insert(debitEntry)
+        context.insert(creditEntry)
+        
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        
+        return transaction
+    }
+    
+    /// Create a dividend transaction
+    /// - Parameters:
+    ///   - date: Transaction date
+    ///   - description: Transaction description
+    ///   - amount: Dividend amount
+    ///   - investmentAccount: The investment account generating the dividend
+    ///   - cashAccount: The cash account receiving the dividend
+    ///   - incomeAccount: The income account to record dividend income
+    ///   - context: Model context
+    /// - Returns: The created transaction
+    static func createDividend(
+        date: Date = Date(),
+        description: String,
+        amount: Decimal,
+        investmentAccount: Account,
+        cashAccount: Account,
+        incomeAccount: Account,
+        context: ModelContext
+    ) -> Transaction {
+        let transaction = Transaction(
+            date: date,
+            descriptionText: description,
+            reference: ""
+        )
+        
+        // Set investment-specific properties
+        transaction.investmentType = .dividend
+        
+        // Double-entry: Debit cash (asset increases), Credit dividend income
+        let debitEntry = Entry(entryType: .debit, amount: amount, account: cashAccount)
+        let creditEntry = Entry(entryType: .credit, amount: amount, account: incomeAccount)
+        
+        context.insert(transaction)
+        context.insert(debitEntry)
+        context.insert(creditEntry)
+        
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        
+        return transaction
+    }
+    
+    /// Create a stock split transaction
+    /// - Parameters:
+    ///   - date: Transaction date
+    ///   - description: Transaction description
+    ///   - splitRatio: The split multiplier (e.g., 2 for 2:1 split)
+    ///   - investmentAccount: The investment account with the shares
+    ///   - context: Model context
+    /// - Returns: The created transaction
+    static func createStockSplit(
+        date: Date = Date(),
+        description: String,
+        splitRatio: Decimal,
+        investmentAccount: Account,
+        context: ModelContext
+    ) -> Transaction {
+        let transaction = Transaction(
+            date: date,
+            descriptionText: description,
+            reference: ""
+        )
+        
+        // Set investment-specific properties
+        transaction.investmentType = .split
+        transaction.shares = splitRatio
+        
+        // Stock splits don't create actual accounting entries
+        // They just record the event and the helper tracks share count changes
+        context.insert(transaction)
+        
+        // Create a zero-value entry pair just to link to the account
+        let debitEntry = Entry(entryType: .debit, amount: 0, account: investmentAccount)
+        let creditEntry = Entry(entryType: .credit, amount: 0, account: investmentAccount)
+        
         context.insert(debitEntry)
         context.insert(creditEntry)
         

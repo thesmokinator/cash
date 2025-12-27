@@ -234,13 +234,16 @@ struct AccountListView: View {
     }
 }
 
+// MARK: - Account Row View
+
 struct AccountRowView: View {
     @Environment(AppSettings.self) private var settings
     let account: Account
+    @State private var isCalculating = false
     
     var body: some View {
         HStack {
-            Image(systemName: account.accountType.iconName)
+            Image(systemName: account.effectiveIconName)
                 .foregroundStyle(.secondary)
                 .frame(width: 24)
             
@@ -258,24 +261,68 @@ struct AccountRowView: View {
             
             Spacer()
             
-            PrivacyAmountView(
-                amount: CurrencyFormatter.format(account.balance, currency: account.currency),
-                isPrivate: settings.privacyMode,
-                font: .subheadline,
-                fontWeight: .medium,
-                color: balanceColor(for: account)
-            )
+            if isCalculating {
+                ProgressView()
+                    .scaleEffect(0.5)
+                    .frame(width: 20, height: 20)
+            } else {
+                PrivacyAmountView(
+                    amount: account.cachedFormattedBalance,
+                    isPrivate: settings.privacyMode,
+                    font: .subheadline,
+                    fontWeight: .medium,
+                    color: balanceColor
+                )
+            }
         }
         .padding(.vertical, 4)
+        .onAppear {
+            // Lazy load balance calculation when row becomes visible
+            if !account.balanceCalculated {
+                calculateBalanceAsync()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .accountBalancesNeedUpdate)) { notification in
+            // Recalculate balance if this account is affected
+            let accountIDs = notification.userInfo?["accountIDs"] as? Set<UUID>
+            if accountIDs == nil || accountIDs!.contains(account.id) {
+                calculateBalanceAsync()
+            }
+        }
     }
     
-    private func balanceColor(for account: Account) -> Color {
-        if account.balance == 0 {
+    private func calculateBalanceAsync() {
+        isCalculating = true
+        // Capture values needed for background work
+        let accountId = account.id
+        let balance = account.balance
+        let currency = account.currency
+
+        Task.detached(priority: .userInitiated) {
+            // Do formatting work on background thread
+            let formattedBalance = CurrencyFormatter.format(balance, currency: currency)
+
+            // Update UI on main thread
+            await MainActor.run {
+                // Verify we're still working with the same account
+                if self.account.id == accountId {
+                    self.account.cachedBalance = balance
+                    self.account.cachedFormattedBalance = formattedBalance
+                    self.account.balanceCalculated = true
+                }
+                self.isCalculating = false
+            }
+        }
+    }
+    
+    private var balanceColor: Color {
+        let balance = account.cachedBalance
+        if balance == 0 {
             return .secondary
         }
         switch account.accountClass {
         case .asset:
-            return account.balance >= 0 ? .primary : .red
+            return balance >= 0 ? .primary : .red
         case .liability:
             return .primary
         case .income:
