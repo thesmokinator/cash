@@ -235,6 +235,7 @@
       }
     },
     "#%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -290,6 +291,9 @@
         }
       }
     },
+    "% Change" : {
+
+    },
     "% of repayment amount" : {
       "localizations" : {
         "de" : {
@@ -317,9 +321,6 @@
           }
         }
       }
-    },
-    "%@" : {
-
     },
     "%@ - %@" : {
       "localizations" : {
@@ -1272,6 +1273,9 @@
           }
         }
       }
+    },
+    "52W Range" : {
+
     },
     "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
       "localizations" : {
@@ -5084,9 +5088,6 @@
         }
       }
     },
-    "Current Price" : {
-
-    },
     "Current Status" : {
       "localizations" : {
         "de" : {
@@ -5325,9 +5326,6 @@
           }
         }
       }
-    },
-    "Day Change" : {
-
     },
     "Day of week" : {
       "localizations" : {
@@ -6698,9 +6696,6 @@
           }
         }
       }
-    },
-    "Error loading quote: %@" : {
-
     },
     "Español" : {
       "localizations" : {
@@ -9479,6 +9474,9 @@
     "Investment Details" : {
 
     },
+    "Investments" : {
+
+    },
     "ISIN" : {
 
     },
@@ -10167,6 +10165,9 @@
       }
     },
     "Live Quote" : {
+
+    },
+    "Loading..." : {
 
     },
     "Loan" : {
@@ -12159,9 +12160,6 @@
         }
       }
     },
-    "No quote data available" : {
-
-    },
     "No recurring transactions" : {
       "localizations" : {
         "de" : {
@@ -13933,6 +13931,9 @@
         }
       }
     },
+    "Price" : {
+
+    },
     "Principal" : {
       "localizations" : {
         "de" : {
@@ -14358,6 +14359,9 @@
           }
         }
       }
+    },
+    "Quote data unavailable" : {
+
     },
     "Rate Scenarios" : {
       "localizations" : {
@@ -16089,6 +16093,9 @@
         }
       }
     },
+    "Show live ETF quotes" : {
+
+    },
     "Show Main Window" : {
       "localizations" : {
         "de" : {
@@ -17777,9 +17784,6 @@
         }
       }
     },
-    "Trading Venue: %@" : {
-
-    },
     "Transaction" : {
       "localizations" : {
         "de" : {
@@ -18873,6 +18877,9 @@
           }
         }
       }
+    },
+    "When enabled, displays real-time price quotes for investment accounts with an ISIN code. This setting syncs across your devices via iCloud." : {
+
     },
     "When enabled, unused budget from envelopes will carry over to the next period." : {
       "localizations" : {

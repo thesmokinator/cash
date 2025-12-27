@@ -102,6 +102,7 @@ final class AppSettings {
     private let themeKey = "appTheme"
     private let languageKey = "appLanguage"
     private let privacyModeKey = "privacyMode"
+    private let showLiveQuotesKey = "showLiveQuotes"
     
     var theme: AppTheme {
         didSet {
@@ -121,6 +122,14 @@ final class AppSettings {
     var privacyMode: Bool {
         didSet {
             UserDefaults.standard.set(privacyMode, forKey: privacyModeKey)
+            syncToCloud()
+        }
+    }
+    
+    var showLiveQuotes: Bool {
+        didSet {
+            UserDefaults.standard.set(showLiveQuotes, forKey: showLiveQuotesKey)
+            syncToCloud()
         }
     }
     
@@ -145,10 +154,73 @@ final class AppSettings {
         }
         
         self.privacyMode = UserDefaults.standard.bool(forKey: privacyModeKey)
+        self.showLiveQuotes = UserDefaults.standard.bool(forKey: showLiveQuotesKey)
         
         // Apply theme and language on init
         applyTheme()
         applyLanguage()
+        
+        // Setup iCloud sync
+        setupCloudSync()
+    }
+    
+    // MARK: - iCloud Sync
+    
+    private func setupCloudSync() {
+        // Listen for changes from other devices
+        NotificationCenter.default.addObserver(
+            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+            object: NSUbiquitousKeyValueStore.default,
+            queue: .main
+        ) { [weak self] notification in
+            self?.handleCloudChange(notification)
+        }
+        
+        // Sync initial values from cloud
+        NSUbiquitousKeyValueStore.default.synchronize()
+        syncFromCloud()
+    }
+    
+    private func syncToCloud() {
+        let store = NSUbiquitousKeyValueStore.default
+        store.set(privacyMode, forKey: privacyModeKey)
+        store.set(showLiveQuotes, forKey: showLiveQuotesKey)
+        store.synchronize()
+    }
+    
+    private func syncFromCloud() {
+        let store = NSUbiquitousKeyValueStore.default
+        
+        // Only sync if cloud has a value (to preserve local defaults)
+        if store.object(forKey: privacyModeKey) != nil {
+            let cloudPrivacyMode = store.bool(forKey: privacyModeKey)
+            if cloudPrivacyMode != privacyMode {
+                privacyMode = cloudPrivacyMode
+                UserDefaults.standard.set(privacyMode, forKey: privacyModeKey)
+            }
+        }
+        
+        if store.object(forKey: showLiveQuotesKey) != nil {
+            let cloudShowLiveQuotes = store.bool(forKey: showLiveQuotesKey)
+            if cloudShowLiveQuotes != showLiveQuotes {
+                showLiveQuotes = cloudShowLiveQuotes
+                UserDefaults.standard.set(showLiveQuotes, forKey: showLiveQuotesKey)
+            }
+        }
+    }
+    
+    private func handleCloudChange(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let reason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? Int else {
+            return
+        }
+        
+        // Only sync on server change or initial sync
+        if reason == NSUbiquitousKeyValueStoreServerChange ||
+           reason == NSUbiquitousKeyValueStoreInitialSyncChange {
+            syncFromCloud()
+            refreshID = UUID() // Trigger UI refresh
+        }
     }
     
     private func applyTheme() {

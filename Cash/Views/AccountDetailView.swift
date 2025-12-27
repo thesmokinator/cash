@@ -24,26 +24,36 @@ struct AccountDetailView: View {
         VStack(spacing: 0) {
             // Header Card
             VStack(spacing: 12) {
-                HStack {
+                // Main header row
+                HStack(alignment: .top) {
                     Image(systemName: account.effectiveIconName)
                         .font(.title)
                         .foregroundStyle(.tint)
                     
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: 4) {
                         Text(account.displayName)
                             .font(.title2)
                             .fontWeight(.bold)
-                        HStack(spacing: 8) {
-                            Text(account.accountClass.localizedName)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            if !account.accountNumber.isEmpty {
-                                Text("•")
-                                    .font(.caption)
-                                    .foregroundStyle(.tertiary)
-                                Text("#\(account.accountNumber)")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                        
+                        // Compact info row with all details
+                        HStack(spacing: 6) {
+                            CompactPill(text: account.accountClass.localizedName)
+                            CompactPill(text: account.accountType.localizedName)
+                            CompactPill(text: account.currency)
+                            
+                            // Investment-specific info
+                            if account.accountType == .investment {
+                                if let isin = account.isin, !isin.isEmpty {
+                                    CompactPill(text: isin, icon: "number")
+                                }
+                                if let ticker = account.ticker, !ticker.isEmpty {
+                                    CompactPill(text: ticker, isHighlighted: true)
+                                }
+                            }
+                            
+                            // Account number if present
+                            if !account.accountNumber.isEmpty && account.accountType != .investment {
+                                CompactPill(text: "#\(account.accountNumber)")
                             }
                         }
                     }
@@ -64,73 +74,17 @@ struct AccountDetailView: View {
                     }
                 }
                 
-                HStack(spacing: 16) {
-                    DetailPill(label: "Class", value: account.accountClass.localizedName)
-                    DetailPill(label: "Type", value: account.accountType.localizedName)
-                    DetailPill(label: "Currency", value: account.currency)
-                }
-                
-                // Investment-specific information
-                if account.accountType == .investment && (account.isin != nil || account.ticker != nil) {
-                    HStack(spacing: 16) {
-                        if let isin = account.isin {
-                            DetailPill(label: "ISIN", value: isin)
-                        }
-                        if let ticker = account.ticker {
-                            DetailPill(label: "Ticker", value: ticker)
-                        }
-                    }
-                    
-                    // Live ETF Quote
-                    if account.isin != nil {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Live Quote")
-                                .font(.headline)
-                                .foregroundStyle(.secondary)
-                            
-                            if isLoadingQuote {
-                                ProgressView()
-                                    .frame(maxWidth: .infinity, alignment: .center)
-                            } else if let error = quoteError {
-                                Text("Error loading quote: \(error)")
-                                    .font(.caption)
-                                    .foregroundStyle(.red)
-                            } else if let quote = etfQuote {
-                                HStack(spacing: 16) {
-                                    VStack(alignment: .leading) {
-                                        Text("Current Price")
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                        Text("\(quote.latestQuote.localized) \(account.currency)")
-                                            .font(.title3)
-                                            .fontWeight(.bold)
-                                    }
-                                    
-                                    if let change = quote.dtdAmt {
-                                        VStack(alignment: .trailing) {
-                                            Text("Day Change")
-                                                .font(.caption)
-                                                .foregroundStyle(.secondary)
-                                            Text("\(change.localized)")
-                                                .font(.subheadline)
-                                                .foregroundStyle(change.raw >= 0 ? .green : .red)
-                                        }
-                                    }
-                                }
-                                
-                                if let venue = quote.quoteTradingVenue {
-                                    Text("Trading Venue: \(venue)")
-                                        .font(.caption)
-                                        .foregroundStyle(.tertiary)
-                                }
-                            } else {
-                                Text("No quote data available")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                        .padding(.top, 8)
-                    }
+                // Live ETF Quote Box (only if enabled in settings and has ISIN)
+                if settings.showLiveQuotes,
+                   account.accountType == .investment,
+                   let isin = account.isin,
+                   !isin.isEmpty {
+                    LiveQuoteBox(
+                        quote: etfQuote,
+                        isLoading: isLoadingQuote,
+                        error: quoteError,
+                        currency: account.currency
+                    )
                 }
             }
             .padding()
@@ -185,7 +139,7 @@ struct AccountDetailView: View {
         } message: {
             Text("Are you sure you want to delete this account? This action cannot be undone.")
         }
-        .task {
+        .task(id: account.isin) {
             await loadETFQuoteIfNeeded()
         }
         .id(settings.refreshID)
@@ -210,7 +164,8 @@ struct AccountDetailView: View {
     }
     
     private func loadETFQuoteIfNeeded() async {
-        guard account.accountType == .investment,
+        guard settings.showLiveQuotes,
+              account.accountType == .investment,
               let isin = account.isin,
               !isin.isEmpty else {
             return
@@ -228,6 +183,157 @@ struct AccountDetailView: View {
         }
         
         isLoadingQuote = false
+    }
+}
+
+// MARK: - Compact Pill Component
+
+struct CompactPill: View {
+    let text: String
+    var icon: String? = nil
+    var isHighlighted: Bool = false
+    
+    var body: some View {
+        HStack(spacing: 3) {
+            if let icon = icon {
+                Image(systemName: icon)
+                    .font(.system(size: 8))
+            }
+            Text(text)
+        }
+        .font(.caption2)
+        .fontWeight(.medium)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
+        .background(isHighlighted ? Color.accentColor.opacity(0.2) : Color.secondary.opacity(0.15))
+        .foregroundStyle(isHighlighted ? Color.accentColor : Color.secondary)
+        .clipShape(RoundedRectangle(cornerRadius: 4))
+    }
+}
+
+// MARK: - Live Quote Box Component
+
+struct LiveQuoteBox: View {
+    let quote: ETFQuote?
+    let isLoading: Bool
+    let error: String?
+    let currency: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Header
+            HStack {
+                Image(systemName: "chart.line.uptrend.xyaxis")
+                    .font(.caption)
+                    .foregroundStyle(.green)
+                Text("Live Quote")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.green)
+                
+                Spacer()
+                
+                if let quote = quote, let venue = quote.quoteTradingVenue {
+                    Text(venue)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            
+            // Content
+            if isLoading {
+                HStack {
+                    Spacer()
+                    ProgressView()
+                        .scaleEffect(0.8)
+                    Text("Loading...")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                }
+                .padding(.vertical, 4)
+            } else if let error = error {
+                HStack(spacing: 4) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                    Text(error)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+            } else if let quote = quote {
+                HStack(alignment: .firstTextBaseline, spacing: 16) {
+                    // Current price
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Price")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        Text("\(quote.latestQuote.localized) \(currency)")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.primary)
+                    }
+                    
+                    // Day change
+                    if let change = quote.dtdAmt {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Change")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            HStack(spacing: 4) {
+                                Image(systemName: change.raw >= 0 ? "arrow.up.right" : "arrow.down.right")
+                                    .font(.caption2)
+                                Text(change.localized)
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                            }
+                            .foregroundStyle(change.raw >= 0 ? .green : .red)
+                        }
+                    }
+                    
+                    // Day change percentage
+                    if let pct = quote.dtdPrc {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("% Change")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            Text("\(pct.localized)%")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(pct.raw >= 0 ? .green : .red)
+                        }
+                    }
+                    
+                    Spacer()
+                    
+                    // 52-week range
+                    if let lowHigh = quote.quoteLowHigh {
+                        VStack(alignment: .trailing, spacing: 2) {
+                            Text("52W Range")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            Text("\(lowHigh.low.localized) - \(lowHigh.high.localized)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            } else {
+                Text("Quote data unavailable")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(12)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color.green.opacity(0.08))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .strokeBorder(Color.green.opacity(0.3), lineWidth: 1)
+        )
     }
 }
 
