@@ -110,20 +110,6 @@ struct AccountDetailView: View {
         .navigationTitle(account.displayName)
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
-                // Investment transaction button
-                if account.accountType == .investment {
-                    Button(action: { showingAddInvestmentTransaction = true }) {
-                        Label("Investment Transaction", systemImage: "plus.circle")
-                    }
-                }
-                
-                // Reconcile button - only for asset and liability accounts
-                if account.accountClass == .asset || account.accountClass == .liability {
-                    Button(action: { showingReconciliation = true }) {
-                        Label("Reconcile", systemImage: "checkmark.shield")
-                    }
-                }
-                
                 Button(action: { showingEditSheet = true }) {
                     Label("Edit account", systemImage: "pencil")
                 }
@@ -139,7 +125,11 @@ struct AccountDetailView: View {
             EditAccountView(account: account)
         }
         .sheet(isPresented: $showingAddTransaction) {
-            AddTransactionView(preselectedAccount: account)
+            if account.accountType == .investment {
+                AddInvestmentTransactionView(preselectedInvestmentAccount: account)
+            } else {
+                AddTransactionView(preselectedAccount: account)
+            }
         }
         .sheet(isPresented: $showingAddInvestmentTransaction) {
             AddInvestmentTransactionView(preselectedInvestmentAccount: account)
