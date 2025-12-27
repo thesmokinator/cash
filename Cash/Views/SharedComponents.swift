@@ -10,14 +10,14 @@ import SwiftUI
 // MARK: - Currency Formatting
 
 struct CurrencyFormatter {
-    static func format(_ amount: Decimal, currency: String = "EUR") -> String {
+    static nonisolated func format(_ amount: Decimal, currency: String = "EUR") -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = currency
         return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
     
-    static func formatCompact(_ amount: Decimal, currency: String = "EUR") -> String {
+    static nonisolated func formatCompact(_ amount: Decimal, currency: String = "EUR") -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = currency
@@ -25,7 +25,7 @@ struct CurrencyFormatter {
         return formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
     }
     
-    static func parse(_ text: String) -> Decimal {
+    static nonisolated func parse(_ text: String) -> Decimal {
         let cleaned = text.replacingOccurrences(of: ",", with: ".")
         return Decimal(string: cleaned) ?? 0
     }

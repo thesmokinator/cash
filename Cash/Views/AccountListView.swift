@@ -293,17 +293,24 @@ struct AccountRowView: View {
     
     private func calculateBalanceAsync() {
         isCalculating = true
+        // Capture values needed for background work
+        let accountId = account.id
+        let balance = account.balance
+        let currency = account.currency
+
         Task.detached(priority: .userInitiated) {
-            // Calculate balance in background thread
-            let balance = await MainActor.run { account.balance }
-            let formattedBalance = CurrencyFormatter.format(balance, currency: account.currency)
-            
+            // Do formatting work on background thread
+            let formattedBalance = CurrencyFormatter.format(balance, currency: currency)
+
             // Update UI on main thread
             await MainActor.run {
-                account.cachedBalance = balance
-                account.cachedFormattedBalance = formattedBalance
-                account.balanceCalculated = true
-                isCalculating = false
+                // Verify we're still working with the same account
+                if self.account.id == accountId {
+                    self.account.cachedBalance = balance
+                    self.account.cachedFormattedBalance = formattedBalance
+                    self.account.balanceCalculated = true
+                }
+                self.isCalculating = false
             }
         }
     }

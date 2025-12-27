@@ -2266,3 +2266,330 @@ struct ETFTests {
         #expect(locale.count >= 2) // At least language code
     }
 }
+
+// MARK: - Account Balance Caching Tests
+
+struct AccountBalanceCachingTests {
+
+    @Test func accountInitialCachedBalance() async throws {
+        let account = Account(
+            name: "Test Account",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+
+        #expect(account.cachedBalance == 0)
+        #expect(account.cachedFormattedBalance.isEmpty)
+        #expect(account.balanceCalculated == false)
+    }
+
+    @Test func accountRecalculateBalanceWithTransactions() async throws {
+        let account = Account(
+            name: "Test Account",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+
+        // Create a transaction that credits the account (increases asset balance)
+        let transaction = Transaction(date: Date(), descriptionText: "Deposit")
+
+        let debitEntry = Entry(entryType: .debit, amount: 1000, account: account)
+        let creditEntry = Entry(entryType: .credit, amount: 1000, account: Account(
+            name: "Income",
+            currency: "EUR",
+            accountClass: .income,
+            accountType: .salary
+        ))
+
+        debitEntry.transaction = transaction
+        creditEntry.transaction = transaction
+        transaction.entries = [debitEntry, creditEntry]
+
+        // Set reconciliation status to cleared so balance includes it
+        transaction.reconciliationStatus = .cleared
+
+        account.entries = [debitEntry]
+
+        // Recalculate balance
+        account.recalculateBalance()
+
+        #expect(account.cachedBalance == 1000)
+        #expect(account.cachedFormattedBalance == "€1,000.00")
+        #expect(account.balanceCalculated == true)
+    }
+
+    @Test func accountRecalculateBalanceWithExpense() async throws {
+        let account = Account(
+            name: "Test Account",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+
+        // Initial balance
+        let depositTransaction = Transaction(date: Date(), descriptionText: "Deposit")
+        let depositDebit = Entry(entryType: .debit, amount: 2000, account: account)
+        let depositCredit = Entry(entryType: .credit, amount: 2000, account: Account(
+            name: "Income",
+            currency: "EUR",
+            accountClass: .income,
+            accountType: .salary
+        ))
+        depositDebit.transaction = depositTransaction
+        depositCredit.transaction = depositTransaction
+        depositTransaction.entries = [depositDebit, depositCredit]
+        depositTransaction.reconciliationStatus = .cleared
+
+        // Expense transaction
+        let expenseTransaction = Transaction(date: Date().addingTimeInterval(3600), descriptionText: "Purchase")
+        let expenseDebit = Entry(entryType: .debit, amount: 500, account: Account(
+            name: "Food",
+            currency: "EUR",
+            accountClass: .expense,
+            accountType: .food
+        ))
+        let expenseCredit = Entry(entryType: .credit, amount: 500, account: account)
+        expenseDebit.transaction = expenseTransaction
+        expenseCredit.transaction = expenseTransaction
+        expenseTransaction.entries = [expenseDebit, expenseCredit]
+        expenseTransaction.reconciliationStatus = .cleared
+
+        account.entries = [depositDebit, expenseCredit]
+
+        // Recalculate balance
+        account.recalculateBalance()
+
+        #expect(account.cachedBalance == 1500) // 2000 - 500
+        #expect(account.cachedFormattedBalance == "€1,500.00")
+    }
+}
+
+// MARK: - Balance Update Signal Tests
+
+struct BalanceUpdateSignalTests {
+
+    @Test func balanceUpdateSignalSend() async throws {
+        var receivedAccountIDs: Set<UUID>?
+
+        let observer = NotificationCenter.default.addObserver(
+            forName: .accountBalancesNeedUpdate,
+            object: nil,
+            queue: .main
+        ) { notification in
+            receivedAccountIDs = notification.userInfo?["accountIDs"] as? Set<UUID>
+        }
+
+        let accountID1 = UUID()
+        let accountID2 = UUID()
+
+        // Send signal
+        BalanceUpdateSignal.send(for: [accountID1, accountID2])
+
+        // Wait a bit for notification to be processed
+        try await Task.sleep(for: .milliseconds(100))
+
+        NotificationCenter.default.removeObserver(observer)
+
+        #expect(receivedAccountIDs?.count == 2)
+        #expect(receivedAccountIDs?.contains(accountID1) == true)
+        #expect(receivedAccountIDs?.contains(accountID2) == true)
+    }
+
+    @Test func balanceUpdateSignalSendEmpty() async throws {
+        var receivedUserInfo: [AnyHashable: Any]?
+
+        let observer = NotificationCenter.default.addObserver(
+            forName: .accountBalancesNeedUpdate,
+            object: nil,
+            queue: .main
+        ) { notification in
+            receivedUserInfo = notification.userInfo
+        }
+
+        // Send signal with empty array
+        BalanceUpdateSignal.send(for: [])
+
+        // Wait a bit for notification to be processed
+        try await Task.sleep(for: .milliseconds(100))
+
+        NotificationCenter.default.removeObserver(observer)
+
+        #expect(receivedUserInfo?["accountIDs"] as? Set<UUID> == [])
+    }
+
+    @Test func balanceUpdateSignalSendForAll() async throws {
+        var receivedUserInfo: [AnyHashable: Any]?
+
+        let observer = NotificationCenter.default.addObserver(
+            forName: .accountBalancesNeedUpdate,
+            object: nil,
+            queue: .main
+        ) { notification in
+            receivedUserInfo = notification.userInfo
+        }
+
+        // Send signal for all accounts
+        BalanceUpdateSignal.sendForAll()
+
+        // Wait a bit for notification to be processed
+        try await Task.sleep(for: .milliseconds(100))
+
+        NotificationCenter.default.removeObserver(observer)
+
+        #expect(receivedUserInfo == nil) // sendForAll sends nil userInfo
+    }
+}
+
+// MARK: - Account List View Balance Tests
+
+struct AccountListViewBalanceTests {
+
+    @Test func accountRowViewInitialState() async throws {
+        let account = Account(
+            name: "Test Account",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+
+        // Initially balance should not be calculated
+        #expect(account.balanceCalculated == false)
+        #expect(account.cachedBalance == 0)
+        #expect(account.cachedFormattedBalance.isEmpty)
+    }
+
+    @Test func accountBalanceCalculationIntegration() async throws {
+        let account = Account(
+            name: "Test Account",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+
+        // Create transactions
+        let transaction1 = Transaction(date: Date(), descriptionText: "Deposit 1")
+        let debit1 = Entry(entryType: .debit, amount: 1000, account: account)
+        let credit1 = Entry(entryType: .credit, amount: 1000, account: Account(
+            name: "Income",
+            currency: "EUR",
+            accountClass: .income,
+            accountType: .salary
+        ))
+        debit1.transaction = transaction1
+        credit1.transaction = transaction1
+        transaction1.entries = [debit1, credit1]
+        transaction1.reconciliationStatus = .cleared
+
+        let transaction2 = Transaction(date: Date().addingTimeInterval(3600), descriptionText: "Deposit 2")
+        let debit2 = Entry(entryType: .debit, amount: 500, account: account)
+        let credit2 = Entry(entryType: .credit, amount: 500, account: Account(
+            name: "Bonus",
+            currency: "EUR",
+            accountClass: .income,
+            accountType: .salary
+        ))
+        debit2.transaction = transaction2
+        credit2.transaction = transaction2
+        transaction2.entries = [debit2, credit2]
+        transaction2.reconciliationStatus = .cleared
+
+        account.entries = [debit1, debit2]
+
+        // Simulate what AccountRowView does: recalculate balance
+        account.recalculateBalance()
+
+        #expect(account.cachedBalance == 1500)
+        #expect(account.cachedFormattedBalance == "€1,500.00")
+        #expect(account.balanceCalculated == true)
+    }
+
+    @Test func accountBalanceWithLiabilityAccount() async throws {
+        let account = Account(
+            name: "Credit Card",
+            currency: "EUR",
+            accountClass: .liability,
+            accountType: .creditCard
+        )
+
+        // Liability accounts have credit normal balance, so charges increase balance
+        let transaction = Transaction(date: Date(), descriptionText: "Purchase")
+        let debit = Entry(entryType: .debit, amount: 200, account: Account(
+            name: "Shopping",
+            currency: "EUR",
+            accountClass: .expense,
+            accountType: .shopping
+        ))
+        let credit = Entry(entryType: .credit, amount: 200, account: account)
+        debit.transaction = transaction
+        credit.transaction = transaction
+        transaction.entries = [debit, credit]
+        transaction.reconciliationStatus = .cleared
+
+        account.entries = [credit]
+
+        account.recalculateBalance()
+
+        #expect(account.cachedBalance == 200) // Liability increased
+        #expect(account.cachedFormattedBalance == "€200.00")
+    }
+
+    @Test func accountBalanceWithMixedTransactions() async throws {
+        let account = Account(
+            name: "Checking",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        )
+
+        // Initial deposit
+        let deposit = Transaction(date: Date(), descriptionText: "Deposit")
+        let depositDebit = Entry(entryType: .debit, amount: 1000, account: account)
+        let depositCredit = Entry(entryType: .credit, amount: 1000, account: Account(
+            name: "Income",
+            currency: "EUR",
+            accountClass: .income,
+            accountType: .salary
+        ))
+        depositDebit.transaction = deposit
+        depositCredit.transaction = deposit
+        deposit.entries = [depositDebit, depositCredit]
+        deposit.reconciliationStatus = .cleared
+
+        // Expense
+        let expense = Transaction(date: Date().addingTimeInterval(3600), descriptionText: "Food")
+        let expenseDebit = Entry(entryType: .debit, amount: 50, account: Account(
+            name: "Food",
+            currency: "EUR",
+            accountClass: .expense,
+            accountType: .food
+        ))
+        let expenseCredit = Entry(entryType: .credit, amount: 50, account: account)
+        expenseDebit.transaction = expense
+        expenseCredit.transaction = expense
+        expense.entries = [expenseDebit, expenseCredit]
+        expense.reconciliationStatus = .cleared
+
+        // Transfer to savings
+        let transfer = Transaction(date: Date().addingTimeInterval(7200), descriptionText: "Transfer")
+        let transferDebit = Entry(entryType: .debit, amount: 200, account: Account(
+            name: "Savings",
+            currency: "EUR",
+            accountClass: .asset,
+            accountType: .bank
+        ))
+        let transferCredit = Entry(entryType: .credit, amount: 200, account: account)
+        transferDebit.transaction = transfer
+        transferCredit.transaction = transfer
+        transfer.entries = [transferDebit, transferCredit]
+        transfer.reconciliationStatus = .cleared
+
+        account.entries = [depositDebit, expenseCredit, transferCredit]
+
+        account.recalculateBalance()
+
+        #expect(account.cachedBalance == 750) // 1000 - 50 - 200
+        #expect(account.cachedFormattedBalance == "€750.00")
+    }
+}
