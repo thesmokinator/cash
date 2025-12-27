@@ -19,36 +19,38 @@ struct LoansView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Header
-            HStack {
-                Text("Loans & Mortgages")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                
-                Spacer()
-                
-                Menu {
-                    Button {
-                        showingNewLoanCalculator = true
-                    } label: {
-                        Label("New Calculation", systemImage: "function")
-                    }
+            // Header - mostra solo se ci sono loans
+            if !loans.isEmpty {
+                HStack {
+                    Text("Loans & Mortgages")
+                        .font(.title2)
+                        .fontWeight(.bold)
                     
-                    Button {
-                        showingAddExistingLoan = true
+                    Spacer()
+                    
+                    Menu {
+                        Button {
+                            showingNewLoanCalculator = true
+                        } label: {
+                            Label("New Calculation", systemImage: "function")
+                        }
+                        
+                        Button {
+                            showingAddExistingLoan = true
+                        } label: {
+                            Label("Add Existing Loan", systemImage: "plus.circle")
+                        }
                     } label: {
-                        Label("Add Existing Loan", systemImage: "plus.circle")
+                        Label("Add", systemImage: "plus")
                     }
-                } label: {
-                    Label("Add", systemImage: "plus")
+                    .menuStyle(.borderlessButton)
+                    .fixedSize()
                 }
-                .menuStyle(.borderlessButton)
-                .fixedSize()
+                .padding()
+                .background(.regularMaterial)
+                
+                Divider()
             }
-            .padding()
-            .background(.regularMaterial)
-            
-            Divider()
             
             if loans.isEmpty {
                 Spacer()
@@ -63,12 +65,14 @@ struct LoansView: View {
                         } label: {
                             Label("New Calculation", systemImage: "function")
                         }
+                        .buttonStyle(.borderedProminent)
                         
                         Button {
                             showingAddExistingLoan = true
                         } label: {
                             Label("Add Existing", systemImage: "plus.circle")
                         }
+                        .buttonStyle(.borderedProminent)
                     }
                 }
                 Spacer()

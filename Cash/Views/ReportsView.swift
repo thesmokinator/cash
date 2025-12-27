@@ -58,6 +58,21 @@ struct ReportsView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Report type selector
+            #if os(iOS)
+            HStack {
+                Spacer()
+                Picker("Report type", selection: $selectedReport) {
+                    ForEach(ReportType.allCases) { report in
+                        Label(report.localizedName, systemImage: report.iconName)
+                            .tag(report)
+                    }
+                }
+                .pickerStyle(.menu)
+                Spacer()
+            }
+            .padding()
+            .background(.bar)
+            #else
             HStack {
                 ForEach(ReportType.allCases) { report in
                     Button {
@@ -77,6 +92,7 @@ struct ReportsView: View {
             }
             .padding()
             .background(.bar)
+            #endif
             
             Divider()
             

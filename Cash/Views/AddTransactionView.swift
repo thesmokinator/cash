@@ -180,7 +180,9 @@ struct AddTransactionView: View {
             .onAppear { setupPreselectedAccount() }
             .id(settings.refreshID)
         }
+        #if os(macOS)
         .frame(minWidth: 450, minHeight: 550)
+        #endif
     }
     
     @ViewBuilder

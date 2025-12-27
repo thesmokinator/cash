@@ -228,7 +228,9 @@ struct AddExistingLoanView: View {
                 }
             }
         }
+        #if os(macOS)
         .frame(minWidth: 500, minHeight: 550)
+        #endif
     }
     
     private func addLoan() {

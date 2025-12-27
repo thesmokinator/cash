@@ -177,7 +177,9 @@ struct AmortizationScheduleView: View {
                 await generateSchedule()
             }
         }
+        #if os(macOS)
         .frame(minWidth: 700, minHeight: 500)
+        #endif
     }
     
     private func generateSchedule() async {
