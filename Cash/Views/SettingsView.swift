@@ -7,12 +7,36 @@
 
 import SwiftUI
 import SwiftData
+
+#if os(macOS)
 import AppKit
+#endif
+
 import UniformTypeIdentifiers
 
 #if ENABLE_ICLOUD
 import CloudKit
 #endif
+
+// MARK: - Bundle Extension for App Icon
+
+extension Bundle {
+    #if os(iOS)
+    var icon: UIImage? {
+        if let icons = infoDictionary?["CFBundleIcons"] as? [String: Any],
+           let primaryIcon = icons["CFBundlePrimaryIcon"] as? [String: Any],
+           let iconFiles = primaryIcon["CFBundleIconFiles"] as? [String],
+           let lastIcon = iconFiles.last {
+            return UIImage(named: lastIcon)
+        }
+        return nil
+    }
+    #else
+    var icon: NSImage? {
+        return NSWorkspace.shared.icon(forFile: bundlePath)
+    }
+    #endif
+}
 
 // MARK: - Settings Tab
 
@@ -65,11 +89,39 @@ struct SettingsView: View {
     @State private var showingError = false
     @State private var errorMessage = ""
     @State private var importResult: (accountsCount: Int, transactionsCount: Int) = (0, 0)
+    @State private var exportData: Data?
+    @State private var exportFilename = ""
+    @State private var showingFileExporter = false
     
     @Query private var accounts: [Account]
     @Query private var transactions: [Transaction]
     
-    var body: some View {
+    #if os(iOS)
+    private var iosBody: some View {
+        NavigationStack {
+            List {
+                GeneralSettingsTabContent()
+                DataSettingsTabContent(
+                    showingExportFormatPicker: $showingExportFormatPicker,
+                    showingImportConfirmation: $showingImportConfirmation,
+                    showingFirstResetAlert: $showingFirstResetAlert
+                )
+                AboutSettingsTabContent()
+            }
+            .navigationTitle(String(localized: "Settings"))
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "Close")) {
+                        dismissSettings()
+                    }
+                }
+            }
+        }
+    }
+    #endif
+    
+    #if os(macOS)
+    private var macBody: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 // Tab Bar with icons
@@ -81,73 +133,104 @@ struct SettingsView: View {
                 tabContent
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .navigationTitle("Settings")
+            .navigationTitle(String(localized: "Settings"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") {
+                    Button(String(localized: "Close")) {
                         dismissSettings()
                     }
                 }
             }
         }
         .frame(width: 580, height: 520)
-        .id(settings.refreshID)
-        .overlay {
-            if appState.isLoading {
-                LoadingOverlayView(message: appState.loadingMessage)
+    }
+    #endif
+    
+    private var mainView: some View {
+        #if os(iOS)
+        iosBody
+        #else
+        macBody
+        #endif
+    }
+    
+    private func applyOverlaysAndAlerts(to view: some View) -> some View {
+        view
+            .id(settings.refreshID)
+            .overlay {
+                if appState.isLoading {
+                    LoadingOverlayView(message: appState.loadingMessage)
+                }
             }
-        }
-        .alert("Reset all data?", isPresented: $showingFirstResetAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Continue", role: .destructive) {
-                showingSecondResetAlert = true
+            .alert(String(localized: "Reset all data?"), isPresented: $showingFirstResetAlert) {
+                Button(String(localized: "Cancel"), role: .cancel) { }
+                Button(String(localized: "Continue"), role: .destructive) {
+                    showingSecondResetAlert = true
+                }
+            } message: {
+                Text(String(localized: "This will permanently delete all your accounts and transactions. This action cannot be undone."))
             }
-        } message: {
-            Text("This will permanently delete all your accounts and transactions. This action cannot be undone.")
-        }
-        .alert("Are you absolutely sure?", isPresented: $showingSecondResetAlert) {
-            Button("Cancel", role: .cancel) { }
-            Button("Delete everything", role: .destructive) {
-                resetAllData()
+            .alert(String(localized: "Are you absolutely sure?"), isPresented: $showingSecondResetAlert) {
+                Button(String(localized: "Cancel"), role: .cancel) { }
+                Button(String(localized: "Delete everything"), role: .destructive) {
+                    resetAllData()
+                }
+            } message: {
+                Text(String(localized: "All data will be permanently deleted."))
             }
-        } message: {
-            Text("All data will be permanently deleted.")
-        }
-        .sheet(isPresented: $showingExportFormatPicker) {
-            ExportFormatPickerView { format in
-                exportData(format: format)
+            .sheet(isPresented: $showingExportFormatPicker) {
+                ExportFormatPickerView { format in
+                    exportData(format: format)
+                }
             }
-        }
-        .alert("Import data?", isPresented: $showingImportConfirmation) {
-            Button("Cancel", role: .cancel) { }
-            Button("Continue") {
-                showingImportFilePicker = true
+            .alert(String(localized: "Import data?"), isPresented: $showingImportConfirmation) {
+                Button(String(localized: "Cancel"), role: .cancel) { }
+                Button(String(localized: "Continue")) {
+                    showingImportFilePicker = true
+                }
+            } message: {
+                Text(String(localized: "Importing will replace all existing data. Make sure to export your current data first if needed."))
             }
-        } message: {
-            Text("Importing will replace all existing data. Make sure to export your current data first if needed.")
-        }
-        .fileImporter(
-            isPresented: $showingImportFilePicker,
-            allowedContentTypes: [.data],
-            allowsMultipleSelection: false
-        ) { result in
-            handleImport(result: result)
-        }
-        .alert("Export successful", isPresented: $showingExportSuccess) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text("Your data has been exported successfully.")
-        }
-        .alert("Import successful", isPresented: $showingImportSuccess) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text("Imported \(importResult.accountsCount) accounts and \(importResult.transactionsCount) transactions.")
-        }
-        .alert("Error", isPresented: $showingError) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(errorMessage)
-        }
+            .fileImporter(
+                isPresented: $showingImportFilePicker,
+                allowedContentTypes: [.data],
+                allowsMultipleSelection: false
+            ) { result in
+                handleImport(result: result)
+            }
+            .alert(String(localized: "Export successful"), isPresented: $showingExportSuccess) {
+                Button(String(localized: "OK"), role: .cancel) { }
+            } message: {
+                Text(String(localized: "Your data has been exported successfully."))
+            }
+            .alert(String(localized: "Import successful"), isPresented: $showingImportSuccess) {
+                Button(String(localized: "OK"), role: .cancel) { }
+            } message: {
+                Text(String(localized: "Imported \(importResult.accountsCount) accounts and \(importResult.transactionsCount) transactions."))
+            }
+            .alert(String(localized: "Error"), isPresented: $showingError) {
+                Button(String(localized: "OK"), role: .cancel) { }
+            } message: {
+                Text(errorMessage)
+            }
+            .fileExporter(
+                isPresented: $showingFileExporter,
+                document: ExportDocument(data: exportData ?? Data()),
+                contentType: .data,
+                defaultFilename: exportFilename
+            ) { result in
+                switch result {
+                case .success:
+                    showingExportSuccess = true
+                case .failure(let error):
+                    errorMessage = error.localizedDescription
+                    showingError = true
+                }
+            }
+    }
+    
+    var body: some View {
+        applyOverlaysAndAlerts(to: mainView)
     }
     
     // MARK: - Tab Bar
@@ -160,7 +243,7 @@ struct SettingsView: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-        .background(Color(nsColor: .windowBackgroundColor))
+        .background(Color.platformWindowBackground)
     }
     
     private func tabButton(for tab: SettingsTab) -> some View {
@@ -224,6 +307,7 @@ struct SettingsView: View {
             
             let filename = DataExporter.generateFilename(for: format)
             
+            #if os(macOS)
             let savePanel = NSSavePanel()
             savePanel.nameFieldStringValue = filename
             savePanel.canCreateDirectories = true
@@ -239,6 +323,12 @@ struct SettingsView: View {
                     }
                 }
             }
+            #else
+            // iOS: prepare data for file exporter
+            self.exportData = data
+            self.exportFilename = filename
+            self.showingFileExporter = true
+            #endif
         } catch {
             errorMessage = error.localizedDescription
             showingError = true
@@ -522,15 +612,25 @@ struct AboutSettingsTabContent: View {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     }
     
-    var body: some View {
+    #if os(iOS)
+    private var iosAppInfoSection: some View {
         Section {
-            VStack(spacing: 16) {
-                Image(nsImage: NSApp.applicationIconImage)
-                    .resizable()
-                    .frame(width: 80, height: 80)
+            VStack(spacing: 12) {
+                if let icon = Bundle.main.icon {
+                    Image(uiImage: icon)
+                        .resizable()
+                        .frame(width: 64, height: 64)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                } else {
+                    Image(systemName: "app.fill")
+                        .resizable()
+                        .frame(width: 64, height: 64)
+                        .foregroundStyle(.blue)
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                }
                 
                 VStack(spacing: 4) {
-                    Text("Cash")
+                    Text(String(localized: "Cash"))
                         .font(.title2)
                         .fontWeight(.semibold)
                     
@@ -539,7 +639,7 @@ struct AboutSettingsTabContent: View {
                         .foregroundStyle(.secondary)
                 }
                 
-                Text("A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData.")
+                Text(String(localized: "A personal finance management application inspired by Gnucash, built with SwiftUI and SwiftData."))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -547,7 +647,46 @@ struct AboutSettingsTabContent: View {
                 Button {
                     showingLicense = true
                 } label: {
-                    Text("© 2025 Michele Broggi")
+                    Text(String(localized: "© 2025 Michele Broggi"))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+        }
+    }
+    #endif
+    
+    #if os(macOS)
+    private var macAppInfoSection: some View {
+        Section {
+            VStack(spacing: 16) {
+                Image(nsImage: NSWorkspace.shared.icon(forFile: Bundle.main.bundlePath))
+                    .resizable()
+                    .frame(width: 80, height: 80)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                
+                VStack(spacing: 4) {
+                    Text(String(localized: "Cash"))
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    
+                    Text("Version \(appVersion)")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                
+                Text(String(localized: "A personal finance management application inspired by Gnucash, built with SwiftUI and SwiftData."))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                
+                Button {
+                    showingLicense = true
+                } label: {
+                    Text(String(localized: "© 2025 Michele Broggi"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -556,23 +695,33 @@ struct AboutSettingsTabContent: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
         }
+    }
+    #endif
+    
+    var body: some View {
+        #if os(iOS)
+        iosAppInfoSection
+        #else
+        macAppInfoSection
+        #endif
         
         Section {
             Link(destination: URL(string: "https://github.com/thesmokinator/cash")!) {
-                Label("Project website", systemImage: "link")
+                Label(String(localized: "Project website"), systemImage: "link")
             }
             
             Link(destination: URL(string: "https://github.com/thesmokinator/cash/blob/main/PRIVACY.md")!) {
-                Label("Privacy policy", systemImage: "hand.raised.fill")
+                Label(String(localized: "Privacy policy"), systemImage: "hand.raised.fill")
             }
         } header: {
-            Text("Links")
+            Text(String(localized: "Links"))
         }
         .sheet(isPresented: $showingLicense) {
             LicenseView()
         }
     }
 }
+
 
 // MARK: - License View
 
@@ -618,47 +767,89 @@ struct ExportFormatPickerView: View {
     let onSelect: (ExportFormat) -> Void
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Choose export format")
-                .font(.headline)
-            
-            Text("JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-            
-            HStack(spacing: 16) {
-                ForEach(ExportFormat.allCases) { format in
-                    Button {
-                        dismiss()
-                        onSelect(format)
-                    } label: {
-                        VStack(spacing: 8) {
-                            Image(systemName: format.iconName)
-                                .font(.largeTitle)
-                            Text(format.localizedName)
-                                .font(.headline)
-                            Text(format == .cashBackup ? "Full backup" : "Bank format")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+        NavigationStack {
+            List {
+                Section {
+                    Text(String(localized: "Choose the format for exporting your financial data. JSON is recommended for full backup and restore, while OFX is the standard bank format for importing into other applications."))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                
+                Section(String(localized: "Available formats")) {
+                    ForEach(ExportFormat.allCases) { format in
+                        Button {
+                            dismiss()
+                            onSelect(format)
+                        } label: {
+                            HStack(spacing: 16) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(format == .cashBackup ? Color.blue.opacity(0.1) : Color.green.opacity(0.1))
+                                        .frame(width: 48, height: 48)
+                                    
+                                    Image(systemName: format.iconName)
+                                        .font(.title2)
+                                        .foregroundStyle(format == .cashBackup ? .blue : .green)
+                                }
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(format.localizedName)
+                                        .font(.headline)
+                                    
+                                    Text(format.description)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(2)
+                                }
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .contentShape(Rectangle())
                         }
-                        .frame(width: 120, height: 100)
+                        .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                     }
-                    .buttonStyle(.bordered)
                 }
             }
-            
-            Button("Cancel") {
-                dismiss()
+            .navigationTitle(String(localized: "Export data"))
+            #if os(iOS)
+            .navigationBarTitleDisplayMode(.inline)
+            #endif
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "Cancel")) {
+                        dismiss()
+                    }
+                }
             }
-            .buttonStyle(.plain)
         }
-        .padding(30)
-        .frame(width: 340)
+        .presentationDetents([.medium])
     }
 }
 
-#Preview {
-    SettingsView(appState: AppState(), dismissSettings: {})
-        .environment(AppSettings.shared)
+// MARK: - Export Document
+
+struct ExportDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.data] }
+    
+    let data: Data
+    
+    init(data: Data) {
+        self.data = data
+    }
+    
+    init(configuration: ReadConfiguration) throws {
+        guard let data = configuration.file.regularFileContents else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        self.data = data
+    }
+    
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: data)
+    }
 }

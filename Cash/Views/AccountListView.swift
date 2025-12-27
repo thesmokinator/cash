@@ -26,7 +26,13 @@ struct AccountListView: View {
     @Query(filter: #Predicate<Transaction> { $0.isRecurring == true }) private var scheduledTransactions: [Transaction]
     @State private var showingAddAccount = false
     @State private var showingAddTransaction = false
-    @State private var selection: SidebarSelection? = .patrimony
+    @State private var selection: SidebarSelection? = {
+        #if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .phone ? nil : .patrimony
+        #else
+        return .patrimony
+        #endif
+    }()
     
     private var hasAccounts: Bool {
         !accounts.filter { $0.isActive && !$0.isSystem }.isEmpty
@@ -111,7 +117,7 @@ struct AccountListView: View {
                 }
             }
             .listStyle(.sidebar)
-            .navigationTitle("Chart of accounts")
+            .navigationTitle(String(localized: "Cash"))
             .navigationSplitViewColumnWidth(min: 300, ideal: 300, max: 300)
             .toolbar {
                 ToolbarItemGroup(placement: .primaryAction) {
@@ -130,6 +136,14 @@ struct AccountListView: View {
                         )
                     }
                     .help(settings.privacyMode ? "Show amounts" : "Hide amounts")
+                    
+                    #if os(iOS)
+                    Button {
+                        NotificationCenter.default.post(name: .showSettings, object: nil)
+                    } label: {
+                        Label(String(localized: "Settings"), systemImage: "gear")
+                    }
+                    #endif
                 }
             }
             .safeAreaInset(edge: .bottom) {

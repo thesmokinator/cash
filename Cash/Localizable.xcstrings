@@ -262,6 +262,9 @@
         }
       }
     },
+    "#%lld" : {
+
+    },
     "%" : {
       "localizations" : {
         "de" : {
@@ -1406,7 +1409,11 @@
         }
       }
     },
+    "A personal finance management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
+
+    },
     "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -3102,6 +3109,9 @@
         }
       }
     },
+    "Available formats" : {
+
+    },
     "Available:" : {
       "localizations" : {
         "de" : {
@@ -3591,6 +3601,7 @@
       }
     },
     "Bank format" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4467,6 +4478,7 @@
       }
     },
     "Chart of accounts" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4529,6 +4541,7 @@
       }
     },
     "Choose export format" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4583,6 +4596,9 @@
           }
         }
       }
+    },
+    "Choose the format for exporting your financial data. JSON is recommended for full backup and restore, while OFX is the standard bank format for importing into other applications." : {
+
     },
     "Choose your preferences" : {
       "localizations" : {
@@ -4779,6 +4795,9 @@
           }
         }
       }
+    },
+    "Complete backup of all your accounts, transactions, and settings. Perfect for restoring your data or migrating to another device." : {
+
     },
     "Confirm Payoff" : {
       "localizations" : {
@@ -8503,6 +8522,7 @@
       }
     },
     "Full backup" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -9866,6 +9886,9 @@
         }
       }
     },
+    "Interest Difference" : {
+
+    },
     "Interest income" : {
       "localizations" : {
         "de" : {
@@ -10519,6 +10542,7 @@
       }
     },
     "JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -16408,6 +16432,9 @@
         }
       }
     },
+    "Report type" : {
+
+    },
     "Reports" : {
       "localizations" : {
         "de" : {
@@ -17934,6 +17961,9 @@
         }
       }
     },
+    "Standard banking format compatible with most financial software. Contains transaction data only." : {
+
+    },
     "Start date" : {
       "localizations" : {
         "de" : {
@@ -18132,35 +18162,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Frazionamento azionario"
-          }
-        }
-      }
-    },
-    "Stock splits do not create accounting entries." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bei Aktiensplits werden keine Buchhaltungseinträge erstellt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Las divisiones de acciones no crean asientos contables."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les fractionnements d'actions ne créent pas d'écritures comptables."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I frazionamenti azionari non creano scritture contabili."
           }
         }
       }

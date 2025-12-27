@@ -137,7 +137,9 @@ struct CreateLoanRecurringView: View {
                 }
             }
         }
+        #if os(macOS)
         .frame(minWidth: 450, minHeight: 500)
+        #endif
     }
     
     private func createRecurringTransaction() {

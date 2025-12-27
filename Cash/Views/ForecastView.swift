@@ -122,6 +122,24 @@ struct ForecastView: View {
         ScrollView {
             VStack(spacing: 24) {
                 // Period Selector
+                #if os(iOS)
+                HStack {
+                    Spacer()
+                    Picker("Period", selection: $selectedPeriod) {
+                        ForEach(ForecastPeriod.allCases) { period in
+                            Text(period.localizedName).tag(period)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    .disabled(isCalculating)
+                    .accessibilityIdentifier("forecastPeriodSelector")
+                    .onChange(of: selectedPeriod) { _, newPeriod in
+                        calculateForecast(for: newPeriod)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal)
+                #else
                 Picker(selection: $selectedPeriod) {
                     ForEach(ForecastPeriod.allCases) { period in
                         Text(period.localizedName).tag(period)
@@ -137,6 +155,7 @@ struct ForecastView: View {
                 .onChange(of: selectedPeriod) { _, newPeriod in
                     calculateForecast(for: newPeriod)
                 }
+                #endif
                 
                 if isCalculating {
                     VStack(spacing: 16) {

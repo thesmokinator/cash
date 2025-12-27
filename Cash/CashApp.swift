@@ -8,6 +8,10 @@
 import SwiftUI
 import SwiftData
 
+#if os(macOS)
+import AppKit
+#endif
+
 // MARK: - Navigation State
 
 @Observable
@@ -33,7 +37,10 @@ struct CashApp: App {
     @State private var menuAppState = AppState()
     @State private var navigationState = NavigationState()
     @State private var showingSettingsSheet = false
+    
+    #if os(macOS)
     @Environment(\.openWindow) private var openWindow
+    #endif
     
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -95,6 +102,7 @@ struct CashApp: App {
         }
         .modelContainer(sharedModelContainer)
         .environment(settings)
+        #if os(macOS)
         .commands {
             // Add Window menu with option to show main window
             CommandGroup(after: .windowList) {
@@ -153,8 +161,10 @@ struct CashApp: App {
                 .keyboardShortcut(",", modifiers: .command)
             }
         }
+        #endif
     }
     
+    #if os(macOS)
     private func ensureMainWindowOpen() {
         if let window = NSApplication.shared.windows.first(where: { $0.isVisible && $0.identifier?.rawValue.contains("main") == true }) {
             window.makeKeyAndOrderFront(nil)
@@ -163,4 +173,5 @@ struct CashApp: App {
         }
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
+    #endif
 }

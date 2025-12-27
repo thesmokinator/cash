@@ -8,7 +8,10 @@
 import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
+
+#if os(macOS)
 import AppKit
+#endif
 
 // MARK: - App Notifications
 
@@ -50,7 +53,7 @@ struct ContentView: View {
                 SettingsView(appState: appState, dismissSettings: { showingSettings = false })
                     .toolbar {
                         ToolbarItem(placement: .confirmationAction) {
-                            Button("Done") {
+                            Button(String(localized: "Done")) {
                                 showingSettings = false
                             }
                         }
@@ -196,21 +199,25 @@ struct WelcomeSheet: View {
                     showingImportPicker = true
                 }
                 
+                #if os(macOS)
                 WelcomeOptionButton(
                     title: "Quit",
                     subtitle: "Exit the application",
                     icon: "xmark.circle.fill",
                     color: .red
                 ) {
-                    exit(0)
+                    NSApplication.shared.terminate(nil)
                 }
+                #endif
             }
             .padding(.horizontal, 20)
             
             Spacer()
         }
         .padding(40)
+        #if os(macOS)
         .frame(width: 450, height: 560)
+        #endif
         .overlay {
             if appState.isLoading {
                 LoadingOverlayView(message: appState.loadingMessage)
@@ -306,13 +313,14 @@ struct WelcomeOptionButton: View {
                     Text(title)
                         .font(.headline)
                         .foregroundStyle(.primary)
+                        .lineLimit(2)
                     
                     Text(subtitle)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .lineLimit(2)
                 }
-                
-                Spacer()
+                .frame(maxWidth: .infinity, alignment: .leading)
                 
                 Image(systemName: "chevron.right")
                     .font(.caption)

@@ -47,6 +47,15 @@ enum ExportFormat: String, CaseIterable, Identifiable {
             return "doc.text"
         }
     }
+    
+    var description: String {
+        switch self {
+        case .cashBackup:
+            return String(localized: "Complete backup of all your accounts, transactions, and settings. Perfect for restoring your data or migrating to another device.")
+        case .ofx:
+            return String(localized: "Standard banking format compatible with most financial software. Contains transaction data only.")
+        }
+    }
 }
 
 // MARK: - Exportable Data Structures

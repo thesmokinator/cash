@@ -57,16 +57,18 @@ struct BudgetView: View {
                 
                 Divider()
                 
-                // Filter bar with search and add button
-                TransactionFilterBar(
-                    dateFilter: .constant(.thisMonth),
-                    searchText: $searchText,
-                    showDateFilter: false,
-                    onAddTransaction: {
-                        budgetForEnvelope = budget
-                    }
-                )
-                .padding(.vertical, 8)
+                // Filter bar with search and add button - mostra solo se ci sono envelopes
+                if let envelopes = budget.envelopes, !envelopes.isEmpty {
+                    TransactionFilterBar(
+                        dateFilter: .constant(.thisMonth),
+                        searchText: $searchText,
+                        showDateFilter: false,
+                        onAddTransaction: {
+                            budgetForEnvelope = budget
+                        }
+                    )
+                    .padding(.vertical, 8)
+                }
                 
                 // Envelopes List
                 if let envelopes = budget.envelopes, !envelopes.isEmpty {
@@ -155,29 +157,31 @@ struct BudgetView: View {
         }
         .navigationTitle("Budget")
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Menu {
-                    Button {
-                        showingCreateBudget = true
-                    } label: {
-                        Label("New Budget", systemImage: "plus")
-                    }
-                    
-                    if !budgets.isEmpty {
-                        Divider()
+            if activeBudget != nil {
+                ToolbarItem(placement: .primaryAction) {
+                    Menu {
+                        Button {
+                            showingCreateBudget = true
+                        } label: {
+                            Label("New Budget", systemImage: "plus")
+                        }
                         
-                        Menu("Previous Budgets") {
-                            ForEach(budgets.prefix(5)) { budget in
-                                Button {
-                                    // View historical budget
-                                } label: {
-                                    Text(budget.displayName)
+                        if !budgets.isEmpty {
+                            Divider()
+                            
+                            Menu("Previous Budgets") {
+                                ForEach(budgets.prefix(5)) { budget in
+                                    Button {
+                                        // View historical budget
+                                    } label: {
+                                        Text(budget.displayName)
+                                    }
                                 }
                             }
                         }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
                     }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
                 }
             }
         }

@@ -9,9 +9,9 @@ A simplified macOS financial management application inspired by Gnucash, built w
 ## Getting Started
 
 ### Prerequisites
-- macOS 14.0 or later
-- Xcode 15.0 or later
-- Swift 5.9 or later
+- macOS 26.0 or later
+- Xcode 26.0 or later
+- Swift 6.0 or later
 
 ### Installation
 

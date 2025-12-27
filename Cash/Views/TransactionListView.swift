@@ -334,7 +334,7 @@ struct TransactionFilterBar: View {
                 }
             }
             .padding(8)
-            .background(Color(nsColor: .controlBackgroundColor))
+            .background(Color.platformControlBackground)
             .clipShape(RoundedRectangle(cornerRadius: 8))
             
             if showDateFilter {
@@ -361,7 +361,7 @@ struct TransactionFilterBar: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
-        .background(Color(nsColor: .windowBackgroundColor))
+        .background(Color.platformWindowBackground)
     }
 }
 
