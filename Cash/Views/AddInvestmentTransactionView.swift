@@ -35,6 +35,7 @@ struct AddInvestmentTransactionView: View {
     @State private var showingValidationError = false
     @State private var validationErrors: [String] = []
     @State private var showingHelpTip = false
+    @State private var isLoadingQuote = false
     
     // MARK: - Computed Properties
     
@@ -211,6 +212,12 @@ struct AddInvestmentTransactionView: View {
                     .frame(width: 350)
             }
             .onAppear { setupPreselectedAccount() }
+            .onChange(of: selectedInvestmentAccount) { 
+                Task { await loadQuoteForSelectedAccount() } 
+            }
+            .onChange(of: transactionType) { 
+                Task { await loadQuoteForSelectedAccount() } 
+            }
         }
         .frame(minWidth: 500, minHeight: 550)
     }
@@ -288,9 +295,16 @@ struct AddInvestmentTransactionView: View {
                 Spacer()
                 Text(CurrencyList.symbol(forCode: currentCurrency))
                     .foregroundStyle(.secondary)
-                TextField("0.00", text: $pricePerShareText)
-                    .multilineTextAlignment(.trailing)
-                    .frame(width: 100)
+                ZStack(alignment: .trailing) {
+                    TextField("0.00", text: $pricePerShareText)
+                        .multilineTextAlignment(.trailing)
+                        .frame(width: 100)
+                    if isLoadingQuote {
+                        ProgressView()
+                            .scaleEffect(0.5)
+                            .frame(width: 20, height: 20)
+                    }
+                }
             }
             
             HStack {
@@ -414,6 +428,37 @@ struct AddInvestmentTransactionView: View {
         } else {
             selectedIncomeAccount = incomeAccounts.first
         }
+        
+        // Load quote if account is preselected
+        if selectedInvestmentAccount != nil {
+            Task { await loadQuoteForSelectedAccount() }
+        }
+    }
+    
+    private func loadQuoteForSelectedAccount() async {
+        guard settings.showLiveQuotes,
+              let account = selectedInvestmentAccount,
+              account.accountType == .investment,
+              let isin = account.isin,
+              !isin.isEmpty,
+              transactionType == .buy || transactionType == .sell else {
+            return
+        }
+        
+        isLoadingQuote = true
+        
+        do {
+            let locale = ETFAPIHelper.getUserLocale()
+            let quote = try await ETFAPIHelper.shared.fetchQuote(isin: isin, locale: locale, currency: account.currency)
+            
+            // Set the price per share to the latest quote
+            pricePerShareText = CurrencyFormatter.format(quote.latestQuote.raw, currency: account.currency)
+        } catch {
+            // Silently fail - user can enter price manually
+            print("Failed to load ETF quote: \(error)")
+        }
+        
+        isLoadingQuote = false
     }
     
     private func saveTransaction() {
