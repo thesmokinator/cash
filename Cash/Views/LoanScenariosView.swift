@@ -44,14 +44,14 @@ struct LoanScenariosView: View {
                 // Header with base scenario
                 VStack(spacing: 12) {
                     HStack {
-                        Text("Rate Scenarios Analysis")
+                        Text(String(localized: "Rate Scenarios Analysis"))
                             .font(.headline)
                         Spacer()
                     }
                     
                     HStack(spacing: 32) {
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Base Rate")
+                            Text(String(localized: "Base Rate"))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             Text("\(baseRate.formatted())%")
@@ -60,7 +60,7 @@ struct LoanScenariosView: View {
                         }
                         
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Base Payment")
+                            Text(String(localized: "Base Payment"))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             PrivacyAmountView(
@@ -72,7 +72,7 @@ struct LoanScenariosView: View {
                         }
                         
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Base Total Interest")
+                            Text(String(localized: "Base Total Interest"))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             PrivacyAmountView(
@@ -93,12 +93,94 @@ struct LoanScenariosView: View {
                 
                 if isLoading {
                     Spacer()
-                    ProgressView("Calculating scenarios...")
+                    ProgressView(String(localized: "Calculating scenarios..."))
                     Spacer()
                 } else {
-                    // Scenarios table
+                    #if os(iOS)
+                    // iOS Layout with List
+                    List(scenarios) { s in
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                if s.rateChange > 0 {
+                                    Image(systemName: "arrow.up")
+                                        .foregroundStyle(.red)
+                                } else if s.rateChange < 0 {
+                                    Image(systemName: "arrow.down")
+                                        .foregroundStyle(.green)
+                                } else {
+                                    Image(systemName: "minus")
+                                        .foregroundStyle(.secondary)
+                                }
+                                Text(s.rateChange >= 0 ? "+\(s.rateChange.formatted())%" : "\(s.rateChange.formatted())%")
+                                    .fontWeight(s.rateChange == 0 ? .bold : .regular)
+                                Spacer()
+                                Text("\(s.newRate.formatted())%")
+                                    .fontWeight(s.rateChange == 0 ? .bold : .regular)
+                            }
+                            
+                            Divider()
+                            
+                            VStack(spacing: 4) {
+                                HStack {
+                                    Text(String(localized: "Payment"))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                    PrivacyAmountView(
+                                        amount: CurrencyFormatter.format(s.payment, currency: currency),
+                                        isPrivate: settings.privacyMode,
+                                        font: .body,
+                                        fontWeight: s.rateChange == 0 ? .bold : .semibold
+                                    )
+                                }
+                                
+                                if s.rateChange != 0 {
+                                    HStack {
+                                        Text(String(localized: "Difference"))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Spacer()
+                                        let diff = s.payment - basePayment
+                                        Text("\(diff >= 0 ? "+" : "")\(CurrencyFormatter.format(diff, currency: currency))")
+                                            .font(.caption)
+                                            .foregroundStyle(diff > 0 ? .red : .green)
+                                    }
+                                }
+                                
+                                HStack {
+                                    Text(String(localized: "Total Interest"))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                    PrivacyAmountView(
+                                        amount: CurrencyFormatter.format(s.totalInterest, currency: currency),
+                                        isPrivate: settings.privacyMode,
+                                        font: .body,
+                                        fontWeight: s.rateChange == 0 ? .bold : .regular
+                                    )
+                                }
+                                
+                                if s.rateChange != 0 {
+                                    HStack {
+                                        Text(String(localized: "Interest Difference"))
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                        Spacer()
+                                        let diff = s.totalInterest - baseTotalInterest
+                                        Text("\(diff >= 0 ? "+" : "")\(CurrencyFormatter.format(diff, currency: currency))")
+                                            .font(.caption)
+                                            .foregroundStyle(diff > 0 ? .red : .green)
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                    .listStyle(.inset)
+                    #else
+                    // macOS Table
                     Table(scenarios) { 
-                        TableColumn("Change") { s in
+                        TableColumn(String(localized: "Change")) { s in
                             HStack {
                                 if s.rateChange > 0 {
                                     Image(systemName: "arrow.up")
@@ -116,13 +198,13 @@ struct LoanScenariosView: View {
                         }
                         .width(100)
                         
-                        TableColumn("New Rate") { s in
+                        TableColumn(String(localized: "New Rate")) { s in
                             Text("\(s.newRate.formatted())%")
                                 .fontWeight(s.rateChange == 0 ? .bold : .regular)
                         }
                         .width(100)
                         
-                        TableColumn("Payment") { s in
+                        TableColumn(String(localized: "Payment")) { s in
                             HStack {
                                 PrivacyAmountView(
                                     amount: CurrencyFormatter.format(s.payment, currency: currency),
@@ -141,7 +223,7 @@ struct LoanScenariosView: View {
                         }
                         .width(180)
                         
-                        TableColumn("Total Interest") { s in
+                        TableColumn(String(localized: "Total Interest")) { s in
                             HStack {
                                 PrivacyAmountView(
                                     amount: CurrencyFormatter.format(s.totalInterest, currency: currency),
@@ -160,7 +242,7 @@ struct LoanScenariosView: View {
                         }
                         .width(200)
                         
-                        TableColumn("Monthly Diff") { s in
+                        TableColumn(String(localized: "Monthly Diff")) { s in
                             if s.rateChange != 0 {
                                 let diff = s.payment - basePayment
                                 Text("\(diff >= 0 ? "+" : "")\(CurrencyFormatter.format(diff, currency: currency))")
@@ -173,19 +255,22 @@ struct LoanScenariosView: View {
                         }
                         .width(120)
                     }
+                    #endif
                 }
             }
-            .navigationTitle("Rate Scenarios")
+            .navigationTitle(String(localized: "Rate Scenarios"))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                    Button(String(localized: "Done")) { dismiss() }
                 }
             }
             .task {
                 await calculateScenarios()
             }
         }
+        #if os(macOS)
         .frame(minWidth: 750, minHeight: 450)
+        #endif
     }
     
     private func calculateScenarios() async {

@@ -262,6 +262,9 @@
         }
       }
     },
+    "#%lld" : {
+
+    },
     "%" : {
       "localizations" : {
         "de" : {
@@ -9882,6 +9885,9 @@
           }
         }
       }
+    },
+    "Interest Difference" : {
+
     },
     "Interest income" : {
       "localizations" : {
