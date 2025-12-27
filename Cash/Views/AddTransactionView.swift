@@ -202,23 +202,29 @@ struct AddTransactionView: View {
     
     @ViewBuilder
     private var journalPreview: some View {
-        let (debitName, creditName) = previewAccounts
-        JournalEntryPreview(
-            debitAccountName: debitName,
-            creditAccountName: creditName,
-            amount: amount,
-            currency: currentCurrency
-        )
+        AccountBalancePreview(accounts: calculateUpdatedBalances())
     }
     
-    private var previewAccounts: (String?, String?) {
+    private func calculateUpdatedBalances() -> [(account: Account, newBalance: Decimal)] {
         switch transactionType {
         case .expense:
-            return (selectedExpenseAccount?.displayName, selectedPaymentAccount?.displayName)
+            guard let expense = selectedExpenseAccount, let payment = selectedPaymentAccount else { return [] }
+            return [
+                (expense, expense.balance + amount),
+                (payment, payment.balance - amount)
+            ]
         case .income:
-            return (selectedDepositAccount?.displayName, selectedIncomeAccount?.displayName)
+            guard let deposit = selectedDepositAccount, let income = selectedIncomeAccount else { return [] }
+            return [
+                (deposit, deposit.balance + amount),
+                (income, income.balance + amount)
+            ]
         case .transfer:
-            return (selectedToAccount?.displayName, selectedFromAccount?.displayName)
+            guard let to = selectedToAccount, let from = selectedFromAccount else { return [] }
+            return [
+                (to, to.balance + amount),
+                (from, from.balance - amount)
+            ]
         }
     }
     

@@ -111,6 +111,51 @@ struct JournalEntryPreview: View {
     }
 }
 
+// MARK: - Account Balance Preview
+
+struct AccountBalancePreview: View {
+    let accounts: [(account: Account, newBalance: Decimal)]
+    let emptyMessage: String?
+    
+    init(accounts: [(account: Account, newBalance: Decimal)], emptyMessage: String? = nil) {
+        self.accounts = accounts
+        self.emptyMessage = emptyMessage
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if accounts.isEmpty {
+                Text(emptyMessage ?? "Select accounts to see preview")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(accounts, id: \.account.id) { item in
+                    let balanceChange = item.newBalance - item.account.balance
+                    let isGaining = balanceChange > 0
+                    HStack {
+                        Text(item.account.displayName)
+                            .font(.subheadline)
+                        Spacer()
+                        Text(CurrencyFormatter.format(item.newBalance, currency: item.account.currency))
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .monospacedDigit()
+                            .foregroundStyle(isGaining ? .green : .red)
+                    }
+                    .padding(.vertical, 4)
+                }
+                .padding(12)
+                .background(Color.accentColor.opacity(0.08))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .strokeBorder(Color.accentColor.opacity(0.2), lineWidth: 1)
+                )
+            }
+        }
+    }
+}
+
 // MARK: - Account Picker
 
 struct AccountPicker: View {

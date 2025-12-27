@@ -287,6 +287,7 @@ struct AddInvestmentTransactionView: View {
                     Text(type.helpText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             
@@ -300,6 +301,7 @@ struct AddInvestmentTransactionView: View {
                 Text("Your cost basis is calculated using the Average Cost Method. When you sell shares, the app calculates your gain or loss based on the average price you paid for all shares.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -339,8 +341,6 @@ struct AddInvestmentTransactionView: View {
                         .frame(width: 100)
                 }
             }
-            
-            Divider()
             
             LabeledContent("Total") {
                 Text(CurrencyFormatter.format(totalAmount, currency: currentCurrency))
@@ -394,36 +394,11 @@ struct AddInvestmentTransactionView: View {
         }
     }
     
-    @ViewBuilder
     private var journalPreview: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            let balances = calculateUpdatedBalances()
-            if balances.isEmpty {
-                Text("Stock splits do not create accounting entries.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(balances, id: \.account.id) { item in
-                    HStack {
-                        Text(item.account.displayName)
-                            .font(.subheadline)
-                        Spacer()
-                        Text(CurrencyFormatter.format(item.newBalance, currency: item.account.currency))
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .monospacedDigit()
-                    }
-                    .padding(.vertical, 4)
-                }
-                .padding(12)
-                .background(Color.accentColor.opacity(0.08))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10)
-                        .strokeBorder(Color.accentColor.opacity(0.2), lineWidth: 1)
-                )
-            }
-        }
+        AccountBalancePreview(
+            accounts: calculateUpdatedBalances(),
+            emptyMessage: "Stock splits do not create accounting entries."
+        )
     }
     
     // MARK: - Actions
