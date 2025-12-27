@@ -4587,6 +4587,9 @@
         }
       }
     },
+    "Create accounts to see your net worth." : {
+
+    },
     "Create Budget" : {
       "localizations" : {
         "de" : {
@@ -17252,6 +17255,9 @@
           }
         }
       }
+    },
+    "Total" : {
+
     },
     "Total Amount" : {
       "localizations" : {
