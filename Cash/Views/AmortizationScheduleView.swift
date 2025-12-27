@@ -114,78 +114,80 @@ struct AmortizationScheduleView: View {
                     Spacer()
                 } else {
                     #if os(iOS)
-                    // iOS Layout with List
+                    // iOS Layout with List using reusable components
                     List(schedule) { entry in
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Text("#\(entry.paymentNumber)")
-                                    .font(.headline)
-                                    .monospacedDigit()
-                                Spacer()
-                                Text(entry.date.formatted(date: .abbreviated, time: .omitted))
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                            
-                            Divider()
-                            
-                            HStack {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(String(localized: "Payment"))
-                                        .font(.caption)
+                        ListCard(
+                            header: {
+                                HStack {
+                                    Text("#\(entry.paymentNumber)")
+                                        .font(.headline)
+                                        .monospacedDigit()
+                                    Spacer()
+                                    Text(entry.date.formatted(date: .abbreviated, time: .omitted))
+                                        .font(.subheadline)
                                         .foregroundStyle(.secondary)
-                                    PrivacyAmountView(
-                                        amount: CurrencyFormatter.format(entry.payment, currency: currency),
-                                        isPrivate: settings.privacyMode,
-                                        font: .body,
-                                        fontWeight: .semibold
-                                    )
                                 }
-                                
-                                Spacer()
-                                
-                                VStack(alignment: .trailing, spacing: 4) {
-                                    Text(String(localized: "Balance"))
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                    PrivacyAmountView(
-                                        amount: CurrencyFormatter.format(entry.remainingBalance, currency: currency),
-                                        isPrivate: settings.privacyMode,
-                                        font: .body,
-                                        fontWeight: .medium
-                                    )
+                            },
+                            content: {
+                                VStack(spacing: 8) {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(String(localized: "Payment"))
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(entry.payment, currency: currency),
+                                                isPrivate: settings.privacyMode,
+                                                font: .body,
+                                                fontWeight: .semibold
+                                            )
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        VStack(alignment: .trailing, spacing: 4) {
+                                            Text(String(localized: "Balance"))
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(entry.remainingBalance, currency: currency),
+                                                isPrivate: settings.privacyMode,
+                                                font: .body,
+                                                fontWeight: .medium
+                                            )
+                                        }
+                                    }
+                                    
+                                    HStack(spacing: 16) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "arrow.down.circle.fill")
+                                                .foregroundStyle(.green)
+                                                .font(.caption)
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(entry.principal, currency: currency),
+                                                isPrivate: settings.privacyMode,
+                                                font: .caption,
+                                                fontWeight: .regular,
+                                                color: .green
+                                            )
+                                        }
+                                        
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "arrow.up.circle.fill")
+                                                .foregroundStyle(.orange)
+                                                .font(.caption)
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(entry.interest, currency: currency),
+                                                isPrivate: settings.privacyMode,
+                                                font: .caption,
+                                                fontWeight: .regular,
+                                                color: .orange
+                                            )
+                                        }
+                                    }
                                 }
                             }
-                            
-                            HStack(spacing: 16) {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "arrow.down.circle.fill")
-                                        .foregroundStyle(.green)
-                                        .font(.caption)
-                                    PrivacyAmountView(
-                                        amount: CurrencyFormatter.format(entry.principal, currency: currency),
-                                        isPrivate: settings.privacyMode,
-                                        font: .caption,
-                                        fontWeight: .regular,
-                                        color: .green
-                                    )
-                                }
-                                
-                                HStack(spacing: 4) {
-                                    Image(systemName: "arrow.up.circle.fill")
-                                        .foregroundStyle(.orange)
-                                        .font(.caption)
-                                    PrivacyAmountView(
-                                        amount: CurrencyFormatter.format(entry.interest, currency: currency),
-                                        isPrivate: settings.privacyMode,
-                                        font: .caption,
-                                        fontWeight: .regular,
-                                        color: .orange
-                                    )
-                                }
-                            }
-                        }
-                        .padding(.vertical, 4)
+                        )
                     }
                     .listStyle(.inset)
                     #else
