@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 # Configuration
-SCREENSHOTS_DIR = Path(__file__).parent.parent / "AppStore" / "Screenshots"
+SCREENSHOTS_DIR = Path(__file__).parent.parent / "Screenshots"
 TARGET_WIDTH = 2560
 TARGET_HEIGHT = 1600
 
