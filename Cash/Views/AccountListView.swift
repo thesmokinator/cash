@@ -26,7 +26,13 @@ struct AccountListView: View {
     @Query(filter: #Predicate<Transaction> { $0.isRecurring == true }) private var scheduledTransactions: [Transaction]
     @State private var showingAddAccount = false
     @State private var showingAddTransaction = false
-    @State private var selection: SidebarSelection? = .patrimony
+    @State private var selection: SidebarSelection? = {
+        #if os(iOS)
+        return UIDevice.current.userInterfaceIdiom == .phone ? nil : .patrimony
+        #else
+        return .patrimony
+        #endif
+    }()
     
     private var hasAccounts: Bool {
         !accounts.filter { $0.isActive && !$0.isSystem }.isEmpty
