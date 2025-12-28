@@ -212,7 +212,7 @@ struct ForecastView: View {
                         } description: {
                             Text("Add recurring transactions to see balance projections.")
                         }
-                        .frame(height: 200)
+                        .frame(maxWidth: .infinity, minHeight: 200)
                     }
                 }
                 .padding()
