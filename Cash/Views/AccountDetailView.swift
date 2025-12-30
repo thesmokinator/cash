@@ -214,18 +214,41 @@ struct AccountDetailView: View {
             Divider()
             
             // Transactions List
-            TransactionListView(account: account)
+            TransactionListView(account: account, showToolbar: false)
             
             Spacer(minLength: 0)
         }
         .navigationTitle(account.displayName)
+        #if os(iOS)
+        .navigationBarTitleDisplayMode(.inline)
+        #endif
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
+                // 1. Add transaction
+                Button {
+                    if account.accountType == .investment {
+                        showingAddInvestmentTransaction = true
+                    } else {
+                        showingAddTransaction = true
+                    }
+                } label: {
+                    Label("Add", systemImage: "plus")
+                }
+                
+                // 2. Reconcile
+                if (account.accountClass == .asset || account.accountClass == .liability) && account.accountType != .investment {
+                    Button(action: { showingReconciliation = true }) {
+                        Label("Reconcile", systemImage: "checkmark.shield")
+                    }
+                }
+                
+                // 3. Edit account
                 Button(action: { showingEditSheet = true }) {
-                    Label("Edit account", systemImage: "pencil")
+                    Label("Edit", systemImage: "pencil")
                 }
                 .disabled(account.isSystem)
                 
+                // 4. Delete
                 Button(role: .destructive, action: { showingDeleteConfirmation = true }) {
                     Label("Delete", systemImage: "trash")
                 }
@@ -248,10 +271,9 @@ struct AccountDetailView: View {
         .sheet(isPresented: $showingReconciliation) {
             ReconciliationView(account: account)
         }
-        .confirmationDialog(
+        .alert(
             "Delete account",
-            isPresented: $showingDeleteConfirmation,
-            titleVisibility: .visible
+            isPresented: $showingDeleteConfirmation
         ) {
             Button("Delete", role: .destructive) {
                 modelContext.delete(account)

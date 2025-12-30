@@ -57,15 +57,13 @@ struct BudgetView: View {
                 
                 Divider()
                 
-                // Filter bar with search and add button - mostra solo se ci sono envelopes
+                // Filter bar with search - mostra solo se ci sono envelopes
                 if let envelopes = budget.envelopes, !envelopes.isEmpty {
                     TransactionFilterBar(
                         dateFilter: .constant(.thisMonth),
                         searchText: $searchText,
                         showDateFilter: false,
-                        onAddTransaction: {
-                            budgetForEnvelope = budget
-                        }
+                        showActionButtons: false
                     )
                     .padding(.vertical, 8)
                 }
@@ -159,6 +157,14 @@ struct BudgetView: View {
         .toolbar {
             if activeBudget != nil {
                 ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        budgetForEnvelope = activeBudget
+                    } label: {
+                        Label("Add", systemImage: "plus")
+                    }
+                }
+                
+                ToolbarItem(placement: .secondaryAction) {
                     Menu {
                         Button {
                             showingCreateBudget = true

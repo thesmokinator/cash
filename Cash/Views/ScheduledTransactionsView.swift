@@ -39,12 +39,18 @@ struct ScheduledTransactionsView: View {
             .padding(.horizontal)
             .padding(.top, 8)
             .navigationTitle("Scheduled Transactions")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button(action: { showingAddScheduled = true }) {
+                        Label("Add", systemImage: "plus")
+                    }
+                }
+            }
             
             TransactionFilterBar(
                 dateFilter: $dummyDateFilter,
                 searchText: $searchText,
-                showDateFilter: false,
-                onAddTransaction: { showingAddScheduled = true }
+                showDateFilter: false
             )
             
             Divider()
@@ -750,7 +756,9 @@ struct AddScheduledTransactionView: View {
             }
             .id(settings.refreshID)
         }
+        #if os(macOS)
         .frame(minWidth: 450, minHeight: 500)
+        #endif
     }
     
     @ViewBuilder

@@ -84,7 +84,7 @@ struct TransactionListView: View {
     @State private var displayedTransactions: [(String, [Transaction])] = []
     
     var account: Account?
-    
+    var showToolbar: Bool = true    
     private var currency: String {
         account?.currency ?? CurrencyHelper.defaultCurrency(from: accounts)
     }
@@ -99,22 +99,7 @@ struct TransactionListView: View {
             TransactionFilterBar(
                 dateFilter: $dateFilter,
                 searchText: $searchText,
-                onAddTransaction: {
-                    if account?.accountType == .investment {
-                        showingAddInvestmentTransaction = true
-                    } else {
-                        showingAddTransaction = true
-                    }
-                },
-                onReconcile: canReconcile ? { showingReconciliation = true } : nil,
-                showReconcile: canReconcile,
-                showActionButtons: {
-                    #if os(iOS)
-                    return UIDevice.current.userInterfaceIdiom != .phone
-                    #else
-                    return true
-                    #endif
-                }()
+                showActionButtons: false
             )
             
             Group {
@@ -200,10 +185,9 @@ struct TransactionListView: View {
             }
         }
         .navigationTitle(account?.name ?? String(localized: "All transactions"))
-        #if os(iOS)
         .toolbar {
-            if UIDevice.current.userInterfaceIdiom == .phone {
-                ToolbarItemGroup(placement: .topBarTrailing) {
+            if showToolbar {
+                ToolbarItemGroup(placement: .primaryAction) {
                     Button {
                         if account?.accountType == .investment {
                             showingAddInvestmentTransaction = true
@@ -222,7 +206,6 @@ struct TransactionListView: View {
                 }
             }
         }
-        #endif
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionView(preselectedAccount: account)
         }
