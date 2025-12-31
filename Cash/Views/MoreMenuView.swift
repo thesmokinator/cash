@@ -130,6 +130,20 @@ struct MoreMenuView: View {
 
                 // Data Section
                 Section {
+                    
+                    #if ENABLE_ICLOUD
+                    Button {
+                        showingICloudSheet = true
+                    } label: {
+                        MoreMenuRow(
+                            icon: "icloud.fill",
+                            title: "iCloud Sync",
+                            subtitle: CloudKitManager.shared.isEnabled ? "Enabled" : "Disabled",
+                            color: .blue
+                        )
+                    }
+                    #endif
+                    
                     Button {
                         NotificationCenter.default.post(name: .importOFX, object: nil)
                     } label: {
@@ -162,19 +176,6 @@ struct MoreMenuView: View {
                             color: .indigo
                         )
                     }
-
-                    #if ENABLE_ICLOUD
-                    Button {
-                        showingICloudSheet = true
-                    } label: {
-                        MoreMenuRow(
-                            icon: "icloud.fill",
-                            title: "iCloud Sync",
-                            subtitle: CloudKitManager.shared.isEnabled ? "Enabled" : "Disabled",
-                            color: .blue
-                        )
-                    }
-                    #endif
 
                     Button {
                         showingFirstResetAlert = true
@@ -218,9 +219,59 @@ struct MoreMenuView: View {
                 }
 
                 // About Section
-                AboutCard()
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                Section {
+                    VStack(spacing: CashSpacing.lg) {
+                        if let icon = Bundle.main.icon {
+                            Image(uiImage: icon)
+                                .resizable()
+                                .frame(width: 72, height: 72)
+                                .clipShape(RoundedRectangle(cornerRadius: CashRadius.large))
+                        }
+
+                        VStack(spacing: CashSpacing.xs) {
+                            Text("Cash")
+                                .font(CashTypography.title2)
+                                .foregroundStyle(.primary)
+
+                            Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
+                                .font(CashTypography.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Text("A personal finance management application inspired by Gnucash, built with SwiftUI and SwiftData.")
+                            .font(CashTypography.caption)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+
+                        VStack(spacing: CashSpacing.sm) {
+                            Link(destination: URL(string: "https://github.com/thesmokinator/cash")!) {
+                                HStack {
+                                    Image(systemName: "link")
+                                    Text("Project website")
+                                }
+                                .font(CashTypography.subheadline)
+                                .foregroundStyle(CashColors.primary)
+                            }
+
+                            Link(destination: URL(string: "https://github.com/thesmokinator/cash/blob/main/PRIVACY.md")!) {
+                                HStack {
+                                    Image(systemName: "hand.raised.fill")
+                                    Text("Privacy policy")
+                                }
+                                .font(CashTypography.subheadline)
+                                .foregroundStyle(CashColors.primary)
+                            }
+                        }
+
+                        Text("© 2025 Michele Broggi")
+                            .font(CashTypography.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, CashSpacing.lg)
+                } header: {
+                    Text("About")
+                }
             }
             .listStyle(.insetGrouped)
             .navigationTitle("More")
@@ -478,79 +529,6 @@ struct MoreMenuRow: View {
     }
 }
 
-// MARK: - About Card
-
-struct AboutCard: View {
-    private var appVersion: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-    }
-
-    var body: some View {
-        VStack(spacing: CashSpacing.lg) {
-            if let icon = Bundle.main.icon {
-                Image(uiImage: icon)
-                    .resizable()
-                    .frame(width: 72, height: 72)
-                    .clipShape(RoundedRectangle(cornerRadius: CashRadius.large))
-            }
-
-            VStack(spacing: CashSpacing.xs) {
-                Text("Cash")
-                    .font(CashTypography.title2)
-                    .foregroundStyle(.primary)
-
-                Text("Version \(appVersion)")
-                    .font(CashTypography.caption)
-                    .foregroundStyle(.secondary)
-            }
-
-            Text("A personal finance management application inspired by Gnucash, built with SwiftUI and SwiftData.")
-                .font(CashTypography.caption)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, CashSpacing.lg)
-
-            VStack(spacing: CashSpacing.sm) {
-                Link(destination: URL(string: "https://github.com/thesmokinator/cash")!) {
-                    HStack {
-                        Image(systemName: "link")
-                        Text("Project website")
-                    }
-                    .font(CashTypography.subheadline)
-                    .foregroundStyle(CashColors.primary)
-                }
-
-                Link(destination: URL(string: "https://github.com/thesmokinator/cash/blob/main/PRIVACY.md")!) {
-                    HStack {
-                        Image(systemName: "hand.raised.fill")
-                        Text("Privacy policy")
-                    }
-                    .font(CashTypography.subheadline)
-                    .foregroundStyle(CashColors.primary)
-                }
-            }
-
-            Text("© 2025 Michele Broggi")
-                .font(CashTypography.caption2)
-                .foregroundStyle(.tertiary)
-                .padding(.top, CashSpacing.sm)
-        }
-        .padding(.vertical, CashSpacing.xl)
-        .padding(.horizontal, CashSpacing.lg)
-        .background(.ultraThinMaterial)
-        .background(Color.white.opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: CashRadius.xlarge))
-        .shadow(
-            color: CashShadow.light.color,
-            radius: CashShadow.light.radius,
-            x: CashShadow.light.x,
-            y: CashShadow.light.y
-        )
-        .padding(.horizontal, CashSpacing.lg)
-        .padding(.vertical, CashSpacing.md)
-    }
-}
-
 // MARK: - Theme Settings Sheet
 
 struct ThemeSettingsSheet: View {
@@ -559,35 +537,44 @@ struct ThemeSettingsSheet: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: CashSpacing.xl) {
-                VStack(spacing: CashSpacing.md) {
-                    Image(systemName: "paintbrush.fill")
-                        .font(.system(size: 48))
-                        .foregroundStyle(CashColors.primary)
-
-                    Text("Theme")
-                        .font(CashTypography.title2)
-
-                    Text("Choose your preferred color scheme")
-                        .font(CashTypography.body)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.top, CashSpacing.xl)
-
-                Picker("Theme", selection: Binding(
-                    get: { settings.theme },
-                    set: { settings.theme = $0 }
-                )) {
+            List {
+                Section {
                     ForEach(AppTheme.allCases) { theme in
-                        Text(theme.labelKey).tag(theme)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, CashSpacing.xl)
+                        Button {
+                            settings.theme = theme
+                        } label: {
+                            HStack(spacing: CashSpacing.md) {
+                                Image(systemName: theme.iconName)
+                                    .font(.system(size: 20, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .frame(width: 36, height: 36)
+                                    .background(themeColor(for: theme))
+                                    .clipShape(RoundedRectangle(cornerRadius: CashRadius.small))
 
-                Spacer()
+                                Text(theme.labelKey)
+                                    .font(CashTypography.body)
+                                    .foregroundStyle(.primary)
+
+                                Spacer()
+
+                                if settings.theme == theme {
+                                    Image(systemName: "checkmark")
+                                        .font(.body.weight(.semibold))
+                                        .foregroundStyle(CashColors.primary)
+                                }
+                            }
+                            .padding(.vertical, CashSpacing.xs)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                } header: {
+                    Text("Choose your preferred color scheme")
+                }
             }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Theme")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
@@ -595,6 +582,14 @@ struct ThemeSettingsSheet: View {
                     }
                 }
             }
+        }
+    }
+
+    private func themeColor(for theme: AppTheme) -> Color {
+        switch theme {
+        case .system: return .gray
+        case .light: return .orange
+        case .dark: return .indigo
         }
     }
 }
@@ -606,51 +601,56 @@ struct LanguageSettingsSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingRestartAlert = false
 
+    private let languagesOrder: [AppLanguage] = [
+        .system, .english, .italian, .spanish, .french, .german
+    ]
+
     var body: some View {
         NavigationStack {
-            VStack(spacing: CashSpacing.xl) {
-                VStack(spacing: CashSpacing.md) {
-                    Image(systemName: "globe")
-                        .font(.system(size: 48))
-                        .foregroundStyle(CashColors.primary)
-
-                    Text("Language")
-                        .font(CashTypography.title2)
-
-                    Text("Select your preferred language")
-                        .font(CashTypography.body)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                .padding(.top, CashSpacing.xl)
-
-                Picker("Language", selection: Binding(
-                    get: { settings.language },
-                    set: {
-                        settings.language = $0
-                        if settings.needsRestart {
-                            showingRestartAlert = true
-                        }
-                    }
-                )) {
-                    let languagesOrder: [AppLanguage] = [
-                        .system, .english, .italian, .spanish, .french, .german
-                    ]
+            List {
+                Section {
                     ForEach(languagesOrder) { language in
-                        Text(language.labelKey).tag(language)
+                        Button {
+                            let previousLanguage = settings.language
+                            settings.language = language
+                            if previousLanguage != language {
+                                showingRestartAlert = true
+                            }
+                        } label: {
+                            HStack(spacing: CashSpacing.md) {
+                                Image(systemName: language.iconName)
+                                    .font(.system(size: 20, weight: .semibold))
+                                    .foregroundColor(.white)
+                                    .frame(width: 36, height: 36)
+                                    .background(languageColor(for: language))
+                                    .clipShape(RoundedRectangle(cornerRadius: CashRadius.small))
+
+                                Text(language.labelKey)
+                                    .font(CashTypography.body)
+                                    .foregroundStyle(.primary)
+
+                                Spacer()
+
+                                if settings.language == language {
+                                    Image(systemName: "checkmark")
+                                        .font(.body.weight(.semibold))
+                                        .foregroundStyle(CashColors.primary)
+                                }
+                            }
+                            .padding(.vertical, CashSpacing.xs)
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
                     }
+                } header: {
+                    Text("Select your preferred language")
+                } footer: {
+                    Text("Please restart the app to apply language changes")
                 }
-                .pickerStyle(.wheel)
-                .frame(height: 200)
-
-                Text("Please restart the app to apply language changes")
-                    .font(CashTypography.caption)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, CashSpacing.xl)
-
-                Spacer()
             }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Language")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
@@ -665,6 +665,17 @@ struct LanguageSettingsSheet: View {
             } message: {
                 Text("Please close and reopen the app to apply language changes.")
             }
+        }
+    }
+
+    private func languageColor(for language: AppLanguage) -> Color {
+        switch language {
+        case .system: return .gray
+        case .english: return .blue
+        case .italian: return .green
+        case .spanish: return .red
+        case .french: return .indigo
+        case .german: return .orange
         }
     }
 }

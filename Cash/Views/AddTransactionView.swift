@@ -40,6 +40,7 @@ struct AddTransactionView: View {
     @Query(sort: \Account.accountNumber) private var accounts: [Account]
 
     var preselectedAccount: Account?
+    var initialTransactionType: SimpleTransactionType = .expense
 
     @State private var transactionType: SimpleTransactionType = .expense
     @State private var date: Date = Date()
@@ -181,7 +182,10 @@ struct AddTransactionView: View {
             } message: {
                 Text(validationMessage)
             }
-            .onAppear { setupPreselectedAccount() }
+            .onAppear {
+                transactionType = initialTransactionType
+                setupPreselectedAccount()
+            }
             .id(settings.refreshID)
         }
     }

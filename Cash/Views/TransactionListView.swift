@@ -359,7 +359,7 @@ struct TransactionFilterBar: View {
             .padding(.horizontal, CashSpacing.md)
             .padding(.vertical, CashSpacing.sm)
             .background(.ultraThinMaterial)
-            .background(Color.white.opacity(0.5))
+            .background(CashColors.glassBackground.opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
             .overlay(
                 RoundedRectangle(cornerRadius: CashRadius.medium)
@@ -439,7 +439,7 @@ struct TransactionFilterBar: View {
         .padding(.horizontal, CashSpacing.lg)
         .padding(.vertical, CashSpacing.md)
         .background(.ultraThinMaterial)
-        .background(Color.white.opacity(0.3))
+        .background(CashColors.glassBackground.opacity(0.3))
     }
 }
 

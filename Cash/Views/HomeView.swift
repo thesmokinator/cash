@@ -299,7 +299,11 @@ struct HomeView: View {
                         title: "Expense",
                         color: CashColors.expense
                     ) {
-                        NotificationCenter.default.post(name: .addNewTransaction, object: nil)
+                        NotificationCenter.default.post(
+                            name: .addNewTransaction,
+                            object: nil,
+                            userInfo: ["transactionType": SimpleTransactionType.expense.rawValue]
+                        )
                     }
 
                     QuickActionCard(
@@ -307,7 +311,11 @@ struct HomeView: View {
                         title: "Income",
                         color: CashColors.income
                     ) {
-                        NotificationCenter.default.post(name: .addNewTransaction, object: nil)
+                        NotificationCenter.default.post(
+                            name: .addNewTransaction,
+                            object: nil,
+                            userInfo: ["transactionType": SimpleTransactionType.income.rawValue]
+                        )
                     }
 
                     QuickActionCard(
@@ -315,7 +323,11 @@ struct HomeView: View {
                         title: "Transfer",
                         color: CashColors.transfer
                     ) {
-                        NotificationCenter.default.post(name: .addNewTransaction, object: nil)
+                        NotificationCenter.default.post(
+                            name: .addNewTransaction,
+                            object: nil,
+                            userInfo: ["transactionType": SimpleTransactionType.transfer.rawValue]
+                        )
                     }
 
                     QuickActionCard(

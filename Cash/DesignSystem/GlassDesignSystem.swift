@@ -26,6 +26,19 @@ struct CashColors {
     static let expense = Color(hex: "#FF5252")          // Red A200 - Expenses
     static let transfer = Color(hex: "#448AFF")         // Blue A200 - Transfers
 
+    // Adaptive Glass Colors (for dark mode support)
+    static let glassBackground = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.15, alpha: 1.0)
+            : UIColor(white: 1.0, alpha: 1.0)
+    })
+
+    static let glassBackgroundSecondary = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(white: 0.2, alpha: 1.0)
+            : UIColor(white: 1.0, alpha: 1.0)
+    })
+
     // Background Gradients
     static let backgroundGradient = LinearGradient(
         colors: [Color(hex: "#E0F2F1"), Color(hex: "#B2DFDB")],
@@ -165,7 +178,7 @@ extension View {
     ) -> some View {
         self
             .background(.ultraThinMaterial)
-            .background(Color.white.opacity(opacity))
+            .background(CashColors.glassBackground.opacity(opacity))
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .shadow(
                 color: CashShadow.light.color,
@@ -193,9 +206,9 @@ extension View {
             )
     }
 
-    /// Applies gradient background for main screens
+    /// Applies gradient background for main screens (adapts to dark mode)
     func cashBackground() -> some View {
-        self.background(CashColors.backgroundGradient.ignoresSafeArea())
+        self.modifier(AdaptiveBackgroundModifier())
     }
 
     /// Applies the standard glass card style
@@ -203,6 +216,26 @@ extension View {
         self
             .padding(CashSpacing.lg)
             .glassBackground()
+    }
+}
+
+// MARK: - Adaptive Background Modifier
+
+struct AdaptiveBackgroundModifier: ViewModifier {
+    @Environment(\.colorScheme) private var colorScheme
+
+    func body(content: Content) -> some View {
+        content
+            .background(
+                Group {
+                    if colorScheme == .dark {
+                        Color(.systemBackground)
+                    } else {
+                        CashColors.backgroundGradient
+                    }
+                }
+                .ignoresSafeArea()
+            )
     }
 }
 

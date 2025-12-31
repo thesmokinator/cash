@@ -532,7 +532,7 @@ struct ScheduledCalendarView: View {
         }
         .padding(CashSpacing.lg)
         .background(.ultraThinMaterial)
-        .background(Color.white.opacity(0.6))
+        .background(CashColors.glassBackground.opacity(0.6))
         .clipShape(RoundedRectangle(cornerRadius: CashRadius.large))
         .shadow(
             color: CashShadow.light.color,

@@ -28,7 +28,7 @@ struct GlassCard<Content: View>: View {
         content
             .padding(padding)
             .background(.ultraThinMaterial)
-            .background(Color.white.opacity(0.6))
+            .background(CashColors.glassBackground.opacity(0.6))
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
             .shadow(
                 color: CashShadow.light.color,
@@ -82,7 +82,7 @@ struct GlassMetricCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(CashSpacing.lg)
         .background(.ultraThinMaterial)
-        .background(Color.white.opacity(0.6))
+        .background(CashColors.glassBackground.opacity(0.6))
         .clipShape(RoundedRectangle(cornerRadius: CashRadius.large))
         .shadow(
             color: CashShadow.light.color,
@@ -398,7 +398,7 @@ struct GlassQuickStat: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(CashSpacing.md)
         .background(.ultraThinMaterial)
-        .background(Color.white.opacity(0.5))
+        .background(CashColors.glassBackground.opacity(0.5))
         .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
     }
 }

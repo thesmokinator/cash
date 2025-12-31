@@ -68,6 +68,7 @@ struct MainTabView: View {
 
     @State private var selectedTab: MainTab = .home
     @State private var showingAddTransaction = false
+    @State private var addTransactionType: SimpleTransactionType = .expense
 
     // OFX Import state
     @State private var showingOFXImportPicker = false
@@ -87,7 +88,7 @@ struct MainTabView: View {
             }
         }
         .sheet(isPresented: $showingAddTransaction) {
-            AddTransactionSheet()
+            AddTransactionSheet(transactionType: addTransactionType)
         }
         .sheet(isPresented: $showingOFXImportWizard) {
             OFXImportWizard(ofxTransactions: parsedOFXTransactions)
@@ -104,7 +105,13 @@ struct MainTabView: View {
         } message: {
             Text(ofxErrorMessage)
         }
-        .onReceive(NotificationCenter.default.publisher(for: .addNewTransaction)) { _ in
+        .onReceive(NotificationCenter.default.publisher(for: .addNewTransaction)) { notification in
+            if let type = notification.userInfo?["transactionType"] as? String,
+               let transactionType = SimpleTransactionType(rawValue: type) {
+                addTransactionType = transactionType
+            } else {
+                addTransactionType = .expense
+            }
             showingAddTransaction = true
         }
         .onReceive(NotificationCenter.default.publisher(for: .importOFX)) { _ in
@@ -265,9 +272,11 @@ struct MainTabView: View {
 // MARK: - Add Transaction Sheet
 
 struct AddTransactionSheet: View {
+    var transactionType: SimpleTransactionType = .expense
+
     var body: some View {
         NavigationStack {
-            AddTransactionView()
+            AddTransactionView(initialTransactionType: transactionType)
         }
     }
 }

@@ -611,6 +611,7 @@
       }
     },
     "%lld transactions found" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -637,6 +638,9 @@
           }
         }
       }
+    },
+    "%lld transactions found in OFX file" : {
+
     },
     "%lld transactions imported" : {
       "localizations" : {
@@ -953,6 +957,7 @@
       }
     },
     "→" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1343,6 +1348,12 @@
           }
         }
       }
+    },
+    "About" : {
+
+    },
+    "Account" : {
+
     },
     "Account class" : {
       "localizations" : {
@@ -3458,6 +3469,7 @@
       }
     },
     "Bank Account" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4193,7 +4205,11 @@
         }
       }
     },
+    "Categorize" : {
+
+    },
     "Categorize Transactions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4388,6 +4404,9 @@
           }
         }
       }
+    },
+    "Choose the destination account" : {
+
     },
     "Choose the format for exporting your financial data. JSON is recommended for full backup and restore, while OFX is the standard bank format for importing into other applications." : {
       "localizations" : {
@@ -4589,6 +4608,7 @@
       }
     },
     "Complete" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -8809,7 +8829,11 @@
     "Import" : {
 
     },
+    "Import %lld" : {
+
+    },
     "Import %lld Transactions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -9017,6 +9041,9 @@
         }
       }
     },
+    "Importing" : {
+
+    },
     "Importing data..." : {
       "localizations" : {
         "de" : {
@@ -9102,6 +9129,7 @@
       }
     },
     "Importing..." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -14414,6 +14442,7 @@
       }
     },
     "Previous" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15138,6 +15167,7 @@
       }
     },
     "Ready to import" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -15164,6 +15194,9 @@
           }
         }
       }
+    },
+    "Ready to Import" : {
+
     },
     "Receivable" : {
       "localizations" : {
@@ -15846,6 +15879,7 @@
       }
     },
     "Review All" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -16219,6 +16253,7 @@
       }
     },
     "Select Account" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -16336,6 +16371,9 @@
         }
       }
     },
+    "Select Bank Account" : {
+
+    },
     "Select category" : {
       "localizations" : {
         "de" : {
@@ -16449,6 +16487,7 @@
       }
     },
     "Select the bank account for these transactions" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -84,6 +84,7 @@ struct CashApp: App {
         WindowGroup {
             MainTabView()
                 .environment(navigationState)
+                .preferredColorScheme(settings.theme.colorScheme)
                 .onAppear {
                     // Start iCloud sync monitoring
                     CloudKitManager.shared.startListeningForRemoteChanges()

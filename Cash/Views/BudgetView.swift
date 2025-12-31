@@ -160,7 +160,7 @@ struct BudgetView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(CashColors.backgroundGradient.ignoresSafeArea())
+        .cashBackground()
         .navigationTitle("Budget")
         .toolbar {
             if activeBudget != nil {
