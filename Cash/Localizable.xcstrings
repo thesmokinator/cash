@@ -2540,6 +2540,7 @@
       }
     },
     "Appearance" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4416,6 +4417,9 @@
         }
       }
     },
+    "Choose your preferred color scheme" : {
+
+    },
     "Class" : {
       "localizations" : {
         "de" : {
@@ -6187,6 +6191,12 @@
         }
       }
     },
+    "Disabled" : {
+
+    },
+    "Display real-time price quotes for investment accounts with an ISIN code. This setting syncs across your devices via iCloud." : {
+
+    },
     "Dividend" : {
       "localizations" : {
         "de" : {
@@ -6692,6 +6702,9 @@
           }
         }
       }
+    },
+    "Enabled" : {
+
     },
     "End date" : {
       "localizations" : {
@@ -10478,6 +10491,7 @@
       }
     },
     "Links" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -10504,6 +10518,9 @@
           }
         }
       }
+    },
+    "Live ETF Quotes" : {
+
     },
     "Loading quote..." : {
 
@@ -10937,6 +10954,7 @@
       }
     },
     "MIT License" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -14196,6 +14214,9 @@
         }
       }
     },
+    "Please restart the app to apply language changes" : {
+
+    },
     "Please select a cash account for the transaction" : {
       "localizations" : {
         "de" : {
@@ -16455,6 +16476,9 @@
         }
       }
     },
+    "Select your preferred language" : {
+
+    },
     "Sell" : {
       "localizations" : {
         "de" : {
@@ -16747,7 +16771,7 @@
         }
       }
     },
-    "Sign in to iCloud in Settings to enable sync." : {
+    "Sign in to iCloud in Settings to enable sync" : {
 
     },
     "Similar to French but interest is paid at the beginning of each period." : {
@@ -17378,7 +17402,11 @@
         }
       }
     },
+    "Sync your data across all your devices" : {
+
+    },
     "Sync your data across all your devices." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -17685,9 +17713,6 @@
           }
         }
       }
-    },
-    "Theme, language, and preferences" : {
-
     },
     "This loan has linked recurring transactions. Deleting will also remove all scheduled future payments. This action cannot be undone." : {
       "localizations" : {
@@ -19592,6 +19617,7 @@
       }
     },
     "When enabled, displays real-time price quotes for investment accounts with an ISIN code. This setting syncs across your devices via iCloud." : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

@@ -823,6 +823,106 @@ struct ICloudSyncSettingsSheet: View {
 }
 #endif
 
+// MARK: - Export Format Picker View
+
+struct ExportFormatPickerView: View {
+    @Environment(\.dismiss) private var dismiss
+    let onSelect: (ExportFormat) -> Void
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    Text(
+                        String(
+                            localized:
+                                "Choose the format for exporting your financial data. JSON is recommended for full backup and restore, while OFX is the standard bank format for importing into other applications."
+                        )
+                    )
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                }
+
+                Section(String(localized: "Available formats")) {
+                    ForEach(ExportFormat.allCases) { format in
+                        Button {
+                            dismiss()
+                            onSelect(format)
+                        } label: {
+                            HStack(spacing: 16) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(
+                                            format == .cashBackup
+                                                ? Color.blue.opacity(0.1) : Color.green.opacity(0.1)
+                                        )
+                                        .frame(width: 48, height: 48)
+
+                                    Image(systemName: format.iconName)
+                                        .font(.title2)
+                                        .foregroundStyle(format == .cashBackup ? .blue : .green)
+                                }
+
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(format.localizedName)
+                                        .font(.headline)
+
+                                    Text(format.description)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(2)
+                                }
+
+                                Spacer()
+
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                            }
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                    }
+                }
+            }
+            .navigationTitle(String(localized: "Export data"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "Cancel")) {
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+}
+
+// MARK: - Export Document
+
+struct ExportDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.data] }
+
+    let data: Data
+
+    init(data: Data) {
+        self.data = data
+    }
+
+    init(configuration: ReadConfiguration) throws {
+        guard let data = configuration.file.regularFileContents else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        self.data = data
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: data)
+    }
+}
+
 // MARK: - Bundle Extension for App Icon
 
 extension Bundle {
