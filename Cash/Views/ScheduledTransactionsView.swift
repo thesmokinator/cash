@@ -349,54 +349,54 @@ struct ScheduledCalendarView: View {
     let scheduledTransactions: [Transaction]
     @Binding var selectedDate: Date?
     @Binding var currentMonth: Date
-    
+
     private let calendar = Calendar.current
     private let daysOfWeek = Calendar.current.shortWeekdaySymbols
-    
+
     private var monthInterval: DateInterval {
         calendar.dateInterval(of: .month, for: currentMonth)!
     }
-    
+
     private var daysInMonth: [Date] {
         let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentMonth))!
         let range = calendar.range(of: .day, in: .month, for: currentMonth)!
-        
+
         return range.compactMap { day in
             calendar.date(byAdding: .day, value: day - 1, to: startOfMonth)
         }
     }
-    
+
     private var firstWeekdayOffset: Int {
         let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: currentMonth))!
         let weekday = calendar.component(.weekday, from: startOfMonth)
         return weekday - 1
     }
-    
+
     private var isCurrentMonth: Bool {
         calendar.isDate(currentMonth, equalTo: Date(), toGranularity: .month)
     }
-    
+
     private var scheduledDates: Set<Date> {
         var dates = Set<Date>()
-        
+
         for transaction in scheduledTransactions {
             guard let rule = transaction.recurrenceRule else { continue }
-            
+
             // Generate occurrences for current month
             var currentDate = rule.startDate
             var iterations = 0
             let maxIterations = 366
-            
+
             while currentDate <= monthInterval.end && iterations < maxIterations {
                 if let nextOccurrence = rule.calculateNextOccurrence(from: currentDate, includeDate: true) {
                     if nextOccurrence >= monthInterval.start && nextOccurrence <= monthInterval.end {
                         dates.insert(calendar.startOfDay(for: nextOccurrence))
                     }
-                    
+
                     if nextOccurrence > monthInterval.end {
                         break
                     }
-                    
+
                     // Move to next occurrence
                     switch rule.frequency {
                     case .daily:
@@ -414,80 +414,103 @@ struct ScheduledCalendarView: View {
                 iterations += 1
             }
         }
-        
+
         return dates
     }
-    
+
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: CashSpacing.md) {
             // Month navigation
             HStack {
                 Button {
-                    withAnimation {
+                    withAnimation(.easeInOut(duration: 0.3)) {
                         currentMonth = calendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
                     }
                 } label: {
                     Image(systemName: "chevron.left")
-                        .frame(width: 32, height: 32)
-                        .contentShape(Rectangle())
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(CashColors.primary)
+                        .frame(width: 36, height: 36)
+                        .background(.ultraThinMaterial)
+                        .background(CashColors.primary.opacity(0.1))
+                        .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
-                
+
                 Spacer()
-                
-                Text(currentMonth.formatted(.dateTime.month(.wide).year()))
-                    .font(.headline)
-                
+
+                VStack(spacing: 2) {
+                    Text(currentMonth.formatted(.dateTime.month(.wide)))
+                        .font(CashTypography.title3)
+                        .foregroundStyle(.primary)
+                    Text(currentMonth.formatted(.dateTime.year()))
+                        .font(CashTypography.caption)
+                        .foregroundStyle(.secondary)
+                }
+
                 Spacer()
-                
-                Button {
-                    withAnimation {
-                        currentMonth = Date()
-                        selectedDate = nil
+
+                HStack(spacing: CashSpacing.sm) {
+                    if !isCurrentMonth {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                currentMonth = Date()
+                                selectedDate = nil
+                            }
+                        } label: {
+                            Text("Today")
+                                .font(CashTypography.caption)
+                                .foregroundStyle(CashColors.primary)
+                                .padding(.horizontal, CashSpacing.md)
+                                .padding(.vertical, CashSpacing.xs)
+                                .background(.ultraThinMaterial)
+                                .background(CashColors.primary.opacity(0.1))
+                                .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
                     }
-                } label: {
-                    Text("Today")
-                        .font(.caption)
-                }
-                .buttonStyle(.bordered)
-                .disabled(isCurrentMonth)
-                
-                Button {
-                    withAnimation {
-                        currentMonth = calendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
+
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            currentMonth = calendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
+                        }
+                    } label: {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(CashColors.primary)
+                            .frame(width: 36, height: 36)
+                            .background(.ultraThinMaterial)
+                            .background(CashColors.primary.opacity(0.1))
+                            .clipShape(Circle())
                     }
-                } label: {
-                    Image(systemName: "chevron.right")
-                        .frame(width: 32, height: 32)
-                        .contentShape(Rectangle())
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
             }
-            .padding(.horizontal, 4)
-            
+            .padding(.horizontal, CashSpacing.sm)
+
             // Days of week header
-            HStack(spacing: 1) {
+            HStack(spacing: 2) {
                 ForEach(daysOfWeek, id: \.self) { day in
                     Text(day)
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.secondary)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(CashColors.primary.opacity(0.7))
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 4)
+                        .padding(.vertical, CashSpacing.sm)
                 }
             }
-            .background(Color.platformSeparator.opacity(0.3))
-            .clipShape(RoundedRectangle(cornerRadius: 4))
-            
+            .background(.ultraThinMaterial)
+            .background(CashColors.primary.opacity(0.05))
+            .clipShape(RoundedRectangle(cornerRadius: CashRadius.small))
+
             // Calendar grid
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 1), count: 7), spacing: 1) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 2), count: 7), spacing: 2) {
                 // Empty cells for offset
                 ForEach(0..<firstWeekdayOffset, id: \.self) { _ in
                     Rectangle()
-                        .fill(Color.platformWindowBackground)
-                        .frame(height: 36)
+                        .fill(Color.clear)
+                        .frame(height: 40)
                 }
-                
+
                 // Day cells
                 ForEach(daysInMonth, id: \.self) { date in
                     CalendarDayCell(
@@ -496,20 +519,27 @@ struct ScheduledCalendarView: View {
                         isToday: calendar.isDateInToday(date),
                         hasScheduled: scheduledDates.contains(calendar.startOfDay(for: date))
                     ) {
-                        if selectedDate.map({ calendar.isDate($0, inSameDayAs: date) }) ?? false {
-                            selectedDate = nil
-                        } else {
-                            selectedDate = date
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            if selectedDate.map({ calendar.isDate($0, inSameDayAs: date) }) ?? false {
+                                selectedDate = nil
+                            } else {
+                                selectedDate = date
+                            }
                         }
                     }
                 }
             }
-            .background(Color.platformSeparator.opacity(0.3))
-            .clipShape(RoundedRectangle(cornerRadius: 4))
         }
-        .padding(12)
-        .background(Color.platformControlBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(CashSpacing.lg)
+        .background(.ultraThinMaterial)
+        .background(Color.white.opacity(0.6))
+        .clipShape(RoundedRectangle(cornerRadius: CashRadius.large))
+        .shadow(
+            color: CashShadow.light.color,
+            radius: CashShadow.light.radius,
+            x: CashShadow.light.x,
+            y: CashShadow.light.y
+        )
     }
 }
 
@@ -521,52 +551,67 @@ struct CalendarDayCell: View {
     let isToday: Bool
     let hasScheduled: Bool
     let action: () -> Void
-    
+
     private let calendar = Calendar.current
-    
+
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 2) {
+            VStack(spacing: 3) {
                 Text("\(calendar.component(.day, from: date))")
-                    .font(.system(size: 13, weight: isToday ? .bold : .regular))
+                    .font(.system(size: 14, weight: isToday || isSelected ? .bold : .regular, design: .rounded))
                     .foregroundStyle(foregroundColor)
-                
-                if hasScheduled {
-                    Circle()
-                        .fill(isSelected ? .white : .blue)
-                        .frame(width: 5, height: 5)
-                } else {
-                    Circle()
-                        .fill(.clear)
-                        .frame(width: 5, height: 5)
-                }
+
+                // Indicator dot
+                Circle()
+                    .fill(dotColor)
+                    .frame(width: 6, height: 6)
+                    .opacity(hasScheduled ? 1 : 0)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 36)
+            .frame(height: 40)
             .background(backgroundColor)
+            .clipShape(RoundedRectangle(cornerRadius: CashRadius.small))
+            .overlay(
+                RoundedRectangle(cornerRadius: CashRadius.small)
+                    .stroke(borderColor, lineWidth: isToday && !isSelected ? 1.5 : 0)
+            )
         }
         .buttonStyle(.plain)
         .contentShape(Rectangle())
     }
-    
+
     private var foregroundColor: Color {
         if isSelected {
             return .white
         } else if isToday {
-            return .blue
+            return CashColors.primary
         } else {
             return .primary
         }
     }
-    
+
     private var backgroundColor: Color {
         if isSelected {
-            return .blue
-        } else if isToday {
-            return Color.blue.opacity(0.1)
+            return CashColors.primary
         } else {
-            return Color.platformWindowBackground
+            return Color.clear
         }
+    }
+
+    private var borderColor: Color {
+        if isToday && !isSelected {
+            return CashColors.primary
+        }
+        return .clear
+    }
+
+    private var dotColor: Color {
+        if isSelected {
+            return .white
+        } else if hasScheduled {
+            return CashColors.accent
+        }
+        return .clear
     }
 }
 
@@ -574,54 +619,101 @@ struct ScheduledTransactionRow: View {
     @Environment(AppSettings.self) private var settings
     let transaction: Transaction
     let currency: String
-    
+
     var body: some View {
-        HStack(spacing: 12) {
-            TransactionIconView(transaction: transaction)
-                .font(.title2)
-                .frame(width: 32)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 4) {
+        HStack(spacing: CashSpacing.md) {
+            // Icon with glass background
+            GlassIconCircle(
+                icon: transactionIcon,
+                color: transactionColor,
+                size: 44
+            )
+
+            VStack(alignment: .leading, spacing: CashSpacing.xs) {
+                HStack(spacing: CashSpacing.xs) {
                     Text(transaction.descriptionText.isEmpty ? TransactionHelper.summary(for: transaction) : transaction.descriptionText)
-                        .font(.headline)
-                    
-                    RecurringIcon()
+                        .font(CashTypography.headline)
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
+
+                    Image(systemName: "repeat")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(CashColors.primary)
+                        .padding(4)
+                        .background(CashColors.primary.opacity(0.1))
+                        .clipShape(Circle())
                 }
-                
-                HStack(spacing: 8) {
+
+                HStack(spacing: CashSpacing.sm) {
                     if let rule = transaction.recurrenceRule {
-                        Text(rule.localizedDescription)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        HStack(spacing: CashSpacing.xs) {
+                            Image(systemName: "calendar.badge.clock")
+                                .font(.system(size: 10))
+                            Text(rule.localizedDescription)
+                        }
+                        .font(CashTypography.caption)
+                        .foregroundStyle(.secondary)
                     }
-                    
+
                     if let nextDate = transaction.recurrenceRule?.nextOccurrence {
-                        Text("•")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                        Text("Next: \(nextDate.formatted(date: .abbreviated, time: .omitted))")
-                            .font(.caption)
-                            .foregroundStyle(.blue)
+                        HStack(spacing: CashSpacing.xs) {
+                            Image(systemName: "arrow.right")
+                                .font(.system(size: 8, weight: .bold))
+                            Text(nextDate.formatted(date: .abbreviated, time: .omitted))
+                        }
+                        .font(CashTypography.caption)
+                        .foregroundStyle(CashColors.primary)
+                        .padding(.horizontal, CashSpacing.sm)
+                        .padding(.vertical, 2)
+                        .background(CashColors.primary.opacity(0.1))
+                        .clipShape(Capsule())
                     }
                 }
-                
+
                 Text(TransactionHelper.accountsSummary(for: transaction))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(CashTypography.caption)
+                    .foregroundStyle(.tertiary)
                     .lineLimit(1)
             }
-            
+
             Spacer()
-            
+
             PrivacyAmountView(
                 amount: CurrencyFormatter.format(transaction.amount, currency: currency),
                 isPrivate: settings.privacyMode,
-                font: .subheadline,
-                fontWeight: .semibold
+                font: CashTypography.amountSmall,
+                fontWeight: .bold,
+                color: .primary
             )
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, CashSpacing.sm)
+    }
+
+    private var transactionIcon: String {
+        // Determine icon based on transaction type
+        if let entries = transaction.entries, !entries.isEmpty {
+            let debitEntry = entries.first { $0.entryType == .debit }
+            if let account = debitEntry?.account {
+                return account.effectiveIconName
+            }
+        }
+        return "arrow.left.arrow.right"
+    }
+
+    private var transactionColor: Color {
+        // Determine color based on transaction type
+        if let entries = transaction.entries, !entries.isEmpty {
+            let debitEntry = entries.first { $0.entryType == .debit }
+            if let account = debitEntry?.account {
+                switch account.accountClass {
+                case .expense: return CashColors.expense
+                case .asset: return CashColors.transfer
+                case .income: return CashColors.income
+                default: return CashColors.primary
+                }
+            }
+        }
+        return CashColors.primary
     }
 }
 

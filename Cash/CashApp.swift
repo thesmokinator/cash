@@ -24,15 +24,12 @@ extension Notification.Name {
     static let addNewTransaction = Notification.Name("addNewTransaction")
     static let addNewScheduledTransaction = Notification.Name("addNewScheduledTransaction")
     static let importOFX = Notification.Name("importOFX")
-    static let showSettings = Notification.Name("showSettings")
 }
 
 @main
 struct CashApp: App {
     @State private var settings = AppSettings.shared
-    @State private var menuAppState = AppState()
     @State private var navigationState = NavigationState()
-    @State private var showingSettingsSheet = false
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -87,16 +84,6 @@ struct CashApp: App {
         WindowGroup {
             MainTabView()
                 .environment(navigationState)
-                .sheet(isPresented: $showingSettingsSheet) {
-                    SettingsView(
-                        appState: menuAppState, dismissSettings: { showingSettingsSheet = false }
-                    )
-                    .environment(settings)
-                    .modelContainer(sharedModelContainer)
-                }
-                .onReceive(NotificationCenter.default.publisher(for: .showSettings)) { _ in
-                    showingSettingsSheet = true
-                }
                 .onAppear {
                     // Start iCloud sync monitoring
                     CloudKitManager.shared.startListeningForRemoteChanges()

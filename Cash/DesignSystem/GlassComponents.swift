@@ -65,15 +65,13 @@ struct GlassMetricCard: View {
                     .foregroundColor(.secondary)
             }
 
-            if isPrivate {
-                Text("••••••")
-                    .font(CashTypography.amount)
-                    .foregroundColor(valueColor)
-            } else {
-                Text(value)
-                    .font(CashTypography.amount)
-                    .foregroundColor(valueColor)
-            }
+            PrivacyAmountView(
+                amount: value,
+                isPrivate: isPrivate,
+                font: CashTypography.amount,
+                fontWeight: .semibold,
+                color: valueColor
+            )
 
             if let subtitle = subtitle, !isPrivate {
                 Text(subtitle)
@@ -192,25 +190,27 @@ struct GlassAmountBadge: View {
     var isPositive: Bool = true
     var isPrivate: Bool = false
 
+    private var badgeColor: Color {
+        isPositive ? CashColors.income : CashColors.expense
+    }
+
     var body: some View {
         HStack(spacing: CashSpacing.xs) {
             Image(systemName: isPositive ? "arrow.down.left" : "arrow.up.right")
                 .font(.system(size: 10, weight: .bold))
+                .foregroundColor(badgeColor)
 
-            if isPrivate {
-                Text("••••")
-                    .font(CashTypography.caption)
-            } else {
-                Text(amount)
-                    .font(CashTypography.amountSmall)
-            }
+            PrivacyAmountView(
+                amount: amount,
+                isPrivate: isPrivate,
+                font: CashTypography.amountSmall,
+                fontWeight: .semibold,
+                color: badgeColor
+            )
         }
-        .foregroundColor(isPositive ? CashColors.income : CashColors.expense)
         .padding(.horizontal, CashSpacing.md)
         .padding(.vertical, CashSpacing.xs)
-        .background(
-            (isPositive ? CashColors.income : CashColors.expense).opacity(0.12)
-        )
+        .background(badgeColor.opacity(0.12))
         .clipShape(Capsule())
     }
 }
@@ -377,15 +377,13 @@ struct GlassQuickStat: View {
                 .font(CashTypography.caption)
                 .foregroundColor(.secondary)
 
-            if isPrivate {
-                Text("••••••")
-                    .font(CashTypography.title3)
-                    .foregroundColor(.primary)
-            } else {
-                Text(value)
-                    .font(CashTypography.title3)
-                    .foregroundColor(.primary)
-            }
+            PrivacyAmountView(
+                amount: value,
+                isPrivate: isPrivate,
+                font: CashTypography.title3,
+                fontWeight: .semibold,
+                color: .primary
+            )
 
             if let change = change, !isPrivate {
                 HStack(spacing: 2) {

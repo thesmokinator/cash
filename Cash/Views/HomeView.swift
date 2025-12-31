@@ -96,16 +96,28 @@ struct HomeView: View {
                     // Quick Stats
                     quickStatsSection
 
-                    // Recent Transactions
-                    recentTransactionsSection
-
                     // Quick Actions
                     quickActionsSection
+
+                    // Recent Transactions
+                    recentTransactionsSection
                 }
                 .padding(CashSpacing.lg)
             }
             .cashBackground()
             .navigationTitle("Home")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            settings.privacyMode.toggle()
+                        }
+                    } label: {
+                        Image(systemName: settings.privacyMode ? "eye.slash.fill" : "eye.fill")
+                            .foregroundStyle(CashColors.primary)
+                    }
+                }
+            }
             .refreshable {
                 // Pull to refresh - recalculate balances
                 for account in accounts {
@@ -133,15 +145,13 @@ struct HomeView: View {
                         .font(CashTypography.subheadline)
                         .foregroundColor(.secondary)
 
-                    if settings.privacyMode {
-                        Text("••••••••")
-                            .font(CashTypography.amountLarge)
-                            .foregroundColor(netWorth >= 0 ? CashColors.primary : CashColors.error)
-                    } else {
-                        Text(CurrencyFormatter.format(netWorth, currency: currency))
-                            .font(CashTypography.amountLarge)
-                            .foregroundColor(netWorth >= 0 ? CashColors.primary : CashColors.error)
-                    }
+                    PrivacyAmountView(
+                        amount: CurrencyFormatter.format(netWorth, currency: currency),
+                        isPrivate: settings.privacyMode,
+                        font: CashTypography.amountLarge,
+                        fontWeight: .bold,
+                        color: netWorth >= 0 ? CashColors.primary : CashColors.error
+                    )
                 }
 
                 Spacer()
@@ -160,15 +170,13 @@ struct HomeView: View {
                         .font(CashTypography.caption)
                         .foregroundColor(.secondary)
 
-                    if settings.privacyMode {
-                        Text("••••••")
-                            .font(CashTypography.headline)
-                            .foregroundColor(CashColors.success)
-                    } else {
-                        Text(CurrencyFormatter.format(totalAssets, currency: currency))
-                            .font(CashTypography.headline)
-                            .foregroundColor(CashColors.success)
-                    }
+                    PrivacyAmountView(
+                        amount: CurrencyFormatter.format(totalAssets, currency: currency),
+                        isPrivate: settings.privacyMode,
+                        font: CashTypography.headline,
+                        fontWeight: .semibold,
+                        color: CashColors.success
+                    )
                 }
 
                 VStack(alignment: .leading, spacing: CashSpacing.xs) {
@@ -176,15 +184,13 @@ struct HomeView: View {
                         .font(CashTypography.caption)
                         .foregroundColor(.secondary)
 
-                    if settings.privacyMode {
-                        Text("••••••")
-                            .font(CashTypography.headline)
-                            .foregroundColor(CashColors.error)
-                    } else {
-                        Text(CurrencyFormatter.format(totalLiabilities, currency: currency))
-                            .font(CashTypography.headline)
-                            .foregroundColor(CashColors.error)
-                    }
+                    PrivacyAmountView(
+                        amount: CurrencyFormatter.format(totalLiabilities, currency: currency),
+                        isPrivate: settings.privacyMode,
+                        font: CashTypography.headline,
+                        fontWeight: .semibold,
+                        color: CashColors.error
+                    )
                 }
 
                 Spacer()
@@ -373,15 +379,13 @@ struct TransactionRowHome: View {
             Spacer()
 
             // Amount
-            if isPrivate {
-                Text("••••")
-                    .font(CashTypography.amountSmall)
-                    .foregroundColor(isExpense ? CashColors.expense : CashColors.income)
-            } else {
-                Text("\(isExpense ? "-" : "+")\(CurrencyFormatter.format(amount, currency: currency))")
-                    .font(CashTypography.amountSmall)
-                    .foregroundColor(isExpense ? CashColors.expense : CashColors.income)
-            }
+            PrivacyAmountView(
+                amount: "\(isExpense ? "-" : "+")\(CurrencyFormatter.format(amount, currency: currency))",
+                isPrivate: isPrivate,
+                font: CashTypography.amountSmall,
+                fontWeight: .semibold,
+                color: isExpense ? CashColors.expense : CashColors.income
+            )
         }
         .padding(.vertical, CashSpacing.sm)
     }

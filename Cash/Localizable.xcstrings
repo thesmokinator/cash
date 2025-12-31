@@ -4,35 +4,6 @@
     "" : {
 
     },
-    "-" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "-"
-          }
-        }
-      }
-    },
     "-%@" : {
       "localizations" : {
         "de" : {
@@ -113,41 +84,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "(%@)"
-          }
-        }
-      }
-    },
-    "(%@%@)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(%1$@%2$@)"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "(%1$@%2$@)"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(%1$@%2$@)"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(%1$@%2$@)"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "(%1$@%2$@)"
           }
         }
       }
@@ -236,35 +172,6 @@
         }
       }
     },
-    "#" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "#"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "#"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "#"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "#"
-          }
-        }
-      }
-    },
     "#%lld" : {
       "localizations" : {
         "de" : {
@@ -317,35 +224,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%"
-          }
-        }
-      }
-    },
-    "% Change" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "% Ändern"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "% Cambiar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "% Changement"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "% Modifica"
           }
         }
       }
@@ -408,41 +286,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ - %2$@"
-          }
-        }
-      }
-    },
-    "%@ %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ %2$@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ %2$@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ %2$@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ %2$@"
           }
         }
       }
@@ -1081,12 +924,6 @@
         }
       }
     },
-    "••••••" : {
-
-    },
-    "••••••••" : {
-
-    },
     "© 2025 Michele Broggi" : {
       "localizations" : {
         "de" : {
@@ -1195,34 +1032,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "+%@%%"
-          }
-        }
-      }
-    },
-    "0" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "0"
           }
         }
       }
@@ -1451,35 +1260,6 @@
         }
       }
     },
-    "52W Range" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "52W Reichweite"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rango de 52W"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gamme 52 W"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gamma 52W"
-          }
-        }
-      }
-    },
     "A personal finance management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
       "localizations" : {
         "de" : {
@@ -1504,35 +1284,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Un'applicazione per la gestione delle finanze personali ispirata a Gnucash, realizzata con SwiftUI e SwiftData."
-          }
-        }
-      }
-    },
-    "A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eine vereinfachte macOS-Finanzverwaltungsanwendung, inspiriert von Gnucash, erstellt mit SwiftUI und SwiftData."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Una aplicación de gestión financiera de macOS simplificada inspirada en Gnucash, creada con SwiftUI y SwiftData."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une application simplifiée de gestion financière macOS inspirée de Gnucash, construite avec SwiftUI et SwiftData."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un'applicazione macOS semplificata per la gestione finanziaria ispirata a Gnucash, realizzata con SwiftUI e SwiftData."
           }
         }
       }
@@ -1589,34 +1340,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verrà creata una transazione per registrare questa estinzione nei tuoi conti."
-          }
-        }
-      }
-    },
-    "About" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Um"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acerca de"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "À propos"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Informazioni"
           }
         }
       }
@@ -2449,35 +2172,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tutte le transazioni"
-          }
-        }
-      }
-    },
-    "All transactions for this account have been reconciled" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle Transaktionen für dieses Konto wurden abgeglichen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todas las transacciones de esta cuenta han sido conciliadas."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toutes les transactions pour ce compte ont été rapprochées"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutte le transazioni per questo conto sono state riconciliate"
           }
         }
       }
@@ -3790,35 +3484,6 @@
         }
       }
     },
-    "Bank format" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bankformat"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Formato bancario"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Format bancaire"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Formato bancario"
-          }
-        }
-      }
-    },
     "Base Payment" : {
       "localizations" : {
         "de" : {
@@ -4240,9 +3905,6 @@
           }
         }
       }
-    },
-    "Calculate payments and interest" : {
-
     },
     "Calculating forecast..." : {
       "localizations" : {
@@ -4670,41 +4332,6 @@
         }
       }
     },
-    "Chart of accounts" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kontenplan"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chart of accounts"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "plan de cuentas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plan comptable"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Piano dei conti"
-          }
-        }
-      }
-    },
     "Choose an account from the sidebar to view details" : {
       "localizations" : {
         "de" : {
@@ -4729,35 +4356,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scegli un conto dalla barra laterale per visualizzare i dettagli"
-          }
-        }
-      }
-    },
-    "Choose export format" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wählen Sie das Exportformat"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elija el formato de exportación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisir le format d'exportation"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scegli il formato di esportazione"
           }
         }
       }
@@ -4814,34 +4412,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Scegli il formato per esportare i tuoi dati finanziari. JSON è consigliato per il backup e il ripristino completi, mentre OFX è il formato bancario standard per l'importazione in altre applicazioni."
-          }
-        }
-      }
-    },
-    "Choose your preferences" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wählen Sie Ihre Präferenzen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Elige tus preferencias"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choisissez vos préférences"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scegli le tue preferenze"
           }
         }
       }
@@ -5324,34 +4894,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Crea un budget per iniziare a monitorare le spese per categoria"
-          }
-        }
-      }
-    },
-    "Create a new empty account structure" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erstellen Sie eine neue leere Kontostruktur"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Crear una nueva estructura de cuenta vacía"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Créer une nouvelle structure de compte vide"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Crea una nuova struttura di conti vuota"
           }
         }
       }
@@ -5952,40 +5494,6 @@
         }
       }
     },
-    "Danger zone" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gefahrenzone"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Danger zone"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zona de peligro"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zone dangereuse"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zona pericolosa"
-          }
-        }
-      }
-    },
     "Dark" : {
       "localizations" : {
         "de" : {
@@ -6244,62 +5752,6 @@
         }
       }
     },
-    "Default accounts" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Standardkonten"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuentas predeterminadas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comptes par défaut"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conti predefiniti"
-          }
-        }
-      }
-    },
-    "Default currency" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Standardwährung"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Moneda predeterminada"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Devise par défaut"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Valuta predefinita"
-          }
-        }
-      }
-    },
     "Delete" : {
       "localizations" : {
         "de" : {
@@ -6355,6 +5807,9 @@
           }
         }
       }
+    },
+    "Delete all accounts and transactions" : {
+
     },
     "Delete Envelope" : {
       "localizations" : {
@@ -8006,35 +7461,6 @@
         }
       }
     },
-    "Exit the application" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beenden Sie die Anwendung"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Salir de la aplicación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quitter l'application"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chiudi l'applicazione"
-          }
-        }
-      }
-    },
     "Expense" : {
       "localizations" : {
         "de" : {
@@ -8156,34 +7582,6 @@
         }
       }
     },
-    "Export / Import" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exportieren / Importieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exportar / Importar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exporter/Importer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esporta / importa"
-          }
-        }
-      }
-    },
     "Export data" : {
       "localizations" : {
         "de" : {
@@ -8218,6 +7616,9 @@
         }
       }
     },
+    "Export Data" : {
+
+    },
     "Export successful" : {
       "localizations" : {
         "de" : {
@@ -8242,34 +7643,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esportazione completata"
-          }
-        }
-      }
-    },
-    "Export your data as JSON (full backup) or OFX (standard bank format). Import will replace all existing data." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exportieren Sie Ihre Daten als JSON (vollständige Sicherung) oder OFX (Standard-Bankformat). Durch den Import werden alle vorhandenen Daten ersetzt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exporte sus datos como JSON (copia de seguridad completa) u OFX (formato bancario estándar). La importación reemplazará todos los datos existentes."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exportez vos données au format JSON (sauvegarde complète) ou OFX (format bancaire standard). L'importation remplacera toutes les données existantes."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esporta i tuoi dati come JSON (backup completo) o OFX (formato bancario standard). L'importazione sostituirà tutti i dati esistenti."
           }
         }
       }
@@ -8855,35 +8228,6 @@
         }
       }
     },
-    "Full backup" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vollständige Sicherung"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copia de seguridad completa"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sauvegarde complète"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Backup completo"
-          }
-        }
-      }
-    },
     "Full Loan Payoff" : {
       "localizations" : {
         "de" : {
@@ -8986,34 +8330,6 @@
         }
       }
     },
-    "General" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Allgemein"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "General"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Général"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Generali"
-          }
-        }
-      }
-    },
     "German" : {
       "localizations" : {
         "de" : {
@@ -9072,34 +8388,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tedesco (interessi anticipati)"
-          }
-        }
-      }
-    },
-    "Get started" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fangen Sie an"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "empezar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Commencer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inizia"
           }
         }
       }
@@ -9536,34 +8824,6 @@
         }
       }
     },
-    "Import Backup" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Backup importieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importar copia de seguridad"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer une sauvegarde"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importa backup"
-          }
-        }
-      }
-    },
     "Import Complete!" : {
       "localizations" : {
         "de" : {
@@ -9588,40 +8848,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Importazione completata!"
-          }
-        }
-      }
-    },
-    "Import data" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Daten importieren"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Import data"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importar datos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer des données"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importa dati"
           }
         }
       }
@@ -9654,90 +8880,6 @@
         }
       }
     },
-    "Import error" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importfehler"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Error de importación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erreur d'importation"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Errore di importazione"
-          }
-        }
-      }
-    },
-    "Import Error" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importfehler"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Error de importación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erreur d'importation"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Errore di importazione"
-          }
-        }
-      }
-    },
-    "Import existing data" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vorhandene Daten importieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importar datos existentes"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer des données existantes"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importa dati esistenti"
-          }
-        }
-      }
-    },
     "Import failed: %@" : {
       "localizations" : {
         "de" : {
@@ -9765,6 +8907,9 @@
           }
         }
       }
+    },
+    "Import from JSON backup" : {
+
     },
     "Import from OFX/QFX files" : {
 
@@ -9797,35 +8942,6 @@
         }
       }
     },
-    "Import OFX..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "OFX importieren..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importar OFX..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer OFX..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importa OFX..."
-          }
-        }
-      }
-    },
     "Import successful" : {
       "localizations" : {
         "de" : {
@@ -9853,9 +8969,6 @@
           }
         }
       }
-    },
-    "Import Transactions" : {
-
     },
     "Imported %lld accounts and %lld transactions." : {
       "localizations" : {
@@ -10201,35 +9314,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Assicurazione"
-          }
-        }
-      }
-    },
-    "Interest" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Interesse"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Interés"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Intérêt"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Interesse"
           }
         }
       }
@@ -10914,34 +9998,8 @@
         }
       }
     },
-    "JSON is recommended for full backup and restore. OFX is the standard bank format for importing into other apps." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Für die vollständige Sicherung und Wiederherstellung wird JSON empfohlen. OFX ist das Standardbankformat für den Import in andere Apps."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se recomienda JSON para realizar copias de seguridad y restauración completas. OFX es el formato bancario estándar para importar a otras aplicaciones."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON est recommandé pour une sauvegarde et une restauration complètes. OFX est le format bancaire standard pour l'importation dans d'autres applications."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "JSON è consigliato per backup e ripristino completo. OFX è il formato bancario standard per importare in altre app."
-          }
-        }
-      }
+    "JSON backup or OFX format" : {
+
     },
     "Language" : {
       "localizations" : {
@@ -11251,35 +10309,6 @@
         }
       }
     },
-    "Later" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Später"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Más tarde"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plus tard"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dopo"
-          }
-        }
-      }
-    },
     "Liabilities" : {
       "localizations" : {
         "de" : {
@@ -11476,66 +10505,8 @@
         }
       }
     },
-    "Live Quote" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Live-Zitat"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cotización en vivo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Devis en direct"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Citazione dal vivo"
-          }
-        }
-      }
-    },
     "Loading quote..." : {
 
-    },
-    "Loading..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Laden..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cargando..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chargement..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Caricamento..."
-          }
-        }
-      }
     },
     "Loan" : {
       "localizations" : {
@@ -11819,7 +10790,7 @@
         }
       }
     },
-    "Manage loans and view amortization" : {
+    "Manage loans and amortization" : {
 
     },
     "Manageable" : {
@@ -12157,41 +11128,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deficit mensile"
-          }
-        }
-      }
-    },
-    "Monthly Diff" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Monatliche Differenz"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Monthly diff"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "diferencia mensual"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Différence mensuelle"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Differenza mensile"
           }
         }
       }
@@ -12595,41 +11531,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nuova rata prestito"
-          }
-        }
-      }
-    },
-    "New Rate" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neuer Tarif"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New rate"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nueva tarifa"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nouveau tarif"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nuovo tasso"
           }
         }
       }
@@ -13050,34 +11951,6 @@
         }
       }
     },
-    "Next: %@" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weiter: %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siguiente: %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suivant : %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prossima: %@"
-          }
-        }
-      }
-    },
     "No accounts" : {
       "localizations" : {
         "de" : {
@@ -13114,35 +11987,6 @@
     },
     "No Accounts" : {
 
-    },
-    "No active budget" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kein aktives Budget"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin presupuesto activo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun budget actif"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nessun budget attivo"
-          }
-        }
-      }
     },
     "No Active Budget" : {
 
@@ -13367,35 +12211,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nessun dato da esportare"
-          }
-        }
-      }
-    },
-    "No envelopes" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keine Umschläge"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin sobres"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pas d'enveloppes"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nessuna busta"
           }
         }
       }
@@ -15549,34 +14364,6 @@
         }
       }
     },
-    "Press ESC to quit" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Drücken Sie ESC, um den Vorgang zu beenden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Presione ESC para salir"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Appuyez sur ESC pour quitter"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Premi ESC per uscire"
-          }
-        }
-      }
-    },
     "Preview unavailable" : {
       "localizations" : {
         "de" : {
@@ -15713,35 +14500,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Anno precedente"
-          }
-        }
-      }
-    },
-    "Price" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Preis"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Precio"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prix"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prezzo"
           }
         }
       }
@@ -16230,64 +14988,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Rapido:"
-          }
-        }
-      }
-    },
-    "Quit" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aufhören"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abandonar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quitter"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esci"
-          }
-        }
-      }
-    },
-    "Quote data unavailable" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Angebotsdaten nicht verfügbar"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Datos de cotización no disponibles"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Données de devis indisponibles"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dati preventivo non disponibili"
           }
         }
       }
@@ -16916,39 +15616,8 @@
         }
       }
     },
-    "Reset all data" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle Daten zurücksetzen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset all data"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restablecer todos los datos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Réinitialiser toutes les données"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ripristina tutti i dati"
-          }
-        }
-      }
+    "Reset All Data" : {
+
     },
     "Reset all data?" : {
       "localizations" : {
@@ -17006,41 +15675,6 @@
         }
       }
     },
-    "Restart now" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starten Sie jetzt neu"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restart now"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reiniciar ahora"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Redémarrez maintenant"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Riavvia ora"
-          }
-        }
-      }
-    },
     "Restart required" : {
       "localizations" : {
         "de" : {
@@ -17075,33 +15709,8 @@
         }
       }
     },
-    "Restore from a previous JSON export" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wiederherstellung von einem früheren JSON-Export"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restaurar desde una exportación JSON anterior"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Restaurer à partir d'une exportation JSON précédente"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ripristina da un'esportazione JSON precedente"
-          }
-        }
-      }
+    "Restore Backup" : {
+
     },
     "Results" : {
       "localizations" : {
@@ -17846,34 +16455,6 @@
         }
       }
     },
-    "Select your preferred language, currency, and theme." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wählen Sie Ihre bevorzugte Sprache, Währung und Ihr Thema."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleccione su idioma, moneda y tema preferidos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sélectionnez votre langue, devise et thème préférés."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleziona la lingua, la valuta e il tema preferiti."
-          }
-        }
-      }
-    },
     "Sell" : {
       "localizations" : {
         "de" : {
@@ -17992,34 +16573,6 @@
         }
       }
     },
-    "Set up example accounts to explore the app" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Richten Sie Beispielkonten ein, um die App zu erkunden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configure cuentas de ejemplo para explorar la aplicación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configurer des exemples de comptes pour explorer l'application"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configura conti di esempio per esplorare l'app"
-          }
-        }
-      }
-    },
     "Settings" : {
       "localizations" : {
         "de" : {
@@ -18044,35 +16597,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Impostazioni"
-          }
-        }
-      }
-    },
-    "Settings..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Einstellungen..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajustes..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Paramètres..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Impostazioni..."
           }
         }
       }
@@ -18223,66 +16747,8 @@
         }
       }
     },
-    "Show Main Window" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hauptfenster anzeigen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar ventana principal"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher la fenêtre principale"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra la finestra principale"
-          }
-        }
-      }
-    },
     "Sign in to iCloud in Settings to enable sync." : {
 
-    },
-    "Sign in to iCloud in System Settings to enable sync." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Melden Sie sich in den Systemeinstellungen bei iCloud an, um die Synchronisierung zu aktivieren."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inicie sesión en iCloud en Configuración del sistema para habilitar la sincronización."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Connectez-vous à iCloud dans les paramètres système pour activer la synchronisation."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Accedi a iCloud nelle Impostazioni di sistema per abilitare la sincronizzazione."
-          }
-        }
-      }
     },
     "Similar to French but interest is paid at the beginning of each period." : {
       "localizations" : {
@@ -18510,34 +16976,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Data inizio"
-          }
-        }
-      }
-    },
-    "Start fresh" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fangen Sie neu an"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empezar de nuevo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Repartir à neuf"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inizia da zero"
           }
         }
       }
@@ -19136,64 +17574,6 @@
         }
       }
     },
-    "The app needs to restart to apply iCloud changes." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die App muss neu gestartet werden, um die iCloud-Änderungen zu übernehmen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La aplicación debe reiniciarse para aplicar los cambios de iCloud."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'application doit redémarrer pour appliquer les modifications iCloud."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'app deve essere riavviata per applicare le modifiche di iCloud."
-          }
-        }
-      }
-    },
-    "The app needs to restart to apply language changes." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Die App muss neu gestartet werden, um Sprachänderungen zu übernehmen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La aplicación debe reiniciarse para aplicar los cambios de idioma."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'application doit redémarrer pour appliquer les modifications de langue."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L'app deve essere riavviata per applicare le modifiche della lingua."
-          }
-        }
-      }
-    },
     "The payment fits well within your budget with room to spare." : {
       "localizations" : {
         "de" : {
@@ -19308,34 +17688,6 @@
     },
     "Theme, language, and preferences" : {
 
-    },
-    "These accounts will be created. Set opening balances for your asset and liability accounts." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diese Konten werden erstellt. Legen Sie Eröffnungssalden für Ihre Aktiv- und Passivkonten fest."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estas cuentas serán creadas. Establezca saldos iniciales para sus cuentas de activos y pasivos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ces comptes seront créés. Définissez les soldes d’ouverture de vos comptes d’actif et de passif."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Questi conti verranno creati. Imposta i saldi iniziali per i tuoi conti attività e passività."
-          }
-        }
-      }
     },
     "This loan has linked recurring transactions. Deleting will also remove all scheduled future payments. This action cannot be undone." : {
       "localizations" : {
@@ -19560,34 +17912,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Questo creerà una transazione reale e aggiornerà i tuoi saldi."
-          }
-        }
-      }
-    },
-    "This will delete all accounts and transactions." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dadurch werden alle Konten und Transaktionen gelöscht."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esto eliminará todas las cuentas y transacciones."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cela supprimera tous les comptes et transactions."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Questo eliminerà tutti i conti e le transazioni."
           }
         }
       }
@@ -20085,62 +18409,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tieni traccia della tua attività di investimento per monitorare la performance del portafoglio e calcolare guadagni/perdite."
-          }
-        }
-      }
-    },
-    "Track your personal finances with double-entry bookkeeping" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verfolgen Sie Ihre persönlichen Finanzen mit der doppelten Buchführung"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Realice un seguimiento de sus finanzas personales con contabilidad por partida doble"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suivez vos finances personnelles avec la comptabilité en partie double"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gestisci le tue finanze personali con la partita doppia"
-          }
-        }
-      }
-    },
-    "Track your personal finances with ease using double-entry bookkeeping." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verfolgen Sie Ihre persönlichen Finanzen ganz einfach mithilfe der doppelten Buchführung."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Realice un seguimiento de sus finanzas personales con facilidad utilizando la contabilidad por entrada doble."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suivez facilement vos finances personnelles grâce à la comptabilité en partie double."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gestisci le tue finanze personali con facilità usando la partita doppia."
           }
         }
       }
@@ -20975,34 +19243,6 @@
         }
       }
     },
-    "Use Demo Data" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Verwenden Sie Demodaten"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usar datos de demostración"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utiliser les données de démonstration"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usa dati demo"
-          }
-        }
-      }
-    },
     "Used" : {
       "localizations" : {
         "de" : {
@@ -21347,34 +19587,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "settimane"
-          }
-        }
-      }
-    },
-    "Welcome to Cash" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Willkommen bei Cash"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bienvenido a Cash"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bienvenue chez Cash"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benvenuto in Cash"
           }
         }
       }

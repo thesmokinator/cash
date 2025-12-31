@@ -9,6 +9,14 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
+// MARK: - App State
+
+@Observable
+class AppState {
+    var isLoading = false
+    var loadingMessage = ""
+}
+
 // MARK: - Main Tab Enum
 
 enum MainTab: Int, CaseIterable, Identifiable {
@@ -55,13 +63,11 @@ enum MainTab: Int, CaseIterable, Identifiable {
 
 struct MainTabView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.modelContext) private var modelContext
     @Environment(AppSettings.self) private var settings
     @Environment(NavigationState.self) private var navigationState
 
     @State private var selectedTab: MainTab = .home
     @State private var showingAddTransaction = false
-    @State private var showingWelcome = false
 
     // OFX Import state
     @State private var showingOFXImportPicker = false
@@ -69,13 +75,6 @@ struct MainTabView: View {
     @State private var parsedOFXTransactions: [OFXTransaction] = []
     @State private var showingOFXError = false
     @State private var ofxErrorMessage = ""
-
-    @Query(filter: #Predicate<AppConfiguration> { _ in true })
-    private var configurations: [AppConfiguration]
-
-    private var needsSetup: Bool {
-        configurations.first?.needsSetup ?? true
-    }
 
     var body: some View {
         Group {
@@ -89,9 +88,6 @@ struct MainTabView: View {
         }
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionSheet()
-        }
-        .sheet(isPresented: $showingWelcome) {
-            SetupWizardView(isPresented: $showingWelcome)
         }
         .sheet(isPresented: $showingOFXImportWizard) {
             OFXImportWizard(ofxTransactions: parsedOFXTransactions)
@@ -107,11 +103,6 @@ struct MainTabView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(ofxErrorMessage)
-        }
-        .onAppear {
-            if needsSetup {
-                showingWelcome = true
-            }
         }
         .onReceive(NotificationCenter.default.publisher(for: .addNewTransaction)) { _ in
             showingAddTransaction = true
@@ -230,14 +221,6 @@ struct MainTabView: View {
                     Label("Reports", systemImage: "chart.bar.fill")
                 }
             }
-
-            Section {
-                NavigationLink {
-                    SettingsViewWrapper()
-                } label: {
-                    Label("Settings", systemImage: "gear")
-                }
-            }
         }
         .navigationTitle("Cash")
         .toolbar {
@@ -286,16 +269,6 @@ struct AddTransactionSheet: View {
         NavigationStack {
             AddTransactionView()
         }
-    }
-}
-
-// MARK: - Settings View Wrapper
-
-struct SettingsViewWrapper: View {
-    @State private var appState = AppState()
-
-    var body: some View {
-        SettingsView(appState: appState) {}
     }
 }
 
@@ -365,16 +338,6 @@ struct AccountsTabView: View {
                         showingAddAccount = true
                     } label: {
                         Image(systemName: "plus")
-                    }
-                }
-
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            settings.privacyMode.toggle()
-                        }
-                    } label: {
-                        Image(systemName: settings.privacyMode ? "eye.slash.fill" : "eye.fill")
                     }
                 }
             }
@@ -460,6 +423,31 @@ struct AccountRowViewSimple: View {
         case .income: return CashColors.success
         case .expense: return CashColors.error
         case .equity: return .primary
+        }
+    }
+}
+
+// MARK: - Loading Overlay
+
+struct LoadingOverlayView: View {
+    let message: String
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.4)
+                .ignoresSafeArea()
+
+            VStack(spacing: 16) {
+                ProgressView()
+                    .scaleEffect(1.5)
+                    .progressViewStyle(.circular)
+
+                Text(message)
+                    .font(.headline)
+                    .foregroundStyle(.white)
+            }
+            .padding(30)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
         }
     }
 }

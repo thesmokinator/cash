@@ -144,12 +144,6 @@ struct AccountListView: View {
                             systemImage: settings.privacyMode ? "eye.slash.fill" : "eye.fill"
                         )
                     }
-
-                    Button {
-                        NotificationCenter.default.post(name: .showSettings, object: nil)
-                    } label: {
-                        Label(String(localized: "Settings"), systemImage: "gear")
-                    }
                 }
             }
             .safeAreaInset(edge: .bottom) {
