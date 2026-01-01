@@ -610,35 +610,6 @@
         }
       }
     },
-    "%lld transactions found" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Transaktionen gefunden"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld transacciones encontradas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld transactions trouvées"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld transazioni trovate"
-          }
-        }
-      }
-    },
     "%lld transactions found in OFX file" : {
 
     },
@@ -952,35 +923,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "© 2025 Michele Broggi"
-          }
-        }
-      }
-    },
-    "→" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "→"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "→"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "→"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "→"
           }
         }
       }
@@ -2553,35 +2495,6 @@
         }
       }
     },
-    "Appearance" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aussehen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apariencia"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apparence"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aspetto"
-          }
-        }
-      }
-    },
     "Are you absolutely sure?" : {
       "localizations" : {
         "de" : {
@@ -3471,35 +3384,6 @@
         }
       }
     },
-    "Bank Account" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bankkonto"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuenta bancaria"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compte bancaire"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conto bancario"
-          }
-        }
-      }
-    },
     "Base Payment" : {
       "localizations" : {
         "de" : {
@@ -4211,35 +4095,6 @@
     "Categorize" : {
 
     },
-    "Categorize Transactions" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transaktionen kategorisieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Categorizar transacciones"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Catégoriser les transactions"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Categorizza transazioni"
-          }
-        }
-      }
-    },
     "Category" : {
       "localizations" : {
         "de" : {
@@ -4606,35 +4461,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Confortevole"
-          }
-        }
-      }
-    },
-    "Complete" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vollständig"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Complet"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completato"
           }
         }
       }
@@ -8832,40 +8658,8 @@
         }
       }
     },
-    "Import" : {
-
-    },
     "Import %lld" : {
 
-    },
-    "Import %lld Transactions" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld-Transaktionen importieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importar %lld Transacciones"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importer %lld Transactions"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importa %lld transazioni"
-          }
-        }
-      }
     },
     "Import Complete!" : {
       "localizations" : {
@@ -9130,35 +8924,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "L'importazione sostituirà tutti i dati esistenti. Assicurati di esportare i dati attuali prima se necessario."
-          }
-        }
-      }
-    },
-    "Importing..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importieren..."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importador..."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importation..."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Importazione..."
           }
         }
       }
@@ -10524,35 +10289,6 @@
         }
       }
     },
-    "Links" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Links"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Campo de golf"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Links"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Collegamenti"
-          }
-        }
-      }
-    },
     "Live ETF Quotes" : {
 
     },
@@ -10986,35 +10722,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Minimo"
-          }
-        }
-      }
-    },
-    "MIT License" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MIT-Lizenz"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Licencia MIT"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Licence MIT"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Licenza MIT"
           }
         }
       }
@@ -11555,6 +11262,12 @@
           }
         }
       }
+    },
+    "New Expense" : {
+
+    },
+    "New Income" : {
+
     },
     "New Loan Payment" : {
       "localizations" : {
@@ -14453,35 +14166,6 @@
         }
       }
     },
-    "Previous" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vorherige"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anterior"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Précédent"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Precedente"
-          }
-        }
-      }
-    },
     "Previous Budgets" : {
       "localizations" : {
         "de" : {
@@ -15023,9 +14707,6 @@
         }
       }
     },
-    "Quick Actions" : {
-
-    },
     "Quick:" : {
       "localizations" : {
         "de" : {
@@ -15174,35 +14855,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pronto"
-          }
-        }
-      }
-    },
-    "Ready to import" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bereit zum Import"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listo para importar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prêt à importer"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pronto per importare"
           }
         }
       }
@@ -15890,35 +15542,6 @@
         }
       }
     },
-    "Review All" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle überprüfen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Revisar todo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tout examiner"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vedi tutti"
-          }
-        }
-      }
-    },
     "Risk" : {
       "localizations" : {
         "de" : {
@@ -16264,35 +15887,6 @@
         }
       }
     },
-    "Select Account" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wählen Sie Konto aus"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleccionar cuenta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sélectionnez un compte"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleziona conto"
-          }
-        }
-      }
-    },
     "Select accounts to see preview" : {
       "localizations" : {
         "de" : {
@@ -16494,35 +16088,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seleziona categoria entrata"
-          }
-        }
-      }
-    },
-    "Select the bank account for these transactions" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wählen Sie das Bankkonto für diese Transaktionen aus"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleccione la cuenta bancaria para estas transacciones"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sélectionnez le compte bancaire pour ces transactions"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seleziona il conto bancario per queste transazioni"
           }
         }
       }
@@ -17455,35 +17020,6 @@
     },
     "Sync your data across all your devices" : {
 
-    },
-    "Sync your data across all your devices." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Synchronisieren Sie Ihre Daten auf allen Ihren Geräten."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sincroniza tus datos en todos tus dispositivos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Synchronisez vos données sur tous vos appareils."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sincronizza i tuoi dati su tutti i tuoi dispositivi."
-          }
-        }
-      }
     },
     "Synced" : {
       "localizations" : {
@@ -19660,35 +19196,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "settimane"
-          }
-        }
-      }
-    },
-    "When enabled, displays real-time price quotes for investment accounts with an ISIN code. This setting syncs across your devices via iCloud." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wenn diese Option aktiviert ist, werden Echtzeit-Preisangebote für Anlagekonten mit einem ISIN-Code angezeigt. Diese Einstellung synchronisiert alle Ihre Geräte über iCloud."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuando está habilitado, muestra cotizaciones de precios en tiempo real para cuentas de inversión con un código ISIN. Esta configuración se sincroniza en todos sus dispositivos a través de iCloud."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lorsqu'il est activé, affiche les cotations en temps réel pour les comptes d'investissement avec un code ISIN. Ce paramètre se synchronise sur vos appareils via iCloud."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se abilitato, visualizza quotazioni di prezzo in tempo reale per i conti di investimento con un codice ISIN. Questa impostazione si sincronizza su tutti i tuoi dispositivi tramite iCloud."
           }
         }
       }

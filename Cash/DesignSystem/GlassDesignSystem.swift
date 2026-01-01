@@ -10,21 +10,21 @@ import SwiftUI
 // MARK: - Color Palette
 
 struct CashColors {
-    // Primary Teal Palette
-    static let primary = Color(hex: "#00897B")          // Teal 600 - Main brand color
-    static let primaryLight = Color(hex: "#4DB6AC")     // Teal 300 - Highlights
-    static let primaryDark = Color(hex: "#00695C")      // Teal 800 - Dark accents
-    static let accent = Color(hex: "#26A69A")           // Teal 400 - Secondary accent
+    // Primary Palette - Professional Navy/Slate
+    static let primary = Color(hex: "#1E3A5F")          // Deep navy - Main brand color
+    static let primaryLight = Color(hex: "#4A6FA5")     // Lighter navy - Highlights
+    static let primaryDark = Color(hex: "#0F2744")      // Darker navy - Dark accents
+    static let accent = Color(hex: "#3D5A80")           // Slate blue - Secondary accent
 
-    // Semantic Colors
-    static let success = Color(hex: "#4CAF50")          // Green 500 - Positive values
-    static let warning = Color(hex: "#FF9800")          // Orange 500 - Warnings
-    static let error = Color(hex: "#F44336")            // Red 500 - Negative values, errors
+    // Semantic Colors - Muted, professional tones
+    static let success = Color(hex: "#2E7D32")          // Forest green - Positive values
+    static let warning = Color(hex: "#F57C00")          // Deep orange - Warnings
+    static let error = Color(hex: "#C62828")            // Deep red - Negative values, errors
 
-    // Income/Expense Colors
-    static let income = Color(hex: "#00C853")           // Green A700 - Income
-    static let expense = Color(hex: "#FF5252")          // Red A200 - Expenses
-    static let transfer = Color(hex: "#448AFF")         // Blue A200 - Transfers
+    // Income/Expense Colors - Softer, professional
+    static let income = Color(hex: "#388E3C")           // Medium green - Income
+    static let expense = Color(hex: "#D32F2F")          // Medium red - Expenses
+    static let transfer = Color(hex: "#1976D2")         // Medium blue - Transfers
 
     // Adaptive Glass Colors (for dark mode support)
     static let glassBackground = Color(UIColor { traits in
@@ -39,15 +39,15 @@ struct CashColors {
             : UIColor(white: 1.0, alpha: 1.0)
     })
 
-    // Background Gradients
+    // Background Gradients - Clean, neutral
     static let backgroundGradient = LinearGradient(
-        colors: [Color(hex: "#E0F2F1"), Color(hex: "#B2DFDB")],
+        colors: [Color(hex: "#F8F9FA"), Color(hex: "#E9ECEF")],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
 
     static let backgroundGradientDark = LinearGradient(
-        colors: [Color(hex: "#004D40"), Color(hex: "#00695C")],
+        colors: [Color(hex: "#121212"), Color(hex: "#1E1E1E")],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
     )
@@ -72,7 +72,7 @@ struct CashColors {
     )
 
     // Tab Bar
-    static let tabBarBackground = Color(hex: "#00897B").opacity(0.95)
+    static let tabBarBackground = Color(hex: "#1E3A5F").opacity(0.95)
     static let tabBarSelected = Color.white
     static let tabBarUnselected = Color.white.opacity(0.6)
 }

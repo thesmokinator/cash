@@ -18,6 +18,9 @@ struct HomeView: View {
 
     @State private var selectedTransaction: Transaction?
     @State private var showingAllTransactions = false
+    
+    // iCloud sync state
+    private var cloudManager = CloudKitManager.shared
 
     // MARK: - Computed Properties
 
@@ -96,9 +99,6 @@ struct HomeView: View {
                     // Quick Stats
                     quickStatsSection
 
-                    // Quick Actions
-                    quickActionsSection
-
                     // Recent Transactions
                     recentTransactionsSection
                 }
@@ -108,13 +108,60 @@ struct HomeView: View {
             .navigationTitle("Home")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            settings.privacyMode.toggle()
+                    HStack(spacing: CashSpacing.md) {
+                        // iCloud sync indicator
+                        if cloudManager.shouldShowSyncIndicator && cloudManager.syncState.isSyncing {
+                            ProgressView()
+                                .scaleEffect(0.8)
+                                .tint(CashColors.primary)
                         }
-                    } label: {
-                        Image(systemName: settings.privacyMode ? "eye.slash.fill" : "eye.fill")
-                            .foregroundStyle(CashColors.primary)
+                        
+                        // Add transaction menu
+                        Menu {
+                            Button {
+                                NotificationCenter.default.post(
+                                    name: .addNewTransaction,
+                                    object: nil,
+                                    userInfo: ["transactionType": SimpleTransactionType.expense.rawValue]
+                                )
+                            } label: {
+                                Label("New Expense", systemImage: "arrow.up.circle.fill")
+                            }
+                            
+                            Button {
+                                NotificationCenter.default.post(
+                                    name: .addNewTransaction,
+                                    object: nil,
+                                    userInfo: ["transactionType": SimpleTransactionType.income.rawValue]
+                                )
+                            } label: {
+                                Label("New Income", systemImage: "arrow.down.circle.fill")
+                            }
+                            
+                            Button {
+                                NotificationCenter.default.post(
+                                    name: .addNewTransaction,
+                                    object: nil,
+                                    userInfo: ["transactionType": SimpleTransactionType.transfer.rawValue]
+                                )
+                            } label: {
+                                Label("Transfer", systemImage: "arrow.left.arrow.right")
+                            }
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundStyle(CashColors.primary)
+                        }
+                        
+                        // Privacy toggle
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                settings.privacyMode.toggle()
+                            }
+                        } label: {
+                            Image(systemName: settings.privacyMode ? "eye.slash.fill" : "eye.fill")
+                                .foregroundStyle(CashColors.primary)
+                        }
                     }
                 }
             }
@@ -198,19 +245,13 @@ struct HomeView: View {
         }
         .padding(CashSpacing.xl)
         .background(.ultraThinMaterial)
-        .background(
-            LinearGradient(
-                colors: [CashColors.primary.opacity(0.15), CashColors.primaryLight.opacity(0.08)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
+        .background(CashColors.glassBackground.opacity(0.6))
         .clipShape(RoundedRectangle(cornerRadius: CashRadius.xlarge))
         .shadow(
-            color: CashShadow.medium.color,
-            radius: CashShadow.medium.radius,
-            x: CashShadow.medium.x,
-            y: CashShadow.medium.y
+            color: CashShadow.light.color,
+            radius: CashShadow.light.radius,
+            x: CashShadow.light.x,
+            y: CashShadow.light.y
         )
     }
 
@@ -284,64 +325,6 @@ struct HomeView: View {
         }
     }
 
-    // MARK: - Quick Actions Section
-
-    private var quickActionsSection: some View {
-        VStack(alignment: .leading, spacing: CashSpacing.md) {
-            Text("Quick Actions")
-                .font(CashTypography.headline)
-                .padding(.horizontal, CashSpacing.lg)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: CashSpacing.md) {
-                    QuickActionCard(
-                        icon: "arrow.up.circle.fill",
-                        title: "Expense",
-                        color: CashColors.expense
-                    ) {
-                        NotificationCenter.default.post(
-                            name: .addNewTransaction,
-                            object: nil,
-                            userInfo: ["transactionType": SimpleTransactionType.expense.rawValue]
-                        )
-                    }
-
-                    QuickActionCard(
-                        icon: "arrow.down.circle.fill",
-                        title: "Income",
-                        color: CashColors.income
-                    ) {
-                        NotificationCenter.default.post(
-                            name: .addNewTransaction,
-                            object: nil,
-                            userInfo: ["transactionType": SimpleTransactionType.income.rawValue]
-                        )
-                    }
-
-                    QuickActionCard(
-                        icon: "arrow.left.arrow.right",
-                        title: "Transfer",
-                        color: CashColors.transfer
-                    ) {
-                        NotificationCenter.default.post(
-                            name: .addNewTransaction,
-                            object: nil,
-                            userInfo: ["transactionType": SimpleTransactionType.transfer.rawValue]
-                        )
-                    }
-
-                    QuickActionCard(
-                        icon: "doc.text",
-                        title: "Import",
-                        color: CashColors.primary
-                    ) {
-                        NotificationCenter.default.post(name: .importOFX, object: nil)
-                    }
-                }
-                .padding(.horizontal, CashSpacing.lg)
-            }
-        }
-    }
 }
 
 // MARK: - Transaction Row for Home
@@ -400,34 +383,6 @@ struct TransactionRowHome: View {
             )
         }
         .padding(.vertical, CashSpacing.sm)
-    }
-}
-
-// MARK: - Quick Action Card
-
-struct QuickActionCard: View {
-    let icon: String
-    let title: LocalizedStringKey
-    let color: Color
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(spacing: CashSpacing.sm) {
-                Image(systemName: icon)
-                    .font(.system(size: 24, weight: .semibold))
-                    .foregroundColor(color)
-
-                Text(title)
-                    .font(CashTypography.caption)
-                    .foregroundColor(.primary)
-            }
-            .frame(width: 80, height: 80)
-            .background(.ultraThinMaterial)
-            .background(color.opacity(0.1))
-            .clipShape(RoundedRectangle(cornerRadius: CashRadius.large))
-        }
-        .buttonStyle(.plain)
     }
 }
 
