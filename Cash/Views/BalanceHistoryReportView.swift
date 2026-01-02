@@ -370,7 +370,7 @@ struct StatCard: View {
                     .privacyBlur(isPrivate)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 80, alignment: .leading)
         .padding()
         .background(.quaternary.opacity(0.5))
         .clipShape(RoundedRectangle(cornerRadius: 12))

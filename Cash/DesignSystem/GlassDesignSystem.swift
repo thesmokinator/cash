@@ -157,6 +157,55 @@ struct CashRadius {
     static let pill: CGFloat = 100
 }
 
+// MARK: - Glass Menu Picker
+
+struct GlassMenuPicker<SelectionValue: Hashable, Content: View>: View {
+    let title: String
+    @Binding var selection: SelectionValue
+    let icon: String?
+    @ViewBuilder let content: () -> Content
+    
+    init(
+        _ title: String,
+        selection: Binding<SelectionValue>,
+        icon: String? = nil,
+        @ViewBuilder content: @escaping () -> Content
+    ) {
+        self.title = title
+        self._selection = selection
+        self.icon = icon
+        self.content = content
+    }
+    
+    var body: some View {
+        Menu {
+            content()
+        } label: {
+            HStack(spacing: CashSpacing.xs) {
+                if let icon = icon {
+                    Image(systemName: icon)
+                        .font(.system(size: 14, weight: .medium))
+                }
+                Text(title)
+                    .font(CashTypography.subheadline)
+                    .lineLimit(1)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.system(size: 10, weight: .semibold))
+            }
+            .foregroundStyle(CashColors.primary)
+            .padding(.horizontal, CashSpacing.md)
+            .frame(height: 36)
+            .background(.ultraThinMaterial)
+            .background(CashColors.primary.opacity(0.1))
+            .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
+            .overlay(
+                RoundedRectangle(cornerRadius: CashRadius.medium)
+                    .stroke(CashColors.primary.opacity(0.1), lineWidth: 1)
+            )
+        }
+    }
+}
+
 // MARK: - Shadows
 
 struct CashShadow {

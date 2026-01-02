@@ -290,6 +290,16 @@
         }
       }
     },
+    "%@ • %@%% • %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ • %2$@%% • %3$@"
+          }
+        }
+      }
+    },
     "%@ shares" : {
       "localizations" : {
         "de" : {
@@ -436,6 +446,9 @@
         }
       }
     },
+    "%lld left" : {
+
+    },
     "%lld months" : {
       "localizations" : {
         "de" : {
@@ -527,6 +540,7 @@
       }
     },
     "%lld payments left" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1339,7 +1353,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Di"
+            "value" : "Informazioni"
           }
         }
       }
@@ -1881,41 +1895,6 @@
     "Add existing" : {
 
     },
-    "Add Existing" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vorhandenes hinzufügen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add existing"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Agregar existente"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajouter un existant"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aggiungi esistente"
-          }
-        }
-      }
-    },
     "Add Existing Loan" : {
       "localizations" : {
         "de" : {
@@ -2405,6 +2384,7 @@
       }
     },
     "Amortization" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -4717,6 +4697,7 @@
       }
     },
     "Close" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -14635,34 +14616,6 @@
         }
       }
     },
-    "Period" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zeitraum"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Período"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Période"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Periodo"
-          }
-        }
-      }
-    },
     "Period Type" : {
       "localizations" : {
         "de" : {
@@ -16379,34 +16332,6 @@
         }
       }
     },
-    "Report type" : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Berichtstyp"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tipo de informe"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Type de rapport"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tipo di rapporto"
-          }
-        }
-      }
-    },
     "Reports" : {
       "localizations" : {
         "de" : {
@@ -16857,35 +16782,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Programmati"
-          }
-        }
-      }
-    },
-    "Scheduled Transactions" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geplante Transaktionen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transacciones programadas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transactions planifiées"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Transazioni pianificate"
           }
         }
       }

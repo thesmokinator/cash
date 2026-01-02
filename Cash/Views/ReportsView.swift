@@ -60,17 +60,23 @@ struct ReportsView: View {
             // Report type selector
             HStack {
                 Spacer()
-                Picker("Report type", selection: $selectedReport) {
+                GlassMenuPicker(selectedReport.localizedName, selection: $selectedReport) {
                     ForEach(ReportType.allCases) { report in
-                        Text(report.localizedName)
-                            .tag(report)
+                        Button {
+                            selectedReport = report
+                        } label: {
+                            HStack {
+                                Text(report.localizedName)
+                                if selectedReport == report {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
                     }
                 }
-                .pickerStyle(.menu)
                 Spacer()
             }
             .padding()
-            .background(.bar)
             
             Divider()
             

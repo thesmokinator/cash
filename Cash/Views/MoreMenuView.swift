@@ -77,17 +77,6 @@ struct MoreMenuView: View {
                 // Analytics Section
                 Section {
                     NavigationLink {
-                        ReportsView()
-                    } label: {
-                        MoreMenuRow(
-                            icon: "doc.text.fill",
-                            title: "Reports",
-                            subtitle: "Expense analysis and trends",
-                            color: .purple
-                        )
-                    }
-
-                    NavigationLink {
                         NetWorthView()
                     } label: {
                         MoreMenuRow(
@@ -95,6 +84,17 @@ struct MoreMenuView: View {
                             title: "Net Worth",
                             subtitle: "Assets and liabilities overview",
                             color: CashColors.success
+                        )
+                    }
+
+                    NavigationLink {
+                        ReportsView()
+                    } label: {
+                        MoreMenuRow(
+                            icon: "doc.text.fill",
+                            title: "Reports",
+                            subtitle: "Expense analysis and trends",
+                            color: .purple
                         )
                     }
 

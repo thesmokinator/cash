@@ -32,6 +32,17 @@ enum ForecastPeriod: String, CaseIterable, Identifiable {
         }
     }
     
+    var localizedString: String {
+        switch self {
+        case .nextWeek: return String(localized: "Next week")
+        case .next15Days: return String(localized: "Next 15 days")
+        case .nextMonth: return String(localized: "Next month")
+        case .next3Months: return String(localized: "Next 3 months")
+        case .next6Months: return String(localized: "Next 6 months")
+        case .next12Months: return String(localized: "Next 12 months")
+        }
+    }
+    
     var endDate: Date {
         let calendar = Calendar.current
         let now = Date()
@@ -124,12 +135,20 @@ struct ForecastView: View {
                 // Period Selector
                 HStack {
                     Spacer()
-                    Picker("Period", selection: $selectedPeriod) {
+                    GlassMenuPicker(selectedPeriod.localizedString, selection: $selectedPeriod) {
                         ForEach(ForecastPeriod.allCases) { period in
-                            Text(period.localizedName).tag(period)
+                            Button {
+                                selectedPeriod = period
+                            } label: {
+                                HStack {
+                                    Text(period.localizedName)
+                                    if selectedPeriod == period {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
+                            }
                         }
                     }
-                    .pickerStyle(.menu)
                     .disabled(isCalculating)
                     .accessibilityIdentifier("forecastPeriodSelector")
                     .onChange(of: selectedPeriod) { _, newPeriod in
@@ -419,7 +438,7 @@ struct ForecastSummaryCard: View {
                 color: amount < 0 ? .red : .primary
             )
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 80, alignment: .leading)
         .padding()
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 12))

@@ -183,8 +183,6 @@ struct LoanCalculatorView: View {
                             proposedPayment: calculatedPayment,
                             currency: currency
                         )
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
                     }
                 }
             }

@@ -19,39 +19,6 @@ struct LoansView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            // Header - mostra solo se ci sono loans
-            if !loans.isEmpty {
-                HStack {
-                    Text("Loans & Mortgages")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    
-                    Spacer()
-                    
-                    Menu {
-                        Button {
-                            showingNewLoanCalculator = true
-                        } label: {
-                            Label("New Calculation", systemImage: "function")
-                        }
-                        
-                        Button {
-                            showingAddExistingLoan = true
-                        } label: {
-                            Label("Add Existing Loan", systemImage: "plus.circle")
-                        }
-                    } label: {
-                        Label("Add", systemImage: "plus")
-                    }
-                    .menuStyle(.borderlessButton)
-                    .fixedSize()
-                }
-                .padding()
-                .background(.regularMaterial)
-                
-                Divider()
-            }
-            
             if loans.isEmpty {
                 Spacer()
                 ContentUnavailableView {
@@ -94,6 +61,25 @@ struct LoansView: View {
             }
         }
         .cashBackground()
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Menu {
+                    Button {
+                        showingNewLoanCalculator = true
+                    } label: {
+                        Label("New Calculation", systemImage: "function")
+                    }
+                    
+                    Button {
+                        showingAddExistingLoan = true
+                    } label: {
+                        Label("Add Existing Loan", systemImage: "plus.circle")
+                    }
+                } label: {
+                    Label("Add", systemImage: "plus")
+                }
+            }
+        }
         .sheet(isPresented: $showingNewLoanCalculator) {
             LoanCalculatorView()
         }
@@ -146,17 +132,9 @@ struct LoanRowView: View {
                     }
                 }
                 
-                HStack(spacing: 8) {
-                    Text(loan.interestRateType.localizedName)
-                    Text("•")
-                        .foregroundStyle(.tertiary)
-                    Text("\(loan.currentInterestRate.formatted())%")
-                    Text("•")
-                        .foregroundStyle(.tertiary)
-                    Text(loan.paymentFrequency.localizedName)
-                }
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                Text("\(loan.interestRateType.localizedName) • \(loan.currentInterestRate.formatted())% • \(loan.paymentFrequency.localizedName)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             
             Spacer()
@@ -169,16 +147,16 @@ struct LoanRowView: View {
                     fontWeight: .semibold
                 )
                 
-                Text("\(loan.remainingPayments) payments left")
+                Text("\(loan.remainingPayments) left")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             
             // Progress indicator
             CircularProgressView(progress: loan.progressPercentage / 100)
-                .frame(width: 40, height: 40)
+                .frame(width: 36, height: 36)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, 4)
     }
 }
 

@@ -112,15 +112,20 @@ struct ExpenseByCategoryReportView: View {
             HStack {
                 // Period picker
                 if UIDevice.current.userInterfaceIdiom == .phone {
-                    Picker(selection: $selectedPeriod) {
+                    GlassMenuPicker(selectedPeriod.localizedName, selection: $selectedPeriod) {
                         ForEach(ReportPeriod.allCases) { period in
-                            Text(period.localizedName).tag(period)
+                            Button {
+                                selectedPeriod = period
+                            } label: {
+                                HStack {
+                                    Text(period.localizedName)
+                                    if selectedPeriod == period {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
+                            }
                         }
-                    } label: {
-                        EmptyView()
                     }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
                 } else {
                     Picker(selection: $selectedPeriod) {
                         ForEach(ReportPeriod.allCases) { period in
@@ -137,19 +142,21 @@ struct ExpenseByCategoryReportView: View {
                 Spacer()
                 
                 // Sort picker
-                Menu {
+                GlassMenuPicker(sortOrder.localizedName, selection: $sortOrder, icon: "arrow.up.arrow.down") {
                     ForEach(ExpenseSortOrder.allCases) { order in
                         Button {
                             sortOrder = order
                         } label: {
-                            Label(order.localizedName, systemImage: order.iconName)
+                            HStack {
+                                Image(systemName: order.iconName)
+                                Text(order.localizedName)
+                                if sortOrder == order {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
                         }
                     }
-                } label: {
-                    Label(sortOrder.localizedName, systemImage: "arrow.up.arrow.down")
                 }
-                .menuStyle(.borderlessButton)
-                .frame(width: 150)
             }
             .padding()
             .background(.bar)
