@@ -21,9 +21,10 @@ struct BudgetView: View {
     @State private var envelopeForEdit: Envelope?
     @State private var envelopeToDelete: Envelope?
     @State private var searchText: String = ""
+    @State private var selectedBudget: Budget?
 
     private var activeBudget: Budget? {
-        budgets.first { $0.isCurrentPeriod && $0.isActive }
+        selectedBudget ?? budgets.first { $0.isCurrentPeriod && $0.isActive }
     }
 
     private var currency: String {
@@ -46,14 +47,50 @@ struct BudgetView: View {
         return sorted.filter { $0.displayName.localizedCaseInsensitiveContains(searchText) }
     }
 
+    private var currentBudgetIndex: Int {
+        guard let activeBudget else { return 0 }
+        return budgets.firstIndex(where: { $0.id == activeBudget.id }) ?? 0
+    }
+
+    private func navigateToPreviousBudget() {
+        let newIndex = currentBudgetIndex + 1
+        if newIndex < budgets.count {
+            withAnimation(.spring(response: 0.3)) {
+                selectedBudget = budgets[newIndex]
+            }
+        }
+    }
+
+    private func navigateToNextBudget() {
+        let newIndex = currentBudgetIndex - 1
+        if newIndex >= 0 {
+            withAnimation(.spring(response: 0.3)) {
+                selectedBudget = budgets[newIndex]
+            }
+        }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             if let budget = activeBudget {
-                // Budget Header - sempre in alto
+                // Budget Header with swipe gesture
                 BudgetHeaderView(
                     budget: budget,
                     currency: currency,
                     isPrivate: settings.privacyMode
+                )
+                .contentShape(Rectangle())
+                .gesture(
+                    DragGesture(minimumDistance: 50)
+                        .onEnded { value in
+                            if value.translation.width > 0 {
+                                // Swipe right -> previous budget (older)
+                                navigateToPreviousBudget()
+                            } else {
+                                // Swipe left -> next budget (newer)
+                                navigateToNextBudget()
+                            }
+                        }
                 )
 
                 GlassDivider()
@@ -180,20 +217,16 @@ struct BudgetView: View {
                         } label: {
                             Label("New Budget", systemImage: "calendar")
                         }
-
-                        if !budgets.isEmpty {
-                            Divider()
-
-                            ForEach(budgets.prefix(5)) { budget in
-                                Button {
-                                    // View historical budget
-                                } label: {
-                                    Text(budget.displayName)
-                                }
-                            }
-                        }
                     } label: {
                         Label("Add", systemImage: "plus")
+                    }
+                }
+            } else {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showingCreateBudget = true
+                    } label: {
+                        Label("Create Budget", systemImage: "plus")
                     }
                 }
             }
