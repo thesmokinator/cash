@@ -45,7 +45,7 @@ struct CustomTabBar: View {
             Spacer()
             Rectangle()
                 .fill(.ultraThinMaterial)
-                .background(CashColors.primary.opacity(0.85))
+                .background(CashColors.tabBarBackground)
                 .frame(height: tabBarHeight)
                 .clipShape(
                     .rect(
@@ -81,7 +81,7 @@ struct CustomTabBar: View {
                 Text(tab.title)
                     .font(.system(size: 10, weight: selectedTab == tab ? .semibold : .regular))
             }
-            .foregroundColor(selectedTab == tab ? .white : .white.opacity(0.6))
+            .foregroundColor(selectedTab == tab ? CashColors.tabBarSelected : CashColors.tabBarUnselected)
             .frame(maxWidth: .infinity)
             .contentShape(Rectangle())
         }

@@ -360,7 +360,6 @@ final class CloudKitManager {
     /// Deduplicate accounts with the same name, type, class, and currency
     /// Merges transactions from duplicate accounts into the primary account
     func deduplicateAccounts(in context: ModelContext) {
-        print("🔄 Starting account deduplication after iCloud sync")
 
         let descriptor = FetchDescriptor<Account>(
             sortBy: [SortDescriptor(\.createdAt)]
@@ -371,7 +370,6 @@ final class CloudKitManager {
             return
         }
 
-        print("📊 Found \(allAccounts.count) total accounts")
 
         // Group accounts by deduplication key
         var accountGroups: [String: [Account]] = [:]
@@ -417,14 +415,11 @@ final class CloudKitManager {
 
         if totalDuplicatesRemoved > 0 {
             print("✅ Deduplication complete: removed \(totalDuplicatesRemoved) duplicate accounts")
-        } else {
-            print("ℹ️ No duplicate accounts found")
         }
 
         // Save changes
         do {
             try context.save()
-            print("💾 Changes saved successfully")
         } catch {
             print("❌ Failed to save deduplication changes: \(error)")
         }
@@ -432,6 +427,5 @@ final class CloudKitManager {
         // Post notification to recalculate account balances
         NotificationCenter.default.post(
             name: .accountBalancesNeedUpdate, object: nil, userInfo: nil)
-        print("📢 Posted balance update notification")
     }
 }

@@ -10,21 +10,45 @@ import SwiftUI
 // MARK: - Color Palette
 
 struct CashColors {
-    // Primary Palette - Professional Navy/Slate
-    static let primary = Color(hex: "#1E3A5F")          // Deep navy - Main brand color
+    // Primary Palette - Adaptive for dark/light mode
+    static let primary = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.47, green: 0.67, blue: 0.95, alpha: 1.0)  // #78ABF2 - Bright blue for dark mode
+            : UIColor(red: 0.12, green: 0.23, blue: 0.37, alpha: 1.0)  // #1E3A5F - Deep navy for light mode
+    })
     static let primaryLight = Color(hex: "#4A6FA5")     // Lighter navy - Highlights
     static let primaryDark = Color(hex: "#0F2744")      // Darker navy - Dark accents
     static let accent = Color(hex: "#3D5A80")           // Slate blue - Secondary accent
 
-    // Semantic Colors - Muted, professional tones
-    static let success = Color(hex: "#2E7D32")          // Forest green - Positive values
+    // Semantic Colors - Adaptive for better dark mode contrast
+    static let success = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.40, green: 0.80, blue: 0.40, alpha: 1.0)  // #66CC66 - Brighter green for dark mode
+            : UIColor(red: 0.18, green: 0.49, blue: 0.20, alpha: 1.0)  // #2E7D32 - Forest green for light mode
+    })
     static let warning = Color(hex: "#F57C00")          // Deep orange - Warnings
-    static let error = Color(hex: "#C62828")            // Deep red - Negative values, errors
+    static let error = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 1.0, green: 0.45, blue: 0.45, alpha: 1.0)   // #FF7373 - Brighter red for dark mode
+            : UIColor(red: 0.78, green: 0.16, blue: 0.16, alpha: 1.0)  // #C62828 - Deep red for light mode
+    })
 
-    // Income/Expense Colors - Softer, professional
-    static let income = Color(hex: "#388E3C")           // Medium green - Income
-    static let expense = Color(hex: "#D32F2F")          // Medium red - Expenses
-    static let transfer = Color(hex: "#1976D2")         // Medium blue - Transfers
+    // Income/Expense Colors - Adaptive for dark mode readability
+    static let income = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.40, green: 0.85, blue: 0.40, alpha: 1.0)  // #66D966 - Bright green for dark mode
+            : UIColor(red: 0.22, green: 0.56, blue: 0.24, alpha: 1.0)  // #388E3C - Medium green for light mode
+    })
+    static let expense = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 1.0, green: 0.50, blue: 0.50, alpha: 1.0)   // #FF8080 - Bright red for dark mode
+            : UIColor(red: 0.83, green: 0.18, blue: 0.18, alpha: 1.0)  // #D32F2F - Medium red for light mode
+    })
+    static let transfer = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.47, green: 0.67, blue: 0.95, alpha: 1.0)  // #78ABF2 - Bright blue for dark mode
+            : UIColor(red: 0.10, green: 0.46, blue: 0.82, alpha: 1.0)  // #1976D2 - Medium blue for light mode
+    })
 
     // Adaptive Glass Colors (for dark mode support)
     static let glassBackground = Color(UIColor { traits in
@@ -71,10 +95,18 @@ struct CashColors {
         endPoint: .bottomTrailing
     )
 
-    // Tab Bar
-    static let tabBarBackground = Color(hex: "#1E3A5F").opacity(0.95)
+    // Tab Bar - Adaptive for dark mode
+    static let tabBarBackground = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.12, green: 0.12, blue: 0.14, alpha: 0.95)  // Dark gray for dark mode
+            : UIColor(red: 0.12, green: 0.23, blue: 0.37, alpha: 0.95)  // Navy for light mode
+    })
     static let tabBarSelected = Color.white
-    static let tabBarUnselected = Color.white.opacity(0.6)
+    static let tabBarUnselected = Color(UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor.white.withAlphaComponent(0.75)  // More visible in dark mode
+            : UIColor.white.withAlphaComponent(0.6)
+    })
 }
 
 // MARK: - Typography

@@ -464,18 +464,6 @@ struct MainTabView: View {
             }
         }
         .listStyle(.sidebar)
-        .navigationTitle("Cash")
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    showingAddTransaction = true
-                } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.title2)
-                        .foregroundColor(CashColors.primary)
-                }
-            }
-        }
     }
 
     @ViewBuilder
