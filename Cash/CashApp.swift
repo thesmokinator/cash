@@ -5,8 +5,8 @@
 //  Created by Michele Broggi on 25/11/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Navigation State
 
@@ -17,24 +17,22 @@ class NavigationState {
     var currentAccount: Account? = nil
 }
 
-// MARK: - Cmd+N Notifications
+// MARK: - Notifications
 
 extension Notification.Name {
     static let addNewAccount = Notification.Name("addNewAccount")
     static let addNewTransaction = Notification.Name("addNewTransaction")
     static let addNewScheduledTransaction = Notification.Name("addNewScheduledTransaction")
     static let importOFX = Notification.Name("importOFX")
-    static let showSettings = Notification.Name("showSettings")
+    static let importJSON = Notification.Name("importJSON")
+    static let exportData = Notification.Name("exportData")
 }
 
 @main
 struct CashApp: App {
     @State private var settings = AppSettings.shared
-    @State private var menuAppState = AppState()
     @State private var navigationState = NavigationState()
-    @State private var showingSettingsSheet = false
-    @Environment(\.openWindow) private var openWindow
-    
+
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Account.self,
@@ -47,47 +45,49 @@ struct CashApp: App {
             Envelope.self,
             Loan.self,
         ])
-        
+
         #if ENABLE_ICLOUD
-        let cloudManager = CloudKitManager.shared
-        
-        // Try CloudKit if enabled and available
-        if cloudManager.isEnabled && cloudManager.isAvailable {
-            do {
-                let cloudConfig = ModelConfiguration(
-                    schema: schema,
-                    isStoredInMemoryOnly: false,
-                    cloudKitDatabase: .private(cloudManager.containerIdentifier)
-                )
-                return try ModelContainer(for: schema, configurations: [cloudConfig])
-            } catch {
-                // CloudKit failed, fall back to local storage
-                print("CloudKit initialization failed: \(error). Falling back to local storage.")
+            let cloudManager = CloudKitManager.shared
+
+            // Try CloudKit if enabled and available
+            if cloudManager.isEnabled && cloudManager.isAvailable {
+                do {
+                    let cloudConfig = ModelConfiguration(
+                        schema: schema,
+                        isStoredInMemoryOnly: false,
+                        cloudKitDatabase: .private(cloudManager.containerIdentifier)
+                    )
+                    let container = try ModelContainer(for: schema, configurations: [cloudConfig])
+                    cloudManager.modelContainer = container
+                    return container
+                } catch {
+                    // CloudKit failed, fall back to local storage
+                    print(
+                        "CloudKit initialization failed: \(error). Falling back to local storage.")
+                }
             }
-        }
         #endif
-        
-        // Local storage (default)
-        let localConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
+        // Fall back to local storage
         do {
-            return try ModelContainer(for: schema, configurations: [localConfig])
+            let container = try ModelContainer(
+                for: schema,
+                configurations: [ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)])
+            #if ENABLE_ICLOUD
+                CloudKitManager.shared.modelContainer = container
+            #endif
+            return container
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
 
     var body: some Scene {
-        WindowGroup(id: "main") {
-            ContentView()
+        WindowGroup {
+            MainTabView()
                 .environment(navigationState)
-                .sheet(isPresented: $showingSettingsSheet) {
-                    SettingsView(appState: menuAppState, dismissSettings: { showingSettingsSheet = false })
-                        .environment(settings)
-                        .modelContainer(sharedModelContainer)
-                }
-                .onReceive(NotificationCenter.default.publisher(for: .showSettings)) { _ in
-                    showingSettingsSheet = true
-                }
+                .environment(\.locale, settings.language.locale)
+                .preferredColorScheme(settings.theme.colorScheme)
                 .onAppear {
                     // Start iCloud sync monitoring
                     CloudKitManager.shared.startListeningForRemoteChanges()
@@ -95,72 +95,67 @@ struct CashApp: App {
         }
         .modelContainer(sharedModelContainer)
         .environment(settings)
-        .commands {
-            // Add Window menu with option to show main window
-            CommandGroup(after: .windowList) {
-                Button("Show Main Window") {
-                    if let window = NSApplication.shared.windows.first(where: { $0.identifier?.rawValue == "main" }) {
-                        window.makeKeyAndOrderFront(nil)
-                        NSApplication.shared.activate(ignoringOtherApps: true)
-                    } else {
-                        openWindow(id: "main")
-                    }
-                }
-                .keyboardShortcut("0", modifiers: .command)
+        #if os(macOS)
+            .defaultSize(width: 1200, height: 800)
+            .commands {
+                AppCommands()
             }
-            
-            // Replace default New Window command with contextual actions
-            CommandGroup(replacing: .newItem) {
-                Button {
-                    ensureMainWindowOpen()
-                    if navigationState.isViewingAccount {
-                        NotificationCenter.default.post(name: .addNewTransaction, object: nil)
-                    } else if navigationState.isViewingScheduled {
-                        NotificationCenter.default.post(name: .addNewScheduledTransaction, object: nil)
-                    } else {
-                        NotificationCenter.default.post(name: .addNewAccount, object: nil)
-                    }
-                } label: {
-                    if navigationState.isViewingAccount {
-                        Text("New transaction")
-                    } else if navigationState.isViewingScheduled {
-                        Text("New scheduled transaction")
-                    } else {
-                        Text("New account")
-                    }
-                }
-                .keyboardShortcut("n", modifiers: .command)
+        #endif
+
+        #if os(macOS)
+            Settings {
+                MacOSSettingsView()
+                    .environment(settings)
+                    .modelContainer(sharedModelContainer)
             }
-            
-            // Import menu
-            CommandGroup(replacing: .importExport) {
-                Button {
-                    ensureMainWindowOpen()
-                    NotificationCenter.default.post(name: .importOFX, object: nil)
-                } label: {
-                    Label("Import OFX...", systemImage: "doc.badge.arrow.up")
-                }
-            }
-            
-            // Settings menu item (replaces system Preferences)
-            CommandGroup(replacing: .appSettings) {
-                Button {
-                    ensureMainWindowOpen()
-                    showingSettingsSheet = true
-                } label: {
-                    Text("Settings...")
-                }
-                .keyboardShortcut(",", modifiers: .command)
-            }
-        }
-    }
-    
-    private func ensureMainWindowOpen() {
-        if let window = NSApplication.shared.windows.first(where: { $0.isVisible && $0.identifier?.rawValue.contains("main") == true }) {
-            window.makeKeyAndOrderFront(nil)
-        } else {
-            openWindow(id: "main")
-        }
-        NSApplication.shared.activate(ignoringOtherApps: true)
+        #endif
     }
 }
+
+// MARK: - macOS Menu Bar Commands
+
+#if os(macOS)
+    struct AppCommands: Commands {
+        var body: some Commands {
+            // Replace the New Item menu
+            CommandGroup(replacing: .newItem) {
+                Button("New Transaction") {
+                    NotificationCenter.default.post(name: .addNewTransaction, object: nil)
+                }
+                .keyboardShortcut("n", modifiers: [.command])
+
+                Button("New Account") {
+                    NotificationCenter.default.post(name: .addNewAccount, object: nil)
+                }
+                .keyboardShortcut("n", modifiers: [.command, .shift])
+
+                Divider()
+
+                Button("Import OFX...") {
+                    NotificationCenter.default.post(name: .importOFX, object: nil)
+                }
+                .keyboardShortcut("i", modifiers: [.command])
+
+                Button("Export Data...") {
+                    NotificationCenter.default.post(
+                        name: .exportData,
+                        object: nil,
+                        userInfo: ["format": "cashBackup"]
+                    )
+                }
+                .keyboardShortcut("e", modifiers: [.command])
+            }
+
+            // Help menu
+            CommandGroup(replacing: .help) {
+                Link(
+                    "Cash on GitHub",
+                    destination: URL(string: "https://github.com/thesmokinator/cash")!)
+                Link(
+                    "Privacy Policy",
+                    destination: URL(
+                        string: "https://github.com/thesmokinator/cash/blob/main/PRIVACY.md")!)
+            }
+        }
+    }
+#endif

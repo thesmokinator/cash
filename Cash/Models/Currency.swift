@@ -38,7 +38,6 @@ struct CurrencyList {
         CurrencyInfo(code: "DKK", name: "Danish Krone", symbol: "kr"),
         CurrencyInfo(code: "PLN", name: "Polish Zloty", symbol: "zł"),
         CurrencyInfo(code: "RUB", name: "Russian Ruble", symbol: "₽"),
-        CurrencyInfo(code: "TRY", name: "Turkish Lira", symbol: "₺"),
         CurrencyInfo(code: "ZAR", name: "South African Rand", symbol: "R"),
         CurrencyInfo(code: "SGD", name: "Singapore Dollar", symbol: "S$"),
         CurrencyInfo(code: "HKD", name: "Hong Kong Dollar", symbol: "HK$"),

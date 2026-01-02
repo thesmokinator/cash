@@ -126,17 +126,29 @@ struct YearOverYearReportView: View {
         VStack(spacing: 0) {
             // Period picker
             HStack {
-                Picker(selection: $selectedPeriod) {
-                    ForEach(ComparisonPeriod.allCases) { period in
-                        Text(period.localizedName).tag(period)
+                if DeviceType.current.isCompact {
+                    Picker(selection: $selectedPeriod) {
+                        ForEach(ComparisonPeriod.allCases) { period in
+                            Text(period.localizedName).tag(period)
+                        }
+                    } label: {
+                        EmptyView()
                     }
-                } label: {
-                    EmptyView()
+                    .pickerStyle(.menu)
+                    .labelsHidden()
+                } else {
+                    Picker(selection: $selectedPeriod) {
+                        ForEach(ComparisonPeriod.allCases) { period in
+                            Text(period.localizedName).tag(period)
+                        }
+                    } label: {
+                        EmptyView()
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+                    .frame(maxWidth: 400)
                 }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-                .frame(maxWidth: 400)
-                
+
                 Spacer()
             }
             .padding()

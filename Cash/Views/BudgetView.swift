@@ -5,8 +5,8 @@
 //  Created by Michele Broggi on 28/11/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 // MARK: - Budget View
 
@@ -14,29 +14,31 @@ struct BudgetView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppSettings.self) private var settings
     @Query(sort: \Budget.startDate, order: .reverse) private var budgets: [Budget]
-    
+
     @State private var showingCreateBudget = false
     @State private var budgetForEnvelope: Budget?
     @State private var budgetForTransfer: Budget?
     @State private var envelopeForEdit: Envelope?
     @State private var envelopeToDelete: Envelope?
     @State private var searchText: String = ""
-    
+    @State private var selectedBudget: Budget?
+
     private var activeBudget: Budget? {
-        budgets.first { $0.isCurrentPeriod && $0.isActive }
+        selectedBudget ?? budgets.first { $0.isCurrentPeriod && $0.isActive }
     }
-    
+
     private var currency: String {
         // Safely get currency, avoiding access to potentially invalidated objects
         guard let budget = activeBudget,
-              let envelopes = budget.envelopes,
-              let envelope = envelopes.first,
-              let category = envelope.category else {
+            let envelopes = budget.envelopes,
+            let envelope = envelopes.first,
+            let category = envelope.category
+        else {
             return "EUR"
         }
         return category.currency
     }
-    
+
     private func filteredEnvelopes(from envelopes: [Envelope]) -> [Envelope] {
         let sorted = envelopes.sorted(by: { $0.sortOrder < $1.sortOrder })
         if searchText.isEmpty {
@@ -44,53 +46,98 @@ struct BudgetView: View {
         }
         return sorted.filter { $0.displayName.localizedCaseInsensitiveContains(searchText) }
     }
-    
+
+    private var currentBudgetIndex: Int {
+        guard let activeBudget else { return 0 }
+        return budgets.firstIndex(where: { $0.id == activeBudget.id }) ?? 0
+    }
+
+    private func navigateToPreviousBudget() {
+        let newIndex = currentBudgetIndex + 1
+        if newIndex < budgets.count {
+            withAnimation(.spring(response: 0.3)) {
+                selectedBudget = budgets[newIndex]
+            }
+        }
+    }
+
+    private func navigateToNextBudget() {
+        let newIndex = currentBudgetIndex - 1
+        if newIndex >= 0 {
+            withAnimation(.spring(response: 0.3)) {
+                selectedBudget = budgets[newIndex]
+            }
+        }
+    }
+
     var body: some View {
-        VStack(spacing: 0) {
-            if let budget = activeBudget {
-                // Budget Header - sempre in alto
-                BudgetHeaderView(
-                    budget: budget,
-                    currency: currency,
-                    isPrivate: settings.privacyMode
-                )
-                
-                Divider()
-                
-                // Filter bar with search and add button
-                TransactionFilterBar(
-                    dateFilter: .constant(.thisMonth),
-                    searchText: $searchText,
-                    showDateFilter: false,
-                    onAddTransaction: {
-                        budgetForEnvelope = budget
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                if let budget = activeBudget {
+                    // Budget Header with swipe gesture
+                    BudgetHeaderView(
+                        budget: budget,
+                        currency: currency,
+                        isPrivate: settings.privacyMode
+                    )
+                    .contentShape(Rectangle())
+                    .simultaneousGesture(
+                        DragGesture(minimumDistance: 50)
+                            .onEnded { value in
+                                // Only trigger if the swipe is predominantly horizontal
+                                // (horizontal distance > vertical distance)
+                                let horizontalDistance = abs(value.translation.width)
+                                let verticalDistance = abs(value.translation.height)
+
+                                guard horizontalDistance > verticalDistance else { return }
+
+                                if value.translation.width > 0 {
+                                    // Swipe right -> previous budget (older)
+                                    navigateToPreviousBudget()
+                                } else {
+                                    // Swipe left -> next budget (newer)
+                                    navigateToNextBudget()
+                                }
+                            }
+                    )
+
+                    GlassDivider()
+
+                    // Filter bar with search - mostra solo se ci sono envelopes
+                    if let envelopes = budget.envelopes, !envelopes.isEmpty {
+                        TransactionFilterBar(
+                            dateFilter: .constant(.thisMonth),
+                            searchText: $searchText,
+                            showDateFilter: false,
+                            showActionButtons: false
+                        )
+                        .padding(.vertical, CashSpacing.sm)
                     }
-                )
-                .padding(.vertical, 8)
-                
-                // Envelopes List
-                if let envelopes = budget.envelopes, !envelopes.isEmpty {
-                    let filtered = filteredEnvelopes(from: envelopes)
-                    if filtered.isEmpty {
-                        ContentUnavailableView.search(text: searchText)
-                    } else {
-                        List {
+
+                    // Envelopes List
+                    if let envelopes = budget.envelopes, !envelopes.isEmpty {
+                        let filtered = filteredEnvelopes(from: envelopes)
+                        if filtered.isEmpty {
+                            ContentUnavailableView.search(text: searchText)
+                                .frame(minHeight: 200)
+                        } else {
                             ForEach(filtered) { envelope in
                                 EnvelopeRowView(
                                     envelope: envelope,
                                     currency: currency,
                                     isPrivate: settings.privacyMode
                                 )
-                                .listRowSeparator(.hidden)
+                                .padding(.horizontal, CashSpacing.md)
+                                .padding(.vertical, CashSpacing.sm)
                                 .contextMenu {
                                     Button {
                                         envelopeForEdit = envelope
                                     } label: {
                                         Label("Edit", systemImage: "pencil")
                                     }
-                                    
+
                                     Divider()
-                                    
+
                                     Button(role: .destructive) {
                                         envelopeToDelete = envelope
                                     } label: {
@@ -98,86 +145,116 @@ struct BudgetView: View {
                                     }
                                 }
                             }
-                            .onDelete { indexSet in
-                                let envelope = filtered[indexSet.first!]
-                                envelopeToDelete = envelope
+
+                            // Bottom toolbar for transfer
+                            if envelopes.count >= 2 {
+                                HStack {
+                                    Spacer()
+                                    Button {
+                                        budgetForTransfer = budget
+                                    } label: {
+                                        Label("Transfer", systemImage: "arrow.left.arrow.right")
+                                    }
+                                }
+                                .padding()
                             }
                         }
-                        .listStyle(.inset)
-                    }
-                    
-                    // Bottom toolbar for transfer
-                    if envelopes.count >= 2 {
-                        HStack {
-                            Spacer()
-                            Button {
-                                budgetForTransfer = budget
-                            } label: {
-                                Label("Transfer", systemImage: "arrow.left.arrow.right")
-                            }
-                        }
-                        .padding()
-                        .background(.bar)
-                    }
-                } else {
-                    VStack {
-                        Spacer()
-                        ContentUnavailableView {
-                            Label("No envelopes", systemImage: "envelope")
-                        } description: {
-                            Text("Add envelopes to start budgeting")
-                        } actions: {
+                    } else {
+                        VStack(spacing: CashSpacing.lg) {
+                            GlassEmptyState(
+                                icon: "envelope",
+                                title: "No Envelopes",
+                                description: "Add envelopes to start budgeting"
+                            )
+                            .padding()
                             Button {
                                 budgetForEnvelope = budget
                             } label: {
-                                Text("Add Envelope")
+                                Label("Add Envelope", systemImage: "plus.circle")
                             }
+                            .buttonStyle(GlassActionButtonStyle())
                         }
-                        Spacer()
+                        .frame(minHeight: 300)
+                        .frame(maxWidth: .infinity)
                     }
-                }
-                
-            } else {
-                // No active budget
-                ContentUnavailableView {
-                    Label("No active budget", systemImage: "envelope.badge.shield.half.filled")
-                } description: {
-                    Text("Create a budget to start tracking your spending by category")
-                } actions: {
-                    Button {
-                        showingCreateBudget = true
-                    } label: {
-                        Text("Create Budget")
+
+                } else {
+                    // No active budget
+                    VStack(spacing: CashSpacing.lg) {
+                        GlassEmptyState(
+                            icon: "envelope.badge.shield.half.filled",
+                            title: "No Active Budget",
+                            description:
+                                "Create a budget to start tracking your spending by category"
+                        )
+                        .padding()
+                        Button {
+                            showingCreateBudget = true
+                        } label: {
+                            Label("Create Budget", systemImage: "plus.circle")
+                        }
+                        .buttonStyle(GlassActionButtonStyle())
                     }
-                    .buttonStyle(.borderedProminent)
+                    .frame(minHeight: 400)
+                    .frame(maxWidth: .infinity)
                 }
             }
         }
+        .cashBackground()
         .navigationTitle("Budget")
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Menu {
+            #if os(macOS)
+            // macOS: Navigation buttons for budget periods (alternative to swipe)
+            ToolbarItem(placement: .navigation) {
+                HStack(spacing: 4) {
+                    Button {
+                        navigateToPreviousBudget()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                    .disabled(currentBudgetIndex >= budgets.count - 1)
+                    .keyboardShortcut(.leftArrow, modifiers: [])
+                    .help("Previous Budget")
+
+                    Button {
+                        navigateToNextBudget()
+                    } label: {
+                        Image(systemName: "chevron.right")
+                    }
+                    .disabled(currentBudgetIndex <= 0)
+                    .keyboardShortcut(.rightArrow, modifiers: [])
+                    .help("Next Budget")
+                }
+            }
+            #endif
+
+            if activeBudget != nil {
+                ToolbarItem(placement: .primaryAction) {
+                    Menu {
+                        Button {
+                            budgetForEnvelope = activeBudget
+                        } label: {
+                            Label("Add Envelope", systemImage: "envelope")
+                        }
+
+                        Divider()
+
+                        Button {
+                            showingCreateBudget = true
+                        } label: {
+                            Label("New Budget", systemImage: "calendar")
+                        }
+                    } label: {
+                        Label("Add", systemImage: "plus")
+                    }
+                }
+            } else {
+                ToolbarItem(placement: .primaryAction) {
                     Button {
                         showingCreateBudget = true
                     } label: {
-                        Label("New Budget", systemImage: "plus")
+                        Label("Create Budget", systemImage: "plus")
                     }
-                    
-                    if !budgets.isEmpty {
-                        Divider()
-                        
-                        Menu("Previous Budgets") {
-                            ForEach(budgets.prefix(5)) { budget in
-                                Button {
-                                    // View historical budget
-                                } label: {
-                                    Text(budget.displayName)
-                                }
-                            }
-                        }
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
                 }
             }
         }
@@ -193,18 +270,22 @@ struct BudgetView: View {
         .sheet(item: $envelopeForEdit) { envelope in
             EditEnvelopeView(envelope: envelope)
         }
-        .alert("Delete Envelope", isPresented: .init(
-            get: { envelopeToDelete != nil },
-            set: { if !$0 { envelopeToDelete = nil } }
-        )) {
-            Button("Cancel", role: .cancel) {
-                envelopeToDelete = nil
-            }
+        .confirmationDialog(
+            "Delete Envelope",
+            isPresented: .init(
+                get: { envelopeToDelete != nil },
+                set: { if !$0 { envelopeToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
             Button("Delete", role: .destructive) {
                 if let envelope = envelopeToDelete {
                     modelContext.delete(envelope)
                     envelopeToDelete = nil
                 }
+            }
+            Button("Cancel", role: .cancel) {
+                envelopeToDelete = nil
             }
         } message: {
             if let envelope = envelopeToDelete {
@@ -220,83 +301,70 @@ struct BudgetHeaderView: View {
     let budget: Budget
     let currency: String
     let isPrivate: Bool
-    
+
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: CashSpacing.lg) {
             // Period info
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: CashSpacing.xs) {
                     Text(budget.displayName)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                    
+                        .font(CashTypography.title2)
+
                     Text(periodDescription)
-                        .font(.caption)
+                        .font(CashTypography.caption)
                         .foregroundStyle(.secondary)
                 }
-                
+
                 Spacer()
-                
+
                 // Period type badge
-                HStack(spacing: 4) {
-                    Image(systemName: budget.periodType.iconName)
-                    Text(budget.periodType.localizedName)
-                }
-                .font(.caption)
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(.quaternary)
-                .clipShape(Capsule())
+                GlassChip(
+                    label: budget.periodType.localizedName,
+                    icon: budget.periodType.iconName
+                )
             }
-            
+
             // Progress bar
-            VStack(spacing: 8) {
-                GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.2))
-                            .frame(height: 12)
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
-                        
-                        Rectangle()
-                            .fill(progressColor.gradient)
-                            .frame(width: min(geometry.size.width * CGFloat(budget.percentageUsed / 100), geometry.size.width), height: 12)
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
-                    }
-                }
-                .frame(height: 12)
-                
+            VStack(spacing: CashSpacing.sm) {
+                GlassProgressBar(
+                    progress: budget.percentageUsed / 100,
+                    height: 12,
+                    foregroundColor: progressColor
+                )
+
                 HStack {
                     PrivacyAmountView(
-                        amount: "\(String(localized: "Spent")): \(CurrencyFormatter.format(budget.totalSpent, currency: currency))",
+                        amount:
+                            "\(String(localized: "Spent")): \(CurrencyFormatter.format(budget.totalSpent, currency: currency))",
                         isPrivate: isPrivate,
-                        font: .caption,
+                        font: CashTypography.caption,
                         fontWeight: .medium,
                         color: .secondary
                     )
-                    
+
                     Spacer()
-                    
+
                     PrivacyAmountView(
-                        amount: "\(String(localized: "Budget")): \(CurrencyFormatter.format(budget.totalBudgeted, currency: currency))",
+                        amount:
+                            "\(String(localized: "Budget")): \(CurrencyFormatter.format(budget.totalBudgeted, currency: currency))",
                         isPrivate: isPrivate,
-                        font: .caption,
+                        font: CashTypography.caption,
                         fontWeight: .medium,
                         color: .secondary
                     )
                 }
             }
-            
+
             // Summary cards
-            HStack(spacing: 12) {
+            HStack(spacing: CashSpacing.md) {
                 BudgetSummaryCard(
                     title: String(localized: "Available"),
                     amount: budget.totalAvailable,
                     currency: currency,
-                    color: budget.totalAvailable >= 0 ? .green : .red,
+                    color: budget.totalAvailable >= 0 ? CashColors.success : CashColors.error,
                     isPrivate: isPrivate
                 )
-                
+
                 BudgetSummaryCard(
                     title: String(localized: "Used"),
                     amount: nil,
@@ -307,16 +375,24 @@ struct BudgetHeaderView: View {
                 )
             }
         }
-        .padding()
-        .background(.bar)
+        .padding(CashSpacing.lg)
+        .background(.ultraThinMaterial)
+        .background(
+            LinearGradient(
+                colors: [CashColors.primary.opacity(0.1), CashColors.primaryLight.opacity(0.05)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
     }
-    
+
     private var periodDescription: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        return "\(formatter.string(from: budget.startDate)) - \(formatter.string(from: budget.endDate))"
+        return
+            "\(formatter.string(from: budget.startDate)) - \(formatter.string(from: budget.endDate))"
     }
-    
+
     private var progressColor: Color {
         let percentage = budget.percentageUsed
         if percentage >= 100 {
@@ -338,33 +414,32 @@ struct BudgetSummaryCard: View {
     let currency: String
     let color: Color
     let isPrivate: Bool
-    
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: CashSpacing.xs) {
             Text(title)
-                .font(.caption)
+                .font(CashTypography.caption)
                 .foregroundStyle(.secondary)
-            
+
             if let amount = amount {
                 PrivacyAmountView(
                     amount: CurrencyFormatter.format(amount, currency: currency),
                     isPrivate: isPrivate,
-                    font: .title3,
+                    font: CashTypography.headline,
                     fontWeight: .semibold,
                     color: color
                 )
             } else if let percentage = percentage {
                 Text(String(format: "%.0f%%", percentage))
-                    .font(.title3)
-                    .fontWeight(.semibold)
+                    .font(CashTypography.headline)
                     .foregroundStyle(color)
                     .privacyBlur(isPrivate)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(.quaternary.opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(CashSpacing.md)
+        .background(color.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
     }
 }
 
@@ -374,39 +449,32 @@ struct EnvelopeRowView: View {
     let envelope: Envelope
     let currency: String
     let isPrivate: Bool
-    
+
     var body: some View {
-        VStack(spacing: 8) {
-            HStack(spacing: 12) {
+        VStack(spacing: CashSpacing.sm) {
+            HStack(spacing: CashSpacing.md) {
                 // Icon
-                Image(systemName: envelope.iconName)
-                    .foregroundStyle(statusColor)
-                    .frame(width: 24)
-                
+                GlassIconCircle(
+                    icon: envelope.iconName,
+                    color: statusColor,
+                    size: 36
+                )
+
                 // Name and progress
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: CashSpacing.xs) {
                     Text(envelope.displayName)
-                        .font(.body)
-                    
+                        .font(CashTypography.body)
+
                     // Progress bar
-                    GeometryReader { geometry in
-                        ZStack(alignment: .leading) {
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(height: 6)
-                                .clipShape(RoundedRectangle(cornerRadius: 3))
-                            
-                            Rectangle()
-                                .fill(statusColor.gradient)
-                                .frame(width: geometry.size.width * CGFloat(min(envelope.percentageUsed, 100) / 100), height: 6)
-                                .clipShape(RoundedRectangle(cornerRadius: 3))
-                        }
-                    }
-                    .frame(height: 6)
+                    GlassProgressBar(
+                        progress: min(envelope.percentageUsed, 100) / 100,
+                        height: 6,
+                        foregroundColor: statusColor
+                    )
                 }
-                
+
                 Spacer()
-                
+
                 // Amounts
                 VStack(alignment: .trailing, spacing: 2) {
                     HStack(spacing: 4) {
@@ -417,50 +485,55 @@ struct EnvelopeRowView: View {
                         Text(CurrencyFormatter.format(envelope.effectiveBudget, currency: currency))
                             .privacyBlur(isPrivate)
                     }
-                    .font(.callout)
-                    
+                    .font(CashTypography.subheadline)
+
                     HStack(spacing: 4) {
                         Text(String(localized: "Available:"))
                             .foregroundStyle(.secondary)
                         Text(CurrencyFormatter.format(envelope.availableAmount, currency: currency))
-                            .foregroundStyle(envelope.availableAmount >= 0 ? .green : .red)
+                            .foregroundStyle(
+                                envelope.availableAmount >= 0
+                                    ? CashColors.success : CashColors.error
+                            )
                             .privacyBlur(isPrivate)
                     }
-                    .font(.caption)
+                    .font(CashTypography.caption)
                 }
-                
+
                 // Warning indicator
                 if envelope.isOverBudget {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(CashColors.error)
                 }
             }
-            
+
             // Rollover indicator
             if envelope.rolloverAmount > 0 {
                 HStack {
                     Image(systemName: "arrow.uturn.forward")
                         .font(.caption2)
-                    Text("Includes \(CurrencyFormatter.format(envelope.rolloverAmount, currency: currency)) rollover")
-                        .font(.caption2)
-                        .privacyBlur(isPrivate)
+                    Text(
+                        "Includes \(CurrencyFormatter.format(envelope.rolloverAmount, currency: currency)) rollover"
+                    )
+                    .font(CashTypography.caption)
+                    .privacyBlur(isPrivate)
                 }
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, 36)
+                .padding(.leading, 48)
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, CashSpacing.sm)
     }
-    
+
     private var statusColor: Color {
         switch envelope.statusColor {
         case .healthy:
-            return .green
+            return CashColors.success
         case .warning:
-            return .orange
+            return CashColors.warning
         case .exceeded:
-            return .red
+            return CashColors.error
         }
     }
 }
@@ -470,11 +543,11 @@ struct EnvelopeRowView: View {
 struct CreateBudgetView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    
+
     @State private var periodType: BudgetPeriodType = .monthly
     @State private var rolloverEnabled = false
     @State private var startDate = Date()
-    
+
     var body: some View {
         NavigationStack {
             Form {
@@ -485,20 +558,22 @@ struct CreateBudgetView: View {
                                 .tag(type)
                         }
                     }
-                    
+
                     DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
                 } header: {
                     Text("Budget Period")
                 } footer: {
                     Text("End Date: \(formattedEndDate)")
                 }
-                
+
                 Section {
                     Toggle("Enable Rollover", isOn: $rolloverEnabled)
                 } header: {
                     Text("Options")
                 } footer: {
-                    Text("When enabled, unused budget from envelopes will carry over to the next period.")
+                    Text(
+                        "When enabled, unused budget from envelopes will carry over to the next period."
+                    )
                 }
             }
             .formStyle(.grouped)
@@ -509,7 +584,7 @@ struct CreateBudgetView: View {
                         dismiss()
                     }
                 }
-                
+
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Create") {
                         createBudget()
@@ -520,14 +595,14 @@ struct CreateBudgetView: View {
         }
         .frame(minWidth: 400, minHeight: 300)
     }
-    
+
     private var formattedEndDate: String {
         let endDate = Budget.calculateEndDate(from: startDate, periodType: periodType)
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         return formatter.string(from: endDate)
     }
-    
+
     private func createBudget() {
         let budget = Budget(
             startDate: startDate,
@@ -544,64 +619,78 @@ struct AddEnvelopeView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Account.name) private var allAccounts: [Account]
-    
+
     let budget: Budget
-    
+
     @State private var selectedCategory: Account?
     @State private var customName = ""
     @State private var budgetedAmount: Decimal = 0
     @State private var amountString = ""
-    
+
     private var budgetableCategories: [Account] {
-        allAccounts.filter { 
-            $0.accountClass == .expense && 
-            $0.isActive && 
-            !$0.isSystem && 
-            $0.includedInBudget 
+        allAccounts.filter {
+            $0.accountClass == .expense && $0.isActive && !$0.isSystem && $0.includedInBudget
         }
     }
-    
+
     private var existingCategoryIds: Set<UUID> {
         Set((budget.envelopes ?? []).compactMap { $0.category?.id })
     }
-    
+
     private var availableCategories: [Account] {
         budgetableCategories.filter { !existingCategoryIds.contains($0.id) }
     }
-    
+
     var body: some View {
         NavigationStack {
             Form {
                 Section {
                     if availableCategories.isEmpty {
-                        Text("No categories available. Enable 'Include in Budget' for expense categories in account settings.")
-                            .foregroundStyle(.secondary)
+                        Text(
+                            "No categories available. Enable 'Include in Budget' for expense categories in account settings."
+                        )
+                        .foregroundStyle(.secondary)
                     } else {
-                        Picker("Category", selection: $selectedCategory) {
-                            Text("Select a category").tag(nil as Account?)
+                        Menu {
                             ForEach(availableCategories) { category in
-                                Label(category.displayName, systemImage: category.accountType.iconName)
-                                    .tag(category as Account?)
+                                Button {
+                                    selectedCategory = category
+                                } label: {
+                                    Label(
+                                        category.displayName,
+                                        systemImage: category.accountType.iconName)
+                                }
+                            }
+                        } label: {
+                            HStack {
+                                Text("Category")
+                                    .foregroundStyle(.secondary)
+                                Spacer()
+                                Text(selectedCategory?.displayName ?? "Select a category")
+                                    .foregroundStyle(
+                                        selectedCategory == nil ? .secondary : .primary)
                             }
                         }
                     }
-                    
+
                     TextField("Custom Name (optional)", text: $customName)
                 } header: {
                     Text("Category")
                 }
-                
+
                 Section {
                     TextField("Amount", text: $amountString)
                         .onChange(of: amountString) { _, newValue in
-                            if let decimal = Decimal(string: newValue.replacingOccurrences(of: ",", with: ".")) {
+                            if let decimal = Decimal(
+                                string: newValue.replacingOccurrences(of: ",", with: "."))
+                            {
                                 budgetedAmount = decimal
                             }
                         }
                 } header: {
                     Text("Budgeted Amount")
                 }
-                
+
                 if let category = selectedCategory {
                     Section {
                         let avgSpending = calculateAverageSpending(for: category)
@@ -611,7 +700,7 @@ struct AddEnvelopeView: View {
                             Text(CurrencyFormatter.format(avgSpending, currency: category.currency))
                                 .foregroundStyle(.secondary)
                         }
-                        
+
                         Button("Use Average") {
                             budgetedAmount = avgSpending
                             amountString = "\(avgSpending)"
@@ -630,7 +719,7 @@ struct AddEnvelopeView: View {
                         dismiss()
                     }
                 }
-                
+
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
                         addEnvelope()
@@ -642,32 +731,33 @@ struct AddEnvelopeView: View {
         }
         .frame(minWidth: 400, minHeight: 350)
     }
-    
+
     private func calculateAverageSpending(for category: Account) -> Decimal {
         let calendar = Calendar.current
         let threeMonthsAgo = calendar.date(byAdding: .month, value: -3, to: Date()) ?? Date()
-        
+
         let entries = category.entries ?? []
         var total: Decimal = 0
-        
+
         for entry in entries {
             guard let transaction = entry.transaction,
-                  !transaction.isRecurring,
-                  transaction.date >= threeMonthsAgo else {
+                !transaction.isRecurring,
+                transaction.date >= threeMonthsAgo
+            else {
                 continue
             }
-            
+
             if entry.entryType == .debit {
                 total += entry.amount
             } else {
                 total -= entry.amount
             }
         }
-        
+
         // Divide by 3 for monthly average
         return max(total / 3, 0)
     }
-    
+
     private func addEnvelope() {
         let envelope = Envelope(
             name: customName,
@@ -685,11 +775,11 @@ struct AddEnvelopeView: View {
 struct EditEnvelopeView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var envelope: Envelope
-    
+
     @State private var customName: String = ""
     @State private var budgetedAmount: Decimal = 0
     @State private var amountString: String = ""
-    
+
     var body: some View {
         NavigationStack {
             Form {
@@ -701,16 +791,18 @@ struct EditEnvelopeView: View {
                         }
                         .foregroundStyle(.secondary)
                     }
-                    
+
                     TextField("Custom Name (optional)", text: $customName)
                 } header: {
                     Text("Category")
                 }
-                
+
                 Section {
                     TextField("Amount", text: $amountString)
                         .onChange(of: amountString) { _, newValue in
-                            if let decimal = Decimal(string: newValue.replacingOccurrences(of: ",", with: ".")) {
+                            if let decimal = Decimal(
+                                string: newValue.replacingOccurrences(of: ",", with: "."))
+                            {
                                 budgetedAmount = decimal
                             }
                         }
@@ -726,7 +818,7 @@ struct EditEnvelopeView: View {
                         dismiss()
                     }
                 }
-                
+
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         saveChanges()
@@ -743,7 +835,7 @@ struct EditEnvelopeView: View {
         }
         .frame(minWidth: 400, minHeight: 250)
     }
-    
+
     private func saveChanges() {
         envelope.name = customName
         envelope.budgetedAmount = budgetedAmount
@@ -754,29 +846,30 @@ struct EditEnvelopeView: View {
 
 struct TransferBetweenEnvelopesView: View {
     @Environment(\.dismiss) private var dismiss
-    
+
     let budget: Budget
-    
+
     @State private var fromEnvelope: Envelope?
     @State private var toEnvelope: Envelope?
     @State private var amount: Decimal = 0
     @State private var amountString = ""
-    
+
     private var envelopes: [Envelope] {
         (budget.envelopes ?? []).sorted(by: { $0.sortOrder < $1.sortOrder })
     }
-    
+
     private var isValid: Bool {
         guard let from = fromEnvelope,
-              let to = toEnvelope,
-              from.id != to.id,
-              amount > 0,
-              from.availableAmount >= amount else {
+            let to = toEnvelope,
+            from.id != to.id,
+            amount > 0,
+            from.availableAmount >= amount
+        else {
             return false
         }
         return true
     }
-    
+
     var body: some View {
         NavigationStack {
             Form {
@@ -788,7 +881,7 @@ struct TransferBetweenEnvelopesView: View {
                                 .tag(envelope as Envelope?)
                         }
                     }
-                    
+
                     Picker("To", selection: $toEnvelope) {
                         Text("Select envelope").tag(nil as Envelope?)
                         ForEach(envelopes.filter { $0.id != fromEnvelope?.id }) { envelope in
@@ -799,11 +892,13 @@ struct TransferBetweenEnvelopesView: View {
                 } header: {
                     Text("Envelopes")
                 }
-                
+
                 Section {
                     TextField("Amount", text: $amountString)
                         .onChange(of: amountString) { _, newValue in
-                            if let decimal = Decimal(string: newValue.replacingOccurrences(of: ",", with: ".")) {
+                            if let decimal = Decimal(
+                                string: newValue.replacingOccurrences(of: ",", with: "."))
+                            {
                                 amount = decimal
                             }
                         }
@@ -811,15 +906,20 @@ struct TransferBetweenEnvelopesView: View {
                     Text("Amount")
                 } footer: {
                     if let from = fromEnvelope {
-                        Text("Available: \(CurrencyFormatter.format(from.availableAmount, currency: "EUR"))")
+                        Text(
+                            "Available: \(CurrencyFormatter.format(from.availableAmount, currency: "EUR"))"
+                        )
                     }
                 }
-                
+
                 if !isValid && amount > 0 {
                     if let from = fromEnvelope, amount > from.availableAmount {
                         Section {
-                            Label("Insufficient funds in source envelope", systemImage: "exclamationmark.triangle")
-                                .foregroundStyle(.red)
+                            Label(
+                                "Insufficient funds in source envelope",
+                                systemImage: "exclamationmark.triangle"
+                            )
+                            .foregroundStyle(.red)
                         }
                     }
                 }
@@ -832,7 +932,7 @@ struct TransferBetweenEnvelopesView: View {
                         dismiss()
                     }
                 }
-                
+
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Transfer") {
                         executeTransfer()
@@ -844,11 +944,12 @@ struct TransferBetweenEnvelopesView: View {
         }
         .frame(minWidth: 400, minHeight: 300)
     }
-    
+
     private func executeTransfer() {
         guard let from = fromEnvelope,
-              let to = toEnvelope else { return }
-        
+            let to = toEnvelope
+        else { return }
+
         let transfer = EnvelopeTransfer(fromEnvelope: from, toEnvelope: to, amount: amount)
         transfer.execute()
     }
@@ -856,6 +957,8 @@ struct TransferBetweenEnvelopesView: View {
 
 #Preview {
     BudgetView()
-        .modelContainer(for: [Account.self, Transaction.self, Budget.self, Envelope.self], inMemory: true)
+        .modelContainer(
+            for: [Account.self, Transaction.self, Budget.self, Envelope.self], inMemory: true
+        )
         .environment(AppSettings.shared)
 }

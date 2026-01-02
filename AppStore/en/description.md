@@ -1,4 +1,4 @@
-Cash is a modern macOS personal finance manager built on double-entry bookkeeping. Designed for people who want powerful accounting features that are easy to use, Cash helps you track accounts, categorize transactions, budget smarter, plan loan payments, and forecast balance trends — all with privacy and optional iCloud sync.
+Cash is a modern personal finance manager for macOS and iOS, built on double-entry bookkeeping. Designed for people who want powerful accounting features that are easy to use, Cash helps you track accounts, categorize transactions, budget smarter, plan loan payments, and forecast balance trends — all with privacy and optional iCloud sync.
 
 Core features
 - Double-entry bookkeeping engine for accurate accounting.
@@ -14,7 +14,7 @@ Privacy mode masks sensitive amounts and supports local-first storage with optio
 Why Cash
 - Local-first, privacy-minded storage: your data remains on device unless you opt-in to iCloud sync.
 - Flexible import & reconciliation: easily import OFX statements and match transactions.
-- Built for macOS: native SwiftUI app with modern UI, keyboard support, and first-class Mac features.
+- Built for macOS and iOS: native SwiftUI app with modern UI, keyboard support, and first-class platform features.
 
 Getting started
 - Guided setup wizard or Demo data to explore features.

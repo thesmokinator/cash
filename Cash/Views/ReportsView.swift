@@ -59,24 +59,24 @@ struct ReportsView: View {
         VStack(spacing: 0) {
             // Report type selector
             HStack {
-                ForEach(ReportType.allCases) { report in
-                    Button {
-                        selectedReport = report
-                    } label: {
-                        Label(report.localizedName, systemImage: report.iconName)
-                            .font(.subheadline)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 6)
-                            .background(selectedReport == report ? Color.accentColor.opacity(0.2) : Color.clear)
-                            .foregroundStyle(selectedReport == report ? .primary : .secondary)
-                            .clipShape(RoundedRectangle(cornerRadius: 6))
+                Spacer()
+                GlassMenuPicker(selectedReport.localizedName, selection: $selectedReport) {
+                    ForEach(ReportType.allCases) { report in
+                        Button {
+                            selectedReport = report
+                        } label: {
+                            HStack {
+                                Text(report.localizedName)
+                                if selectedReport == report {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
                     }
-                    .buttonStyle(.plain)
                 }
                 Spacer()
             }
             .padding()
-            .background(.bar)
             
             Divider()
             
@@ -94,6 +94,7 @@ struct ReportsView: View {
                 LongTermProjectionReportView()
             }
         }
+        .cashBackground()
         .navigationTitle("Reports")
     }
 }

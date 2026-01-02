@@ -84,7 +84,7 @@ struct TransactionListView: View {
     @State private var displayedTransactions: [(String, [Transaction])] = []
     
     var account: Account?
-    
+    var showToolbar: Bool = true    
     private var currency: String {
         account?.currency ?? CurrencyHelper.defaultCurrency(from: accounts)
     }
@@ -99,15 +99,7 @@ struct TransactionListView: View {
             TransactionFilterBar(
                 dateFilter: $dateFilter,
                 searchText: $searchText,
-                onAddTransaction: {
-                    if account?.accountType == .investment {
-                        showingAddInvestmentTransaction = true
-                    } else {
-                        showingAddTransaction = true
-                    }
-                },
-                onReconcile: canReconcile ? { showingReconciliation = true } : nil,
-                showReconcile: canReconcile
+                showActionButtons: false
             )
             
             Group {
@@ -193,6 +185,27 @@ struct TransactionListView: View {
             }
         }
         .navigationTitle(account?.name ?? String(localized: "All transactions"))
+        .toolbar {
+            if showToolbar {
+                ToolbarItemGroup(placement: .primaryAction) {
+                    Button {
+                        if account?.accountType == .investment {
+                            showingAddInvestmentTransaction = true
+                        } else {
+                            showingAddTransaction = true
+                        }
+                    } label: {
+                        Label("Add", systemImage: "plus")
+                    }
+                    
+                    if canReconcile {
+                        Button(action: { showingReconciliation = true }) {
+                            Label("Reconcile", systemImage: "checkmark.shield")
+                        }
+                    }
+                }
+            }
+        }
         .sheet(isPresented: $showingAddTransaction) {
             AddTransactionView(preselectedAccount: account)
         }
@@ -315,53 +328,122 @@ struct TransactionFilterBar: View {
     var onAddTransaction: (() -> Void)?
     var onReconcile: (() -> Void)?
     var showReconcile: Bool = false
-    
+    var showActionButtons: Bool = true
+
     var body: some View {
-        HStack(spacing: 12) {
-            HStack {
+        HStack(spacing: CashSpacing.sm) {
+            // Search field with glass style
+            HStack(spacing: CashSpacing.sm) {
                 Image(systemName: "magnifyingglass")
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(CashColors.primary.opacity(0.7))
+
                 TextField("Search", text: $searchText)
                     .textFieldStyle(.plain)
+                    .font(CashTypography.subheadline)
+
                 if !searchText.isEmpty {
                     Button {
-                        searchText = ""
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            searchText = ""
+                        }
                     } label: {
                         Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 14))
                             .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .transition(.scale.combined(with: .opacity))
+                }
+            }
+            .padding(.horizontal, CashSpacing.md)
+            .frame(height: 40)
+            .background(.ultraThinMaterial)
+            .background(CashColors.glassBackground.opacity(0.5))
+            .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
+            .overlay(
+                RoundedRectangle(cornerRadius: CashRadius.medium)
+                    .stroke(CashColors.primary.opacity(0.1), lineWidth: 1)
+            )
+
+            if showDateFilter {
+                // Period picker with glass style
+                Menu {
+                    ForEach(TransactionDateFilter.allCases) { filter in
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                dateFilter = filter
+                            }
+                        } label: {
+                            HStack {
+                                Text(filter.localizedName)
+                                if dateFilter == filter {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    HStack(spacing: CashSpacing.xs) {
+                        Image(systemName: "calendar")
+                            .font(.system(size: 14, weight: .medium))
+                        Text(dateFilter.localizedName)
+                            .font(CashTypography.subheadline)
+                            .lineLimit(1)
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 10, weight: .semibold))
+                    }
+                    .foregroundStyle(CashColors.primary)
+                    .padding(.horizontal, CashSpacing.md)
+                    .frame(height: 40)
+                    .background(.ultraThinMaterial)
+                    .background(CashColors.primary.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: CashRadius.medium)
+                            .stroke(CashColors.primary.opacity(0.1), lineWidth: 1)
+                    )
+                }
+            }
+
+            if showActionButtons {
+                if let onAdd = onAddTransaction {
+                    Button(action: onAdd) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 32, height: 32)
+                            .background(
+                                LinearGradient(
+                                    colors: [CashColors.primary, CashColors.primaryDark],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .clipShape(Circle())
+                            .shadow(color: CashColors.primary.opacity(0.3), radius: 4, x: 0, y: 2)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                if showReconcile, let onReconcileAction = onReconcile {
+                    Button(action: onReconcileAction) {
+                        Image(systemName: "checkmark.shield")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(CashColors.primary)
+                            .frame(width: 32, height: 32)
+                            .background(.ultraThinMaterial)
+                            .background(CashColors.primary.opacity(0.1))
+                            .clipShape(Circle())
                     }
                     .buttonStyle(.plain)
                 }
             }
-            .padding(8)
-            .background(Color(nsColor: .controlBackgroundColor))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            
-            if showDateFilter {
-                Picker("Period", selection: $dateFilter) {
-                    ForEach(TransactionDateFilter.allCases) { filter in
-                        Text(filter.localizedName).tag(filter)
-                    }
-                }
-                .labelsHidden()
-                .fixedSize()
-            }
-            
-            if let onAdd = onAddTransaction {
-                Button(action: onAdd) {
-                    Label("Add", systemImage: "plus")
-                }
-            }
-            
-            if showReconcile, let onReconcileAction = onReconcile {
-                Button(action: onReconcileAction) {
-                    Label("Reconcile", systemImage: "checkmark.shield")
-                }
-            }
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
-        .background(Color(nsColor: .windowBackgroundColor))
+        .padding(.horizontal, CashSpacing.lg)
+        .padding(.vertical, CashSpacing.md)
+        .background(.ultraThinMaterial)
+        .background(CashColors.glassBackground.opacity(0.3))
     }
 }
 
@@ -419,7 +501,7 @@ struct TransactionRowView: View {
                 }
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 8)
     }
 }
 

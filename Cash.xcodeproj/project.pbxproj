@@ -36,9 +36,22 @@
 		926E5BD02ED60CD700EA8D22 /* CashUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CashUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9280963B2F07AF7400EBD9E4 /* Exceptions for "Cash" folder in "Cash" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 926E5BB62ED60CD600EA8D22 /* Cash */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		926E5BB92ED60CD600EA8D22 /* Cash */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9280963B2F07AF7400EBD9E4 /* Exceptions for "Cash" folder in "Cash" target */,
+			);
 			path = Cash;
 			sourceTree = "<group>";
 		};
@@ -265,7 +278,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "GIT_HASH=$(/usr/bin/git -C \"${SRCROOT}\" rev-parse --short HEAD)\nGIT_COMMIT_COUNT=$(/usr/bin/git -C \"${SRCROOT}\" rev-list --count HEAD)\n# Set CFBundleVersion to a numeric build number derived from the commit count\nif /usr/libexec/PlistBuddy -c \"Print :CFBundleVersion\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" &> /dev/null; then\n  /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $GIT_COMMIT_COUNT\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nelse\n  /usr/libexec/PlistBuddy -c \"Add :CFBundleVersion string $GIT_COMMIT_COUNT\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n# Store the short git hash as a separate key for display in the app\nif /usr/libexec/PlistBuddy -c \"Print :GitShortHash\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" &> /dev/null; then\n  /usr/libexec/PlistBuddy -c \"Set :GitShortHash $GIT_HASH\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nelse\n  /usr/libexec/PlistBuddy -c \"Add :GitShortHash string $GIT_HASH\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n";
+			shellScript = "GIT_HASH=$(/usr/bin/git -C \"${SRCROOT}\" rev-parse --short HEAD)\nGIT_COMMIT_COUNT=$(/usr/bin/git -C \"${SRCROOT}\" rev-list --count HEAD)\n# Set CFBundleShortVersionString if PLATFORM_VERSION is set\nif [ -n \"$PLATFORM_VERSION\" ]; then\n  if /usr/libexec/PlistBuddy -c \"Print :CFBundleShortVersionString\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" &> /dev/null; then\n    /usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $PLATFORM_VERSION\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n  else\n    /usr/libexec/PlistBuddy -c \"Add :CFBundleShortVersionString string $PLATFORM_VERSION\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\n  fi\nfi\n# Set CFBundleVersion to a numeric build number derived from the commit count\nif /usr/libexec/PlistBuddy -c \"Print :CFBundleVersion\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" &> /dev/null; then\n  /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $GIT_COMMIT_COUNT\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nelse\n  /usr/libexec/PlistBuddy -c \"Add :CFBundleVersion string $GIT_COMMIT_COUNT\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n# Store the short git hash as a separate key for display in the app\nif /usr/libexec/PlistBuddy -c \"Print :GitShortHash\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\" &> /dev/null; then\n  /usr/libexec/PlistBuddy -c \"Set :GitShortHash $GIT_HASH\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nelse\n  /usr/libexec/PlistBuddy -c \"Add :GitShortHash string $GIT_HASH\" \"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -442,10 +455,11 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 932KJJ3UZK;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
@@ -459,24 +473,32 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Cash/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Cash Personal Finance";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.thesmokinator.Cash;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) ENABLE_ICLOUD";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -490,10 +512,11 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 932KJJ3UZK;
 				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_INCOMING_NETWORK_CONNECTIONS = NO;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
@@ -507,24 +530,32 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readwrite;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Cash/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Cash Personal Finance";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.thesmokinator.Cash;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ENABLE_ICLOUD";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -533,11 +564,11 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.thesmokinator.CashTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -554,11 +585,11 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.thesmokinator.CashTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -574,10 +605,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.thesmokinator.CashUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -593,10 +624,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.thesmokinator.CashUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;

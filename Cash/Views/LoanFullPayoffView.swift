@@ -194,7 +194,6 @@ struct LoanFullPayoffView: View {
                 selectedPaymentAccount = bankAccounts.first
             }
         }
-        .frame(minWidth: 450, minHeight: 550)
     }
     
     private func executePayoff() {

@@ -1,1 +1,1 @@
-Track accounts, budgets & loans — secure, privacy-first finance for macOS.
+Track accounts, budgets & loans — secure, privacy-first finance for macOS and iOS.

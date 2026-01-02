@@ -56,14 +56,261 @@ struct ReconciliationView: View {
     }
     
     var body: some View {
+        Group {
+            if DeviceType.current.isCompact {
+                // Modern iPhone layout
+                NavigationStack {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // Statement info card
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Statement Information")
+                                .font(.headline)
+                                .foregroundStyle(.secondary)
+                            
+                            VStack(spacing: 12) {
+                                HStack {
+                                    Text("Date")
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                    DatePicker("", selection: $statementDate, displayedComponents: .date)
+                                        .labelsHidden()
+                                }
+                                
+                                Divider()
+                                
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text("Ending balance")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                    HStack(spacing: 8) {
+                                        TextField("0.00", text: $statementBalance)
+                                            #if os(iOS)
+                                            .keyboardType(.decimalPad)
+                                            #endif
+                                            .font(.title2)
+                                            .fontWeight(.semibold)
+                                        Text(account.currency)
+                                            .font(.title3)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                            }
+                        }
+                        .padding()
+                        .background(Color.platformWindowBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .shadow(color: .black.opacity(0.05), radius: 2, y: 1)
+                        
+                        // Balance summary card
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Balance Summary")
+                                .font(.headline)
+                                .foregroundStyle(.secondary)
+                            
+                            VStack(spacing: 12) {
+                                BalanceRow(
+                                    label: "Last reconciled",
+                                    amount: account.lastReconciledBalance ?? Decimal.zero,
+                                    currency: account.currency
+                                )
+                                
+                                Divider()
+                                
+                                BalanceRow(
+                                    label: "Cleared balance",
+                                    amount: clearedBalance,
+                                    currency: account.currency
+                                )
+                                
+                                Divider()
+                                
+                                BalanceRow(
+                                    label: "Statement balance",
+                                    amount: statementBalanceDecimal ?? Decimal.zero,
+                                    currency: account.currency
+                                )
+                                
+                                Divider()
+                                
+                                HStack {
+                                    Text("Difference")
+                                        .font(.subheadline)
+                                    Spacer()
+                                    Text(CurrencyFormatter.format(difference, currency: account.currency))
+                                        .font(.title3)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(difference == Decimal.zero ? .green : .red)
+                                }
+                            }
+                        }
+                        .padding()
+                        .background(Color.platformWindowBackground)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .shadow(color: .black.opacity(0.05), radius: 2, y: 1)
+                        
+                        // Transactions section
+                        if isLoading {
+                            ProgressView()
+                                .padding()
+                        } else if unreconcicledTransactions.isEmpty {
+                            ContentUnavailableView {
+                                Label("No transactions to reconcile", systemImage: "checkmark.circle")
+                            } description: {
+                                Text("All transactions have been reconciled")
+                            }
+                            .padding()
+                        } else {
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack {
+                                    Text("\(unreconcicledTransactions.count) unreconciled transactions")
+                                        .font(.headline)
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                    if !selectedTransactionIDs.isEmpty {
+                                        Button("Clear") {
+                                            selectedTransactionIDs.removeAll()
+                                        }
+                                        .font(.subheadline)
+                                    }
+                                    Button(selectedTransactionIDs.count == unreconcicledTransactions.count ? "Deselect all" : "Select all") {
+                                        if selectedTransactionIDs.count == unreconcicledTransactions.count {
+                                            selectedTransactionIDs.removeAll()
+                                        } else {
+                                            selectedTransactionIDs = Set(unreconcicledTransactions.map { $0.id })
+                                        }
+                                    }
+                                    .font(.subheadline)
+                                }
+                                
+                                ForEach(unreconcicledTransactions) { transaction in
+                                    ReconciliationTransactionRow(
+                                        transaction: transaction,
+                                        account: account,
+                                        isSelected: selectedTransactionIDs.contains(transaction.id)
+                                    ) {
+                                        if selectedTransactionIDs.contains(transaction.id) {
+                                            selectedTransactionIDs.remove(transaction.id)
+                                        } else {
+                                            selectedTransactionIDs.insert(transaction.id)
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                    }
+                    .padding()
+                }
+                .background(Color.platformSecondaryBackground)
+                .navigationTitle("Reconcile")
+                .navigationBarTitleDisplayModeInline()
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { dismiss() }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Reconcile") {
+                            showingConfirmation = true
+                        }
+                        .disabled(!isBalanced || selectedTransactionIDs.isEmpty)
+                        .fontWeight(.semibold)
+                    }
+                }
+            }
+        } else {
+            // iPad layout (keep existing)
+            iphoneLegacyLayout
+        }
+        }
+        .task {
+            await loadTransactions()
+        }
+        .confirmationDialog(
+            "Confirm reconciliation",
+            isPresented: $showingConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Reconcile \(selectedTransactionIDs.count) transactions") {
+                performReconciliation()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("This will mark \(selectedTransactionIDs.count) transactions as reconciled. Reconciled transactions should not be modified.")
+        }
+    }
+    
+    private func loadTransactions() async {
+        isLoading = true
+        
+        // Small delay to allow UI to render
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        _ = account.id
+        let allEntries = account.entries ?? []
+        
+        // Get all transactions that have entries in this account and are not reconciled
+        var transactionSet = Set<UUID>()
+        var transactions: [Transaction] = []
+        
+        for entry in allEntries {
+            guard let transaction = entry.transaction,
+                  !transaction.isRecurring,
+                  transaction.reconciliationStatus != .reconciled,
+                  transaction.date <= statementDate,
+                  !transactionSet.contains(transaction.id) else {
+                continue
+            }
+            transactionSet.insert(transaction.id)
+            transactions.append(transaction)
+        }
+        
+        // Sort by date
+        transactions.sort { $0.date < $1.date }
+        
+        // Pre-select cleared transactions
+        let clearedIDs = transactions
+            .filter { $0.reconciliationStatus == .cleared }
+            .map { $0.id }
+        
+        await MainActor.run {
+            unreconcicledTransactions = transactions
+            selectedTransactionIDs = Set(clearedIDs)
+            isLoading = false
+        }
+    }
+    
+    private func performReconciliation() {
+        let now = Date()
+        
+        for transaction in unreconcicledTransactions {
+            if selectedTransactionIDs.contains(transaction.id) {
+                transaction.reconciliationStatus = .reconciled
+                transaction.reconciledDate = now
+            }
+        }
+        
+        // Update account reconciliation info
+        account.lastReconciledBalance = statementBalanceDecimal
+        account.lastReconciledDate = statementDate
+        
+        try? modelContext.save()
+        
+        dismiss()
+    }
+    
+    // MARK: - Legacy Layout for iPad/macOS
+    
+    private var iphoneLegacyLayout: some View {
         VStack(spacing: 0) {
-            // Header with statement info
+            // Header with statement info (existing layout)
             VStack(spacing: 16) {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Reconcile: \(account.displayName)")
                             .font(.title2)
                             .fontWeight(.bold)
+                            .lineLimit(1)
                         if let lastDate = account.lastReconciledDate {
                             Text("Last reconciled: \(lastDate.formatted(date: .abbreviated, time: .omitted))")
                                 .font(.caption)
@@ -71,9 +318,6 @@ struct ReconciliationView: View {
                         }
                     }
                     Spacer()
-                    Button("Cancel") {
-                        dismiss()
-                    }
                 }
                 
                 HStack(spacing: 20) {
@@ -149,45 +393,50 @@ struct ReconciliationView: View {
                 ContentUnavailableView {
                     Label("No transactions to reconcile", systemImage: "checkmark.circle")
                 } description: {
-                    Text("All transactions for this account have been reconciled")
+                    Text("All transactions have been reconciled")
                 }
                 Spacer()
             } else {
                 List {
-                    Section {
-                        ForEach(unreconcicledTransactions) { transaction in
-                            ReconciliationTransactionRow(
-                                transaction: transaction,
-                                account: account,
-                                isSelected: selectedTransactionIDs.contains(transaction.id),
-                                onToggle: {
-                                    if selectedTransactionIDs.contains(transaction.id) {
-                                        selectedTransactionIDs.remove(transaction.id)
-                                    } else {
-                                        selectedTransactionIDs.insert(transaction.id)
-                                    }
-                                }
-                            )
-                        }
-                    } header: {
-                        HStack {
-                            Text("\(unreconcicledTransactions.count) unreconciled transactions")
-                            Spacer()
-                            Button("Select all") {
-                                selectedTransactionIDs = Set(unreconcicledTransactions.map { $0.id })
+                    ForEach(unreconcicledTransactions) { transaction in
+                        ReconciliationTransactionRow(
+                            transaction: transaction,
+                            account: account,
+                            isSelected: selectedTransactionIDs.contains(transaction.id)
+                        ) {
+                            if selectedTransactionIDs.contains(transaction.id) {
+                                selectedTransactionIDs.remove(transaction.id)
+                            } else {
+                                selectedTransactionIDs.insert(transaction.id)
                             }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(.tint)
-                            
-                            Text("•")
-                                .foregroundStyle(.tertiary)
-                            
-                            Button("Clear selection") {
-                                selectedTransactionIDs.removeAll()
-                            }
-                            .buttonStyle(.plain)
-                            .foregroundStyle(.tint)
                         }
+                    }
+                }
+                .listStyle(.inset)
+                
+                HStack(spacing: 8) {
+                    Text("\(selectedTransactionIDs.count) of \(unreconcicledTransactions.count) selected")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    
+                    if !selectedTransactionIDs.isEmpty {
+                        Text("•")
+                            .foregroundStyle(.tertiary)
+                        
+                        Button("Select all") {
+                            selectedTransactionIDs = Set(unreconcicledTransactions.map { $0.id })
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.tint)
+                        
+                        Text("•")
+                            .foregroundStyle(.tertiary)
+                        
+                        Button("Clear selection") {
+                            selectedTransactionIDs.removeAll()
+                        }
+                        .buttonStyle(.plain)
+                        .foregroundStyle(.tint)
                     }
                 }
             }
@@ -223,7 +472,8 @@ struct ReconciliationView: View {
             .padding()
             .background(.regularMaterial)
         }
-        .frame(minWidth: 700, minHeight: 500)
+        .presentationDetents([.large])
+        .presentationDragIndicator(.visible)
         .task {
             await loadTransactions()
         }
@@ -240,64 +490,25 @@ struct ReconciliationView: View {
             Text("This will mark \(selectedTransactionIDs.count) transactions as reconciled. Reconciled transactions should not be modified.")
         }
     }
+}
+
+// MARK: - Supporting Views
+
+// New component for iPhone layout
+struct BalanceRow: View {
+    let label: String
+    let amount: Decimal
+    let currency: String
     
-    private func loadTransactions() async {
-        isLoading = true
-        
-        // Small delay to allow UI to render
-        try? await Task.sleep(nanoseconds: 100_000_000)
-        
-        _ = account.id
-        let allEntries = account.entries ?? []
-        
-        // Get all transactions that have entries in this account and are not reconciled
-        var transactionSet = Set<UUID>()
-        var transactions: [Transaction] = []
-        
-        for entry in allEntries {
-            guard let transaction = entry.transaction,
-                  !transaction.isRecurring,
-                  transaction.reconciliationStatus != .reconciled,
-                  transaction.date <= statementDate,
-                  !transactionSet.contains(transaction.id) else {
-                continue
-            }
-            transactionSet.insert(transaction.id)
-            transactions.append(transaction)
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.subheadline)
+            Spacer()
+            Text(CurrencyFormatter.format(amount, currency: currency))
+                .font(.body)
+                .fontWeight(.medium)
         }
-        
-        // Sort by date
-        transactions.sort { $0.date < $1.date }
-        
-        // Pre-select cleared transactions
-        let clearedIDs = transactions
-            .filter { $0.reconciliationStatus == .cleared }
-            .map { $0.id }
-        
-        await MainActor.run {
-            unreconcicledTransactions = transactions
-            selectedTransactionIDs = Set(clearedIDs)
-            isLoading = false
-        }
-    }
-    
-    private func performReconciliation() {
-        let now = Date()
-        
-        for transaction in unreconcicledTransactions {
-            if selectedTransactionIDs.contains(transaction.id) {
-                transaction.reconciliationStatus = .reconciled
-                transaction.reconciledDate = now
-            }
-        }
-        
-        // Update account reconciliation info
-        account.lastReconciledBalance = statementBalanceDecimal
-        account.lastReconciledDate = statementDate
-        
-        try? modelContext.save()
-        
-        dismiss()
     }
 }
 

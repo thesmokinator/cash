@@ -58,79 +58,76 @@ struct NetWorthView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 24) {
+            VStack(spacing: CashSpacing.xl) {
                 // Net Worth Cards - One per currency
                 if netWorthByCurrency.isEmpty {
-                    ContentUnavailableView {
-                        Label("No accounts", systemImage: "building.columns")
-                    } description: {
-                        Text("Create accounts to see your net worth.")
-                    }
+                    GlassEmptyState(
+                        icon: "building.columns",
+                        title: "No Accounts",
+                        description: "Create accounts to see your net worth."
+                    )
                 } else if netWorthByCurrency.count == 1 {
                     // Single currency - show traditional layout
                     let data = netWorthByCurrency[0]
-                    
-                    VStack(spacing: 8) {
+
+                    VStack(spacing: CashSpacing.md) {
                         HStack {
                             Text("Net Worth")
-                                .font(.headline)
+                                .font(CashTypography.subheadline)
                                 .foregroundStyle(.secondary)
                             Spacer()
                         }
                         .padding(.horizontal)
-                        
+
                         PrivacyAmountView(
                             amount: CurrencyFormatter.format(data.netWorth, currency: data.currency),
                             isPrivate: settings.privacyMode,
-                            font: .system(size: 48, weight: .bold),
-                            color: data.netWorth >= 0 ? .primary : .red
+                            font: CashTypography.amountLarge,
+                            color: data.netWorth >= 0 ? CashColors.primary : CashColors.error
                         )
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 24)
-                    .background(.regularMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .padding(.vertical, CashSpacing.xl)
+                    .glassBackground()
                     
                     // Summary Cards
-                    HStack(spacing: 16) {
-                        SummaryCard(
+                    HStack(spacing: CashSpacing.md) {
+                        GlassMetricCard(
                             title: "Assets",
-                            amount: data.assets,
-                            color: .green,
+                            value: CurrencyFormatter.format(data.assets, currency: data.currency),
                             icon: "arrow.up.circle.fill",
-                            privacyMode: settings.privacyMode,
-                            currency: data.currency
+                            valueColor: CashColors.success,
+                            iconColor: CashColors.success,
+                            isPrivate: settings.privacyMode
                         )
-                        
-                        SummaryCard(
+
+                        GlassMetricCard(
                             title: "Liabilities",
-                            amount: data.liabilities,
-                            color: .red,
+                            value: CurrencyFormatter.format(data.liabilities, currency: data.currency),
                             icon: "arrow.down.circle.fill",
-                            privacyMode: settings.privacyMode,
-                            currency: data.currency
+                            valueColor: CashColors.error,
+                            iconColor: CashColors.error,
+                            isPrivate: settings.privacyMode
                         )
                     }
                 } else {
                     // Multiple currencies - show grouped by currency
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("Net Worth")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        
-                        VStack(spacing: 12) {
-                            ForEach(netWorthByCurrency, id: \.currency) { data in
-                                CurrencyNetWorthCard(
-                                    data: data,
-                                    privacyMode: settings.privacyMode
-                                )
+                    GlassCard(padding: CashSpacing.lg) {
+                        VStack(alignment: .leading, spacing: CashSpacing.lg) {
+                            Text("Net Worth")
+                                .font(CashTypography.title2)
+
+                            VStack(spacing: CashSpacing.md) {
+                                ForEach(netWorthByCurrency, id: \.currency) { data in
+                                    CurrencyNetWorthCard(
+                                        data: data,
+                                        privacyMode: settings.privacyMode
+                                    )
+                                }
                             }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(.regularMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 
                 // Assets Section - grouped by currency and type
@@ -138,89 +135,86 @@ struct NetWorthView: View {
                     ForEach(currencies, id: \.self) { currency in
                         let currencyAssets = assetAccounts(for: currency)
                         if !currencyAssets.isEmpty {
-                            VStack(alignment: .leading, spacing: 12) {
-                                HStack {
-                                    Text("Assets")
-                                        .font(.title2)
-                                        .fontWeight(.semibold)
-                                    
-                                    if netWorthByCurrency.count > 1 {
-                                        Text("(\(CurrencyList.symbol(forCode: currency)))")
-                                            .font(.title3)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                                
-                                // Group by account type
-                                let groupedAssets = Dictionary(grouping: currencyAssets) { $0.accountType }
-                                let sortedTypes = groupedAssets.keys.sorted { $0.localizedName < $1.localizedName }
-                                
-                                ForEach(sortedTypes, id: \.self) { accountType in
-                                    if let accountsOfType = groupedAssets[accountType] {
-                                        VStack(alignment: .leading, spacing: 8) {
-                                            // Type header
-                                            HStack {
-                                                Image(systemName: accountType.iconName)
-                                                    .foregroundStyle(.secondary)
-                                                    .font(.subheadline)
-                                                Text(accountType.localizedName)
-                                                    .font(.subheadline)
-                                                    .fontWeight(.medium)
-                                                    .foregroundStyle(.secondary)
-                                            }
-                                            .padding(.top, sortedTypes.first == accountType ? 0 : 8)
-                                            
-                                            // Accounts of this type
-                                            ForEach(accountsOfType) { account in
-                                                AccountBalanceRow(account: account, privacyMode: settings.privacyMode, showIcon: false)
-                                            }
-                                            
-                                            // Subtotal for this type
-                                            HStack {
-                                                Text("Subtotal")
-                                                    .font(.caption)
-                                                    .foregroundStyle(.tertiary)
-                                                Spacer()
-                                                PrivacyAmountView(
-                                                    amount: CurrencyFormatter.format(
-                                                        accountsOfType.reduce(0) { $0 + $1.balance },
-                                                        currency: currency
-                                                    ),
-                                                    isPrivate: settings.privacyMode,
-                                                    font: .caption,
-                                                    fontWeight: .semibold,
-                                                    color: .green
-                                                )
-                                            }
-                                            .padding(.vertical, 2)
+                            GlassCard(padding: CashSpacing.lg) {
+                                VStack(alignment: .leading, spacing: CashSpacing.md) {
+                                    HStack {
+                                        Text("Assets")
+                                            .font(CashTypography.title2)
+
+                                        if netWorthByCurrency.count > 1 {
+                                            Text("(\(CurrencyList.symbol(forCode: currency)))")
+                                                .font(CashTypography.headline)
+                                                .foregroundStyle(.secondary)
                                         }
                                     }
-                                }
-                                
-                                // Total for this currency
-                                if netWorthByCurrency.count > 1 {
-                                    Divider()
-                                    HStack {
-                                        Text("Total")
-                                            .fontWeight(.semibold)
-                                        Spacer()
-                                        PrivacyAmountView(
-                                            amount: CurrencyFormatter.format(
-                                                currencyAssets.reduce(0) { $0 + $1.balance },
-                                                currency: currency
-                                            ),
-                                            isPrivate: settings.privacyMode,
-                                            fontWeight: .semibold,
-                                            color: .green
-                                        )
+
+                                    // Group by account type
+                                    let groupedAssets = Dictionary(grouping: currencyAssets) { $0.accountType }
+                                    let sortedTypes = groupedAssets.keys.sorted { $0.localizedName < $1.localizedName }
+
+                                    ForEach(sortedTypes, id: \.self) { accountType in
+                                        if let accountsOfType = groupedAssets[accountType] {
+                                            VStack(alignment: .leading, spacing: CashSpacing.sm) {
+                                                // Type header
+                                                HStack {
+                                                    Image(systemName: accountType.iconName)
+                                                        .foregroundStyle(CashColors.success)
+                                                        .font(.subheadline)
+                                                    Text(accountType.localizedName)
+                                                        .font(CashTypography.subheadline)
+                                                        .foregroundStyle(.secondary)
+                                                }
+                                                .padding(.top, sortedTypes.first == accountType ? 0 : CashSpacing.sm)
+
+                                                // Accounts of this type
+                                                ForEach(accountsOfType) { account in
+                                                    AccountBalanceRow(account: account, privacyMode: settings.privacyMode, showIcon: false)
+                                                }
+
+                                                // Subtotal for this type
+                                                HStack {
+                                                    Text("Subtotal")
+                                                        .font(CashTypography.caption)
+                                                        .foregroundStyle(.tertiary)
+                                                    Spacer()
+                                                    PrivacyAmountView(
+                                                        amount: CurrencyFormatter.format(
+                                                            accountsOfType.reduce(0) { $0 + $1.balance },
+                                                            currency: currency
+                                                        ),
+                                                        isPrivate: settings.privacyMode,
+                                                        font: CashTypography.caption,
+                                                        fontWeight: .semibold,
+                                                        color: CashColors.success
+                                                    )
+                                                }
+                                                .padding(.vertical, 2)
+                                            }
+                                        }
                                     }
-                                    .padding(.vertical, 4)
+
+                                    // Total for this currency
+                                    if netWorthByCurrency.count > 1 {
+                                        GlassDivider()
+                                        HStack {
+                                            Text("Total")
+                                                .font(CashTypography.headline)
+                                            Spacer()
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(
+                                                    currencyAssets.reduce(0) { $0 + $1.balance },
+                                                    currency: currency
+                                                ),
+                                                isPrivate: settings.privacyMode,
+                                                fontWeight: .semibold,
+                                                color: CashColors.success
+                                            )
+                                        }
+                                        .padding(.vertical, CashSpacing.xs)
+                                    }
                                 }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                            .background(.regularMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
                     }
                 }
@@ -230,207 +224,171 @@ struct NetWorthView: View {
                     ForEach(currencies, id: \.self) { currency in
                         let currencyLiabilities = liabilityAccounts(for: currency)
                         if !currencyLiabilities.isEmpty {
-                            VStack(alignment: .leading, spacing: 12) {
-                                HStack {
-                                    Text("Liabilities")
-                                        .font(.title2)
-                                        .fontWeight(.semibold)
-                                    
-                                    if netWorthByCurrency.count > 1 {
-                                        Text("(\(CurrencyList.symbol(forCode: currency)))")
-                                            .font(.title3)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                                
-                                // Group by account type
-                                let groupedLiabilities = Dictionary(grouping: currencyLiabilities) { $0.accountType }
-                                let sortedTypes = groupedLiabilities.keys.sorted { $0.localizedName < $1.localizedName }
-                                
-                                ForEach(sortedTypes, id: \.self) { accountType in
-                                    if let accountsOfType = groupedLiabilities[accountType] {
-                                        VStack(alignment: .leading, spacing: 8) {
-                                            // Type header
-                                            HStack {
-                                                Image(systemName: accountType.iconName)
-                                                    .foregroundStyle(.secondary)
-                                                    .font(.subheadline)
-                                                Text(accountType.localizedName)
-                                                    .font(.subheadline)
-                                                    .fontWeight(.medium)
-                                                    .foregroundStyle(.secondary)
-                                            }
-                                            .padding(.top, sortedTypes.first == accountType ? 0 : 8)
-                                            
-                                            // Accounts of this type
-                                            ForEach(accountsOfType) { account in
-                                                AccountBalanceRow(account: account, privacyMode: settings.privacyMode, showIcon: false)
-                                            }
-                                            
-                                            // Subtotal for this type
-                                            HStack {
-                                                Text("Subtotal")
-                                                    .font(.caption)
-                                                    .foregroundStyle(.tertiary)
-                                                Spacer()
-                                                PrivacyAmountView(
-                                                    amount: CurrencyFormatter.format(
-                                                        accountsOfType.reduce(0) { $0 + $1.balance },
-                                                        currency: currency
-                                                    ),
-                                                    isPrivate: settings.privacyMode,
-                                                    font: .caption,
-                                                    fontWeight: .semibold,
-                                                    color: .red
-                                                )
-                                            }
-                                            .padding(.vertical, 2)
+                            GlassCard(padding: CashSpacing.lg) {
+                                VStack(alignment: .leading, spacing: CashSpacing.md) {
+                                    HStack {
+                                        Text("Liabilities")
+                                            .font(CashTypography.title2)
+
+                                        if netWorthByCurrency.count > 1 {
+                                            Text("(\(CurrencyList.symbol(forCode: currency)))")
+                                                .font(CashTypography.headline)
+                                                .foregroundStyle(.secondary)
                                         }
                                     }
-                                }
-                                
-                                // Total for this currency
-                                if netWorthByCurrency.count > 1 {
-                                    Divider()
-                                    HStack {
-                                        Text("Total")
-                                            .fontWeight(.semibold)
-                                        Spacer()
-                                        PrivacyAmountView(
-                                            amount: CurrencyFormatter.format(
-                                                currencyLiabilities.reduce(0) { $0 + $1.balance },
-                                                currency: currency
-                                            ),
-                                            isPrivate: settings.privacyMode,
-                                            fontWeight: .semibold,
-                                            color: .red
-                                        )
+
+                                    // Group by account type
+                                    let groupedLiabilities = Dictionary(grouping: currencyLiabilities) { $0.accountType }
+                                    let sortedTypes = groupedLiabilities.keys.sorted { $0.localizedName < $1.localizedName }
+
+                                    ForEach(sortedTypes, id: \.self) { accountType in
+                                        if let accountsOfType = groupedLiabilities[accountType] {
+                                            VStack(alignment: .leading, spacing: CashSpacing.sm) {
+                                                // Type header
+                                                HStack {
+                                                    Image(systemName: accountType.iconName)
+                                                        .foregroundStyle(CashColors.error)
+                                                        .font(.subheadline)
+                                                    Text(accountType.localizedName)
+                                                        .font(CashTypography.subheadline)
+                                                        .foregroundStyle(.secondary)
+                                                }
+                                                .padding(.top, sortedTypes.first == accountType ? 0 : CashSpacing.sm)
+
+                                                // Accounts of this type
+                                                ForEach(accountsOfType) { account in
+                                                    AccountBalanceRow(account: account, privacyMode: settings.privacyMode, showIcon: false)
+                                                }
+
+                                                // Subtotal for this type
+                                                HStack {
+                                                    Text("Subtotal")
+                                                        .font(CashTypography.caption)
+                                                        .foregroundStyle(.tertiary)
+                                                    Spacer()
+                                                    PrivacyAmountView(
+                                                        amount: CurrencyFormatter.format(
+                                                            accountsOfType.reduce(0) { $0 + $1.balance },
+                                                            currency: currency
+                                                        ),
+                                                        isPrivate: settings.privacyMode,
+                                                        font: CashTypography.caption,
+                                                        fontWeight: .semibold,
+                                                        color: CashColors.error
+                                                    )
+                                                }
+                                                .padding(.vertical, 2)
+                                            }
+                                        }
                                     }
-                                    .padding(.vertical, 4)
+
+                                    // Total for this currency
+                                    if netWorthByCurrency.count > 1 {
+                                        GlassDivider()
+                                        HStack {
+                                            Text("Total")
+                                                .font(CashTypography.headline)
+                                            Spacer()
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(
+                                                    currencyLiabilities.reduce(0) { $0 + $1.balance },
+                                                    currency: currency
+                                                ),
+                                                isPrivate: settings.privacyMode,
+                                                fontWeight: .semibold,
+                                                color: CashColors.error
+                                            )
+                                        }
+                                        .padding(.vertical, CashSpacing.xs)
+                                    }
                                 }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                            .background(.regularMaterial)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
                     }
                 }
             }
-            .padding()
+            .padding(CashSpacing.lg)
         }
+        .cashBackground()
         .navigationTitle("Net Worth")
         .id(settings.refreshID)
-    }
-}
-
-struct SummaryCard: View {
-    let title: LocalizedStringKey
-    let amount: Decimal
-    let color: Color
-    let icon: String
-    var privacyMode: Bool = false
-    var currency: String = "EUR"
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Image(systemName: icon)
-                    .foregroundColor(color)
-                Text(title)
-                    .foregroundStyle(.secondary)
-            }
-            .font(.subheadline)
-            
-            PrivacyAmountView(
-                amount: CurrencyFormatter.format(amount, currency: currency),
-                isPrivate: privacyMode,
-                font: .title2,
-                fontWeight: .semibold
-            )
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(.regularMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
 struct CurrencyNetWorthCard: View {
     let data: NetWorthByCurrency
     var privacyMode: Bool = false
-    
+
     var body: some View {
-        HStack(alignment: .center, spacing: 16) {
+        HStack(alignment: .center, spacing: CashSpacing.lg) {
             // Currency symbol/code
             VStack(alignment: .leading, spacing: 2) {
                 Text(CurrencyList.symbol(forCode: data.currency))
-                    .font(.title)
-                    .fontWeight(.bold)
+                    .font(CashTypography.title)
                 Text(data.currency)
-                    .font(.caption)
+                    .font(CashTypography.caption)
                     .foregroundStyle(.secondary)
             }
             .frame(width: 60)
-            
+
             Divider()
-            
+
             // Net Worth
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: CashSpacing.xs) {
                 Text("Net Worth")
-                    .font(.caption)
+                    .font(CashTypography.caption)
                     .foregroundStyle(.secondary)
                 PrivacyAmountView(
                     amount: CurrencyFormatter.format(data.netWorth, currency: data.currency),
                     isPrivate: privacyMode,
-                    font: .title2,
-                    fontWeight: .bold,
-                    color: data.netWorth >= 0 ? .primary : .red
+                    font: CashTypography.title2,
+                    color: data.netWorth >= 0 ? CashColors.primary : CashColors.error
                 )
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            
+
             // Assets
-            VStack(alignment: .trailing, spacing: 4) {
+            VStack(alignment: .trailing, spacing: CashSpacing.xs) {
                 HStack(spacing: 4) {
                     Image(systemName: "arrow.up.circle.fill")
-                        .foregroundStyle(.green)
+                        .foregroundStyle(CashColors.success)
                         .font(.caption)
                     Text("Assets")
-                        .font(.caption)
+                        .font(CashTypography.caption)
                         .foregroundStyle(.secondary)
                 }
                 PrivacyAmountView(
                     amount: CurrencyFormatter.format(data.assets, currency: data.currency),
                     isPrivate: privacyMode,
-                    font: .subheadline,
+                    font: CashTypography.subheadline,
                     fontWeight: .medium,
-                    color: .green
+                    color: CashColors.success
                 )
             }
-            
+
             // Liabilities
-            VStack(alignment: .trailing, spacing: 4) {
+            VStack(alignment: .trailing, spacing: CashSpacing.xs) {
                 HStack(spacing: 4) {
                     Image(systemName: "arrow.down.circle.fill")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(CashColors.error)
                         .font(.caption)
                     Text("Liabilities")
-                        .font(.caption)
+                        .font(CashTypography.caption)
                         .foregroundStyle(.secondary)
                 }
                 PrivacyAmountView(
                     amount: CurrencyFormatter.format(data.liabilities, currency: data.currency),
                     isPrivate: privacyMode,
-                    font: .subheadline,
+                    font: CashTypography.subheadline,
                     fontWeight: .medium,
-                    color: .red
+                    color: CashColors.error
                 )
             }
         }
-        .padding()
-        .background(.quaternary.opacity(0.3))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .padding(CashSpacing.lg)
+        .background(CashColors.primary.opacity(0.1))
+        .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
     }
 }
 

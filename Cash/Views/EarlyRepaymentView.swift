@@ -105,16 +105,16 @@ struct EarlyRepaymentView: View {
                 }
                 
                 Section("Early Repayment") {
-                    HStack {
-                        Text(CurrencyList.symbol(forCode: currency))
-                            .foregroundStyle(.secondary)
-                        TextField("Repayment Amount", text: $repaymentAmountText)
-                    }
-                    
-                    HStack {
-                        TextField("Penalty", text: $penaltyPercentageText)
-                        Text("% of repayment amount")
-                            .foregroundStyle(.secondary)
+                    LabeledContent("Amount") {
+                        HStack(spacing: 4) {
+                            TextField("0", text: $repaymentAmountText)
+                                #if os(iOS)
+                                .keyboardType(.decimalPad)
+                                .multilineTextAlignment(.trailing)
+                                #endif
+                            Text(CurrencyList.symbol(forCode: currency))
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     
                     // Quick amount buttons
@@ -132,6 +132,25 @@ struct EarlyRepaymentView: View {
                             .controlSize(.small)
                         }
                     }
+                }
+                
+                Section("Early Termination Penalty") {
+                    LabeledContent("Penalty") {
+                        HStack(spacing: 4) {
+                            TextField("0", text: $penaltyPercentageText)
+                                #if os(iOS)
+                                .keyboardType(.decimalPad)
+                                .multilineTextAlignment(.trailing)
+                                #endif
+                                .frame(width: 60)
+                            Text("%")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    
+                    Text("Enter any early termination penalty percentage from your loan agreement.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
                 
                 if repaymentAmount > 0 {
@@ -234,7 +253,6 @@ struct EarlyRepaymentView: View {
                 }
             }
         }
-        .frame(minWidth: 500, minHeight: 550)
     }
 }
 

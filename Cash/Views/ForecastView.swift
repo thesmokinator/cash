@@ -32,6 +32,17 @@ enum ForecastPeriod: String, CaseIterable, Identifiable {
         }
     }
     
+    var localizedString: String {
+        switch self {
+        case .nextWeek: return String(localized: "Next week")
+        case .next15Days: return String(localized: "Next 15 days")
+        case .nextMonth: return String(localized: "Next month")
+        case .next3Months: return String(localized: "Next 3 months")
+        case .next6Months: return String(localized: "Next 6 months")
+        case .next12Months: return String(localized: "Next 12 months")
+        }
+    }
+    
     var endDate: Date {
         let calendar = Calendar.current
         let now = Date()
@@ -122,21 +133,30 @@ struct ForecastView: View {
         ScrollView {
             VStack(spacing: 24) {
                 // Period Selector
-                Picker(selection: $selectedPeriod) {
-                    ForEach(ForecastPeriod.allCases) { period in
-                        Text(period.localizedName).tag(period)
+                HStack {
+                    Spacer()
+                    GlassMenuPicker(selectedPeriod.localizedString, selection: $selectedPeriod) {
+                        ForEach(ForecastPeriod.allCases) { period in
+                            Button {
+                                selectedPeriod = period
+                            } label: {
+                                HStack {
+                                    Text(period.localizedName)
+                                    if selectedPeriod == period {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
+                            }
+                        }
                     }
-                } label: {
-                    EmptyView()
+                    .disabled(isCalculating)
+                    .accessibilityIdentifier("forecastPeriodSelector")
+                    .onChange(of: selectedPeriod) { _, newPeriod in
+                        calculateForecast(for: newPeriod)
+                    }
+                    Spacer()
                 }
-                .pickerStyle(.segmented)
-                .labelsHidden()
                 .padding(.horizontal)
-                .disabled(isCalculating)
-                .accessibilityIdentifier("forecastPeriodSelector")
-                .onChange(of: selectedPeriod) { _, newPeriod in
-                    calculateForecast(for: newPeriod)
-                }
                 
                 if isCalculating {
                     VStack(spacing: 16) {
@@ -193,7 +213,7 @@ struct ForecastView: View {
                         } description: {
                             Text("Add recurring transactions to see balance projections.")
                         }
-                        .frame(height: 200)
+                        .frame(maxWidth: .infinity, minHeight: 200)
                     }
                 }
                 .padding()
@@ -266,6 +286,7 @@ struct ForecastView: View {
             }
             .padding()
         }
+        .cashBackground()
         .navigationTitle("Forecast")
         .id(settings.refreshID)
         .task {
@@ -417,7 +438,7 @@ struct ForecastSummaryCard: View {
                 color: amount < 0 ? .red : .primary
             )
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, minHeight: 80, alignment: .leading)
         .padding()
         .background(.regularMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 12))

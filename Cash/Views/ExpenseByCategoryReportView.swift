@@ -111,33 +111,52 @@ struct ExpenseByCategoryReportView: View {
             // Header with controls
             HStack {
                 // Period picker
-                Picker(selection: $selectedPeriod) {
-                    ForEach(ReportPeriod.allCases) { period in
-                        Text(period.localizedName).tag(period)
+                if DeviceType.current.isCompact {
+                    GlassMenuPicker(selectedPeriod.localizedName, selection: $selectedPeriod) {
+                        ForEach(ReportPeriod.allCases) { period in
+                            Button {
+                                selectedPeriod = period
+                            } label: {
+                                HStack {
+                                    Text(period.localizedName)
+                                    if selectedPeriod == period {
+                                        Image(systemName: "checkmark")
+                                    }
+                                }
+                            }
+                        }
                     }
-                } label: {
-                    EmptyView()
+                } else {
+                    Picker(selection: $selectedPeriod) {
+                        ForEach(ReportPeriod.allCases) { period in
+                            Text(period.localizedName).tag(period)
+                        }
+                    } label: {
+                        EmptyView()
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+                    .frame(maxWidth: 400)
                 }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-                .frame(maxWidth: 400)
                 
                 Spacer()
                 
                 // Sort picker
-                Menu {
+                GlassMenuPicker(sortOrder.localizedName, selection: $sortOrder, icon: "arrow.up.arrow.down") {
                     ForEach(ExpenseSortOrder.allCases) { order in
                         Button {
                             sortOrder = order
                         } label: {
-                            Label(order.localizedName, systemImage: order.iconName)
+                            HStack {
+                                Image(systemName: order.iconName)
+                                Text(order.localizedName)
+                                if sortOrder == order {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
                         }
                     }
-                } label: {
-                    Label(sortOrder.localizedName, systemImage: "arrow.up.arrow.down")
                 }
-                .menuStyle(.borderlessButton)
-                .frame(width: 150)
             }
             .padding()
             .background(.bar)

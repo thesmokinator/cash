@@ -179,7 +179,9 @@ struct EditTransactionView: View {
             }
             .id(settings.refreshID)
         }
-        .frame(minWidth: 450, minHeight: 500)
+        
+        .presentationDetents([.large])
+        .presentationDragIndicator(.visible)
     }
     
     private func saveTransaction() {

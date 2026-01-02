@@ -1,17 +1,13 @@
 # Cash - Personal Finance Manager
 
-A simplified macOS financial management application inspired by Gnucash, built with SwiftUI and SwiftData.
-
-## Screenshots
-
-![Main Screenshot](Screenshots/001.png)
+A simplified personal finance management application for macOS and iOS (iPhone and iPad), inspired by Gnucash, built with SwiftUI and SwiftData. It's completely free, works offline, and is privacy-first focused.
 
 ## Getting Started
 
 ### Prerequisites
-- macOS 14.0 or later
-- Xcode 15.0 or later
-- Swift 5.9 or later
+- macOS 26.0 or later
+- Xcode 26.0 or later
+- Swift 6.0 or later
 
 ### Installation
 

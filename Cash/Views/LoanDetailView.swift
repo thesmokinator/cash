@@ -124,11 +124,8 @@ struct LoanDetailView: View {
                             .font(.headline)
                             .frame(maxWidth: .infinity, alignment: .leading)
                         
-                        LazyVGrid(columns: [
-                            GridItem(.flexible()),
-                            GridItem(.flexible())
-                        ], spacing: 12) {
-                            ActionButton(title: "Amortization", icon: "tablecells", color: .blue) {
+                        VStack(spacing: 8) {
+                            ActionButton(title: "Amortization Schedule", icon: "tablecells", color: .blue) {
                                 showingAmortization = true
                             }
                             
@@ -167,9 +164,6 @@ struct LoanDetailView: View {
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Close") { dismiss() }
                 }
             }
             .sheet(isPresented: $showingAmortization) {
@@ -221,7 +215,10 @@ struct LoanDetailView: View {
             } message: {
                 Text("Enter the new interest rate. This will recalculate future payments.")
             }
-            .alert("Delete Loan", isPresented: $showingDeleteConfirmation) {
+            .alert(
+                "Delete Loan",
+                isPresented: $showingDeleteConfirmation
+            ) {
                 Button("Delete", role: .destructive) {
                     deleteLoan()
                 }
@@ -234,7 +231,6 @@ struct LoanDetailView: View {
                 }
             }
         }
-        .frame(minWidth: 600, minHeight: 500)
     }
     
     private func deleteLoan() {
@@ -300,11 +296,18 @@ struct ActionButton: View {
             HStack {
                 Image(systemName: icon)
                     .foregroundStyle(color)
+                    .frame(width: 24)
                 Text(title)
+                    .foregroundStyle(.primary)
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
             }
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 12)
-            .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
+            .padding(.horizontal, 16)
+            .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 10))
         }
         .buttonStyle(.plain)
     }

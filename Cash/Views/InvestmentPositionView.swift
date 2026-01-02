@@ -204,7 +204,7 @@ private struct HelpItem: View {
 // MARK: - Compact Position Badge
 
 /// A compact view showing just the key position metrics
-struct InvestmentPositionBadge: View {
+struct InvestmentPositionBadgeCompact: View {
     let position: InvestmentPosition
     let currency: String
     
@@ -273,7 +273,7 @@ struct InvestmentPositionBadge: View {
             currency: "EUR"
         )
         
-        InvestmentPositionBadge(
+        InvestmentPositionBadgeCompact(
             position: InvestmentPosition(
                 shares: 150.5,
                 totalCost: 15050,

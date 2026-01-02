@@ -1,4 +1,3 @@
-//
 //  AmortizationScheduleView.swift
 //  Cash
 //
@@ -10,7 +9,7 @@ import SwiftUI
 struct AmortizationScheduleView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppSettings.self) private var settings
-    
+
     let principal: Decimal
     let annualRate: Decimal
     let totalPayments: Int
@@ -19,173 +18,202 @@ struct AmortizationScheduleView: View {
     let startDate: Date
     let currency: String
     var startingPayment: Int = 1
-    
+
     @State private var schedule: [AmortizationEntry] = []
     @State private var isLoading = true
-    
+
     private var totalInterestPaid: Decimal {
         schedule.reduce(Decimal.zero) { $0 + $1.interest }
     }
-    
+
     private var totalPrincipalPaid: Decimal {
         schedule.reduce(Decimal.zero) { $0 + $1.principal }
     }
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 // Header with summary
                 VStack(spacing: 12) {
                     HStack {
-                        Text("Amortization Schedule")
+                        Text(String(localized: "Amortization Schedule"))
                             .font(.headline)
                         Spacer()
                     }
-                    
-                    HStack(spacing: 32) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Principal")
-                                .font(.caption)
+
+                    VStack(spacing: 8) {
+                        HStack {
+                            Text(String(localized: "Principal"))
+                                .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                            Spacer()
                             PrivacyAmountView(
                                 amount: CurrencyFormatter.format(principal, currency: currency),
                                 isPrivate: settings.privacyMode,
-                                font: .title2,
-                                fontWeight: .bold
+                                font: .title3,
+                                fontWeight: .semibold
                             )
                         }
-                        
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Interest Rate")
-                                .font(.caption)
+
+                        HStack {
+                            Text(String(localized: "Interest Rate"))
+                                .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                            Spacer()
                             Text("\(annualRate.formatted())%")
-                                .font(.title2)
-                                .fontWeight(.bold)
+                                .font(.title3)
+                                .fontWeight(.semibold)
                         }
-                        
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Total Interest")
-                                .font(.caption)
+
+                        HStack {
+                            Text(String(localized: "Total Interest"))
+                                .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                            Spacer()
                             PrivacyAmountView(
-                                amount: CurrencyFormatter.format(totalInterestPaid, currency: currency),
+                                amount: CurrencyFormatter.format(
+                                    totalInterestPaid, currency: currency),
                                 isPrivate: settings.privacyMode,
-                                font: .title2,
-                                fontWeight: .bold
+                                font: .title3,
+                                fontWeight: .semibold
                             )
                         }
-                        
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Total Amount")
-                                .font(.caption)
+
+                        HStack {
+                            Text(String(localized: "Total Amount"))
+                                .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                            Spacer()
                             PrivacyAmountView(
-                                amount: CurrencyFormatter.format(principal + totalInterestPaid, currency: currency),
+                                amount: CurrencyFormatter.format(
+                                    principal + totalInterestPaid, currency: currency),
                                 isPrivate: settings.privacyMode,
-                                font: .title2,
-                                fontWeight: .bold
+                                font: .title3,
+                                fontWeight: .semibold
                             )
                         }
-                        
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Method")
-                                .font(.caption)
+
+                        HStack {
+                            Text(String(localized: "Method"))
+                                .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                            Spacer()
                             Text(amortizationType.shortName)
-                                .font(.title2)
-                                .fontWeight(.bold)
+                                .font(.title3)
+                                .fontWeight(.semibold)
                         }
-                        
-                        Spacer()
                     }
                 }
                 .padding()
                 .background(.regularMaterial)
-                
+
                 Divider()
-                
+
                 if isLoading {
                     Spacer()
-                    ProgressView("Calculating...")
+                    ProgressView(String(localized: "Calculating..."))
                     Spacer()
                 } else {
-                    // Table
-                    Table(schedule) {
-                        TableColumn("#") { entry in
-                            Text("\(entry.paymentNumber)")
-                                .monospacedDigit()
-                        }
-                        .width(40)
-                        
-                        TableColumn("Date") { entry in
-                            Text(entry.date.formatted(date: .abbreviated, time: .omitted))
-                        }
-                        .width(100)
-                        
-                        TableColumn("Payment") { entry in
-                            PrivacyAmountView(
-                                amount: CurrencyFormatter.format(entry.payment, currency: currency),
-                                isPrivate: settings.privacyMode,
-                                font: .body,
-                                fontWeight: .regular
-                            )
-                        }
-                        .width(100)
-                        
-                        TableColumn("Principal") { entry in
-                            PrivacyAmountView(
-                                amount: CurrencyFormatter.format(entry.principal, currency: currency),
-                                isPrivate: settings.privacyMode,
-                                font: .body,
-                                fontWeight: .regular,
-                                color: .green
-                            )
-                        }
-                        .width(100)
-                        
-                        TableColumn("Interest") { entry in
-                            PrivacyAmountView(
-                                amount: CurrencyFormatter.format(entry.interest, currency: currency),
-                                isPrivate: settings.privacyMode,
-                                font: .body,
-                                fontWeight: .regular,
-                                color: .orange
-                            )
-                        }
-                        .width(100)
-                        
-                        TableColumn("Balance") { entry in
-                            PrivacyAmountView(
-                                amount: CurrencyFormatter.format(entry.remainingBalance, currency: currency),
-                                isPrivate: settings.privacyMode,
-                                font: .body,
-                                fontWeight: .medium
-                            )
-                        }
-                        .width(120)
+                    // iOS Layout with List using reusable components
+                    List(schedule) { entry in
+                        ListCard(
+                            header: {
+                                HStack {
+                                    Text("#\(entry.paymentNumber)")
+                                        .font(.headline)
+                                        .monospacedDigit()
+                                    Spacer()
+                                    Text(entry.date.formatted(date: .abbreviated, time: .omitted))
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                }
+                            },
+                            content: {
+                                VStack(spacing: 8) {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text(String(localized: "Payment"))
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(
+                                                    entry.payment, currency: currency),
+                                                isPrivate: settings.privacyMode,
+                                                font: .body,
+                                                fontWeight: .semibold
+                                            )
+                                        }
+
+                                        Spacer()
+
+                                        VStack(alignment: .trailing, spacing: 4) {
+                                            Text(String(localized: "Balance"))
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(
+                                                    entry.remainingBalance, currency: currency),
+                                                isPrivate: settings.privacyMode,
+                                                font: .body,
+                                                fontWeight: .medium
+                                            )
+                                        }
+                                    }
+
+                                    HStack(spacing: 16) {
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "arrow.down.circle.fill")
+                                                .foregroundStyle(.green)
+                                                .font(.caption)
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(
+                                                    entry.principal, currency: currency),
+                                                isPrivate: settings.privacyMode,
+                                                font: .caption,
+                                                fontWeight: .regular,
+                                                color: .green
+                                            )
+                                        }
+
+                                        HStack(spacing: 4) {
+                                            Image(systemName: "arrow.up.circle.fill")
+                                                .foregroundStyle(.orange)
+                                                .font(.caption)
+                                            PrivacyAmountView(
+                                                amount: CurrencyFormatter.format(
+                                                    entry.interest, currency: currency),
+                                                isPrivate: settings.privacyMode,
+                                                font: .caption,
+                                                fontWeight: .regular,
+                                                color: .orange
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        )
                     }
+                    .listStyle(.inset)
                 }
             }
-            .navigationTitle("Amortization Schedule")
+            .navigationTitle(String(localized: "Amortization Schedule"))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
+                    Button(String(localized: "Done")) { dismiss() }
                 }
             }
             .task {
                 await generateSchedule()
             }
         }
-        .frame(minWidth: 700, minHeight: 500)
     }
-    
+
     private func generateSchedule() async {
         isLoading = true
-        
+
         // Small delay to show loading
         try? await Task.sleep(nanoseconds: 100_000_000)
-        
+
         let result = LoanCalculator.generateAmortizationSchedule(
             principal: principal,
             annualRate: annualRate,
@@ -195,7 +223,7 @@ struct AmortizationScheduleView: View {
             startDate: startDate,
             startingPayment: startingPayment
         )
-        
+
         await MainActor.run {
             schedule = result
             isLoading = false
