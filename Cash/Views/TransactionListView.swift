@@ -357,7 +357,7 @@ struct TransactionFilterBar: View {
                 }
             }
             .padding(.horizontal, CashSpacing.md)
-            .padding(.vertical, CashSpacing.sm)
+            .frame(height: 40)
             .background(.ultraThinMaterial)
             .background(CashColors.glassBackground.opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
@@ -386,19 +386,23 @@ struct TransactionFilterBar: View {
                 } label: {
                     HStack(spacing: CashSpacing.xs) {
                         Image(systemName: "calendar")
-                            .font(.system(size: 12, weight: .medium))
+                            .font(.system(size: 14, weight: .medium))
                         Text(dateFilter.localizedName)
-                            .font(CashTypography.caption)
+                            .font(CashTypography.subheadline)
                             .lineLimit(1)
                         Image(systemName: "chevron.down")
                             .font(.system(size: 10, weight: .semibold))
                     }
                     .foregroundStyle(CashColors.primary)
                     .padding(.horizontal, CashSpacing.md)
-                    .padding(.vertical, CashSpacing.sm)
+                    .frame(height: 40)
                     .background(.ultraThinMaterial)
                     .background(CashColors.primary.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: CashRadius.medium)
+                            .stroke(CashColors.primary.opacity(0.1), lineWidth: 1)
+                    )
                 }
             }
 
