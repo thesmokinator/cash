@@ -203,6 +203,31 @@ struct BudgetView: View {
         .cashBackground()
         .navigationTitle("Budget")
         .toolbar {
+            #if os(macOS)
+            // macOS: Navigation buttons for budget periods (alternative to swipe)
+            ToolbarItem(placement: .navigation) {
+                HStack(spacing: 4) {
+                    Button {
+                        navigateToPreviousBudget()
+                    } label: {
+                        Image(systemName: "chevron.left")
+                    }
+                    .disabled(currentBudgetIndex >= budgets.count - 1)
+                    .keyboardShortcut(.leftArrow, modifiers: [])
+                    .help("Previous Budget")
+
+                    Button {
+                        navigateToNextBudget()
+                    } label: {
+                        Image(systemName: "chevron.right")
+                    }
+                    .disabled(currentBudgetIndex <= 0)
+                    .keyboardShortcut(.rightArrow, modifiers: [])
+                    .help("Next Budget")
+                }
+            }
+            #endif
+
             if activeBudget != nil {
                 ToolbarItem(placement: .primaryAction) {
                     Menu {

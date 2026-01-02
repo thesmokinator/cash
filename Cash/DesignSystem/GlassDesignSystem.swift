@@ -11,57 +11,49 @@ import SwiftUI
 
 struct CashColors {
     // Primary Palette - Adaptive for dark/light mode
-    static let primary = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.47, green: 0.67, blue: 0.95, alpha: 1.0)  // #78ABF2 - Bright blue for dark mode
-            : UIColor(red: 0.12, green: 0.23, blue: 0.37, alpha: 1.0)  // #1E3A5F - Deep navy for light mode
-    })
+    static let primary = AdaptiveColor(
+        lightRGB: (r: 0.12, g: 0.23, b: 0.37),  // #1E3A5F - Deep navy for light mode
+        darkRGB: (r: 0.47, g: 0.67, b: 0.95)    // #78ABF2 - Bright blue for dark mode
+    ).color
     static let primaryLight = Color(hex: "#4A6FA5")     // Lighter navy - Highlights
     static let primaryDark = Color(hex: "#0F2744")      // Darker navy - Dark accents
     static let accent = Color(hex: "#3D5A80")           // Slate blue - Secondary accent
 
     // Semantic Colors - Adaptive for better dark mode contrast
-    static let success = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.40, green: 0.80, blue: 0.40, alpha: 1.0)  // #66CC66 - Brighter green for dark mode
-            : UIColor(red: 0.18, green: 0.49, blue: 0.20, alpha: 1.0)  // #2E7D32 - Forest green for light mode
-    })
+    static let success = AdaptiveColor(
+        lightRGB: (r: 0.18, g: 0.49, b: 0.20),  // #2E7D32 - Forest green for light mode
+        darkRGB: (r: 0.40, g: 0.80, b: 0.40)    // #66CC66 - Brighter green for dark mode
+    ).color
     static let warning = Color(hex: "#F57C00")          // Deep orange - Warnings
-    static let error = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 1.0, green: 0.45, blue: 0.45, alpha: 1.0)   // #FF7373 - Brighter red for dark mode
-            : UIColor(red: 0.78, green: 0.16, blue: 0.16, alpha: 1.0)  // #C62828 - Deep red for light mode
-    })
+    static let error = AdaptiveColor(
+        lightRGB: (r: 0.78, g: 0.16, b: 0.16),  // #C62828 - Deep red for light mode
+        darkRGB: (r: 1.0, g: 0.45, b: 0.45)     // #FF7373 - Brighter red for dark mode
+    ).color
 
     // Income/Expense Colors - Adaptive for dark mode readability
-    static let income = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.40, green: 0.85, blue: 0.40, alpha: 1.0)  // #66D966 - Bright green for dark mode
-            : UIColor(red: 0.22, green: 0.56, blue: 0.24, alpha: 1.0)  // #388E3C - Medium green for light mode
-    })
-    static let expense = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 1.0, green: 0.50, blue: 0.50, alpha: 1.0)   // #FF8080 - Bright red for dark mode
-            : UIColor(red: 0.83, green: 0.18, blue: 0.18, alpha: 1.0)  // #D32F2F - Medium red for light mode
-    })
-    static let transfer = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.47, green: 0.67, blue: 0.95, alpha: 1.0)  // #78ABF2 - Bright blue for dark mode
-            : UIColor(red: 0.10, green: 0.46, blue: 0.82, alpha: 1.0)  // #1976D2 - Medium blue for light mode
-    })
+    static let income = AdaptiveColor(
+        lightRGB: (r: 0.22, g: 0.56, b: 0.24),  // #388E3C - Medium green for light mode
+        darkRGB: (r: 0.40, g: 0.85, b: 0.40)    // #66D966 - Bright green for dark mode
+    ).color
+    static let expense = AdaptiveColor(
+        lightRGB: (r: 0.83, g: 0.18, b: 0.18),  // #D32F2F - Medium red for light mode
+        darkRGB: (r: 1.0, g: 0.50, b: 0.50)     // #FF8080 - Bright red for dark mode
+    ).color
+    static let transfer = AdaptiveColor(
+        lightRGB: (r: 0.10, g: 0.46, b: 0.82),  // #1976D2 - Medium blue for light mode
+        darkRGB: (r: 0.47, g: 0.67, b: 0.95)    // #78ABF2 - Bright blue for dark mode
+    ).color
 
     // Adaptive Glass Colors (for dark mode support)
-    static let glassBackground = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.15, alpha: 1.0)
-            : UIColor(white: 1.0, alpha: 1.0)
-    })
+    static let glassBackground = AdaptiveColor(
+        light: Color(white: 1.0),
+        dark: Color(white: 0.15)
+    ).color
 
-    static let glassBackgroundSecondary = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(white: 0.2, alpha: 1.0)
-            : UIColor(white: 1.0, alpha: 1.0)
-    })
+    static let glassBackgroundSecondary = AdaptiveColor(
+        light: Color(white: 1.0),
+        dark: Color(white: 0.2)
+    ).color
 
     // Background Gradients - Clean, neutral
     static let backgroundGradient = LinearGradient(
@@ -96,17 +88,15 @@ struct CashColors {
     )
 
     // Tab Bar - Adaptive for dark mode
-    static let tabBarBackground = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.12, green: 0.12, blue: 0.14, alpha: 0.95)  // Dark gray for dark mode
-            : UIColor(red: 0.12, green: 0.23, blue: 0.37, alpha: 0.95)  // Navy for light mode
-    })
+    static let tabBarBackground = AdaptiveColor(
+        lightRGB: (r: 0.12, g: 0.23, b: 0.37),  // Navy for light mode
+        darkRGB: (r: 0.12, g: 0.12, b: 0.14)    // Dark gray for dark mode
+    ).color.opacity(0.95)
     static let tabBarSelected = Color.white
-    static let tabBarUnselected = Color(UIColor { traits in
-        traits.userInterfaceStyle == .dark
-            ? UIColor.white.withAlphaComponent(0.75)  // More visible in dark mode
-            : UIColor.white.withAlphaComponent(0.6)
-    })
+    static let tabBarUnselected = AdaptiveColor(
+        light: Color.white.opacity(0.6),
+        dark: Color.white.opacity(0.75)         // More visible in dark mode
+    ).color
 }
 
 // MARK: - Typography
@@ -310,7 +300,7 @@ struct AdaptiveBackgroundModifier: ViewModifier {
             .background(
                 Group {
                     if colorScheme == .dark {
-                        Color(.systemBackground)
+                        Color.platformWindowBackground
                     } else {
                         CashColors.backgroundGradient
                     }

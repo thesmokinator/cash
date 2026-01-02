@@ -27,7 +27,7 @@ struct AccountDetailView: View {
             // Header Card
             VStack(spacing: 12) {
                 // Main header row
-                if UIDevice.current.userInterfaceIdiom == .phone {
+                if DeviceType.current.isCompact {
                     // Compact vertical layout for iPhone
                     VStack(spacing: 12) {
                         HStack {
@@ -180,7 +180,7 @@ struct AccountDetailView: View {
             Spacer(minLength: 0)
         }
         .navigationTitle(account.displayName)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayModeInline()
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 // 1. Add transaction

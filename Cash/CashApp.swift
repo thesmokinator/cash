@@ -24,6 +24,7 @@ extension Notification.Name {
     static let addNewTransaction = Notification.Name("addNewTransaction")
     static let addNewScheduledTransaction = Notification.Name("addNewScheduledTransaction")
     static let importOFX = Notification.Name("importOFX")
+    static let importJSON = Notification.Name("importJSON")
     static let exportData = Notification.Name("exportData")
 }
 
@@ -94,5 +95,67 @@ struct CashApp: App {
         }
         .modelContainer(sharedModelContainer)
         .environment(settings)
+        #if os(macOS)
+            .defaultSize(width: 1200, height: 800)
+            .commands {
+                AppCommands()
+            }
+        #endif
+
+        #if os(macOS)
+            Settings {
+                MacOSSettingsView()
+                    .environment(settings)
+                    .modelContainer(sharedModelContainer)
+            }
+        #endif
     }
 }
+
+// MARK: - macOS Menu Bar Commands
+
+#if os(macOS)
+    struct AppCommands: Commands {
+        var body: some Commands {
+            // Replace the New Item menu
+            CommandGroup(replacing: .newItem) {
+                Button("New Transaction") {
+                    NotificationCenter.default.post(name: .addNewTransaction, object: nil)
+                }
+                .keyboardShortcut("n", modifiers: [.command])
+
+                Button("New Account") {
+                    NotificationCenter.default.post(name: .addNewAccount, object: nil)
+                }
+                .keyboardShortcut("n", modifiers: [.command, .shift])
+
+                Divider()
+
+                Button("Import OFX...") {
+                    NotificationCenter.default.post(name: .importOFX, object: nil)
+                }
+                .keyboardShortcut("i", modifiers: [.command])
+
+                Button("Export Data...") {
+                    NotificationCenter.default.post(
+                        name: .exportData,
+                        object: nil,
+                        userInfo: ["format": "cashBackup"]
+                    )
+                }
+                .keyboardShortcut("e", modifiers: [.command])
+            }
+
+            // Help menu
+            CommandGroup(replacing: .help) {
+                Link(
+                    "Cash on GitHub",
+                    destination: URL(string: "https://github.com/thesmokinator/cash")!)
+                Link(
+                    "Privacy Policy",
+                    destination: URL(
+                        string: "https://github.com/thesmokinator/cash/blob/main/PRIVACY.md")!)
+            }
+        }
+    }
+#endif

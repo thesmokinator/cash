@@ -28,7 +28,7 @@ struct AccountListView: View {
     @State private var showingAddAccount = false
     @State private var showingAddTransaction = false
     @State private var selection: SidebarSelection? =
-        UIDevice.current.userInterfaceIdiom == .phone ? nil : .patrimony
+        DeviceType.current.isCompact ? nil : .patrimony
 
     private var hasAccounts: Bool {
         !accounts.filter { $0.isActive && !$0.isSystem }.isEmpty

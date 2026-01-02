@@ -117,7 +117,7 @@ struct BalanceHistoryReportView: View {
         VStack(spacing: 0) {
             // Period picker
             HStack {
-                if UIDevice.current.userInterfaceIdiom == .phone {
+                if DeviceType.current.isCompact {
                     Picker(selection: $selectedPeriod) {
                         ForEach(HistoryPeriod.allCases) { period in
                             Text(period.localizedName).tag(period)

@@ -108,8 +108,10 @@ struct EarlyRepaymentView: View {
                     LabeledContent("Amount") {
                         HStack(spacing: 4) {
                             TextField("0", text: $repaymentAmountText)
+                                #if os(iOS)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
+                                #endif
                             Text(CurrencyList.symbol(forCode: currency))
                                 .foregroundStyle(.secondary)
                         }
@@ -136,8 +138,10 @@ struct EarlyRepaymentView: View {
                     LabeledContent("Penalty") {
                         HStack(spacing: 4) {
                             TextField("0", text: $penaltyPercentageText)
+                                #if os(iOS)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
+                                #endif
                                 .frame(width: 60)
                             Text("%")
                                 .foregroundStyle(.secondary)

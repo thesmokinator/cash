@@ -114,7 +114,7 @@ struct OFXImportWizard: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .navigationTitle("Import OFX")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayModeInline()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     if currentStep != .complete && currentStep != .importing {
@@ -238,7 +238,7 @@ struct OFXImportWizard: View {
                     Text("Choose the destination account")
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyleInsetGrouped()
 
             // Next button
             VStack(spacing: CashSpacing.md) {

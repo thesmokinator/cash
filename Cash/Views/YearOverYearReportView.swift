@@ -126,7 +126,7 @@ struct YearOverYearReportView: View {
         VStack(spacing: 0) {
             // Period picker
             HStack {
-                if UIDevice.current.userInterfaceIdiom == .phone {
+                if DeviceType.current.isCompact {
                     Picker(selection: $selectedPeriod) {
                         ForEach(ComparisonPeriod.allCases) { period in
                             Text(period.localizedName).tag(period)

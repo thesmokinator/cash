@@ -70,8 +70,7 @@ struct CustomTabBar: View {
                 selectedTab = tab
             }
             // Haptic feedback
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.impactOccurred()
+            HapticFeedback.light()
         } label: {
             VStack(spacing: 4) {
                 Image(systemName: selectedTab == tab ? tab.selectedIcon : tab.icon)
@@ -101,8 +100,7 @@ struct CustomTabBar: View {
                 }
             }
             // Haptic feedback
-            let generator = UIImpactFeedbackGenerator(style: .medium)
-            generator.impactOccurred()
+            HapticFeedback.medium()
             onAddTapped()
         } label: {
             ZStack {

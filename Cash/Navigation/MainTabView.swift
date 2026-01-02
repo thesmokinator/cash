@@ -5,8 +5,8 @@
 //  Main navigation container with Tab Bar (iPhone) and Sidebar (iPad)
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 import UniformTypeIdentifiers
 
 // MARK: - App State
@@ -109,14 +109,14 @@ struct MainTabView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(AppSettings.self) private var settings
     @Environment(NavigationState.self) private var navigationState
+    @Environment(\.modelContext) private var modelContext
 
     // Data queries for export
     @Query private var accounts: [Account]
     @Query private var transactions: [Transaction]
 
     @State private var selectedTab: MainTab = .home
-    @State private var showingAddTransaction = false
-    @State private var addTransactionType: SimpleTransactionType = .expense
+    @State private var addTransactionItem: AddTransactionItem?
 
     // iPad sidebar state
     @State private var selectedSidebarItem: iPadSidebarItem? = .home
@@ -144,18 +144,31 @@ struct MainTabView: View {
     @State private var showingOFXError = false
     @State private var ofxErrorMessage = ""
 
+    // JSON Import state
+    @State private var showingJSONImportConfirmation = false
+    @State private var showingJSONImportPicker = false
+    @State private var showingJSONImportSuccess = false
+    @State private var showingJSONImportError = false
+    @State private var jsonImportErrorMessage = ""
+    @State private var jsonImportResult: (accountsCount: Int, transactionsCount: Int) = (0, 0)
+
     var body: some View {
         Group {
-            if horizontalSizeClass == .compact {
-                // iPhone: Tab Bar navigation
-                iPhoneTabView
-            } else {
-                // iPad: Sidebar navigation
-                iPadSidebarView
-            }
+            #if os(macOS)
+                // macOS: Sidebar navigation with toolbar
+                macOSSidebarView
+            #else
+                if horizontalSizeClass == .compact {
+                    // iPhone: Tab Bar navigation
+                    iPhoneTabView
+                } else {
+                    // iPad: Sidebar navigation
+                    iPadSidebarView
+                }
+            #endif
         }
-        .sheet(isPresented: $showingAddTransaction) {
-            AddTransactionSheet(transactionType: addTransactionType)
+        .sheet(item: $addTransactionItem) { item in
+            AddTransactionSheet(transactionType: item.transactionType)
         }
         .sheet(isPresented: $showingOFXImportWizard) {
             OFXImportWizard(ofxTransactions: parsedOFXTransactions)
@@ -173,20 +186,26 @@ struct MainTabView: View {
             Text(ofxErrorMessage)
         }
         .onReceive(NotificationCenter.default.publisher(for: .addNewTransaction)) { notification in
+            let transactionType: SimpleTransactionType
             if let type = notification.userInfo?["transactionType"] as? String,
-               let transactionType = SimpleTransactionType(rawValue: type) {
-                addTransactionType = transactionType
+                let parsedType = SimpleTransactionType(rawValue: type)
+            {
+                transactionType = parsedType
             } else {
-                addTransactionType = .expense
+                transactionType = .expense
             }
-            showingAddTransaction = true
+            addTransactionItem = AddTransactionItem(transactionType: transactionType)
         }
         .onReceive(NotificationCenter.default.publisher(for: .importOFX)) { _ in
             showingOFXImportPicker = true
         }
+        .onReceive(NotificationCenter.default.publisher(for: .importJSON)) { _ in
+            showingJSONImportConfirmation = true
+        }
         .onReceive(NotificationCenter.default.publisher(for: .exportData)) { notification in
             if let formatRaw = notification.userInfo?["format"] as? String,
-               let format = ExportFormat(rawValue: formatRaw) {
+                let format = ExportFormat(rawValue: formatRaw)
+            {
                 performExport(format: format)
             }
         }
@@ -214,6 +233,36 @@ struct MainTabView: View {
         } message: {
             Text(exportErrorMessage)
         }
+        // JSON Import alerts and file picker
+        .alert(String(localized: "Import data?"), isPresented: $showingJSONImportConfirmation) {
+            Button(String(localized: "Cancel"), role: .cancel) {}
+            Button(String(localized: "Continue")) {
+                showingJSONImportPicker = true
+            }
+        } message: {
+            Text(
+                "Importing will replace all existing data. Make sure to export your current data first if needed."
+            )
+        }
+        .fileImporter(
+            isPresented: $showingJSONImportPicker,
+            allowedContentTypes: [.data, .json],
+            allowsMultipleSelection: false
+        ) { result in
+            handleJSONImport(result: result)
+        }
+        .alert(String(localized: "Import successful"), isPresented: $showingJSONImportSuccess) {
+            Button(String(localized: "OK"), role: .cancel) {}
+        } message: {
+            Text(
+                "Imported \(jsonImportResult.accountsCount) accounts and \(jsonImportResult.transactionsCount) transactions."
+            )
+        }
+        .alert(String(localized: "Import error"), isPresented: $showingJSONImportError) {
+            Button(String(localized: "OK"), role: .cancel) {}
+        } message: {
+            Text(jsonImportErrorMessage)
+        }
     }
 
     // MARK: - Export Handler
@@ -224,7 +273,8 @@ struct MainTabView: View {
 
             switch format {
             case .cashBackup:
-                data = try DataExporter.exportCashBackup(accounts: accounts, transactions: transactions)
+                data = try DataExporter.exportCashBackup(
+                    accounts: accounts, transactions: transactions)
             case .ofx:
                 data = try DataExporter.exportOFX(accounts: accounts, transactions: transactions)
             }
@@ -238,6 +288,75 @@ struct MainTabView: View {
             exportErrorMessage = error.localizedDescription
             showingExportError = true
         }
+    }
+
+    // MARK: - JSON Import Handler
+
+    private func handleJSONImport(result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+
+            guard url.startAccessingSecurityScopedResource() else {
+                jsonImportErrorMessage = "Cannot access the selected file"
+                showingJSONImportError = true
+                return
+            }
+
+            Task.detached(priority: .userInitiated) {
+                do {
+                    let data = try Data(contentsOf: url)
+                    url.stopAccessingSecurityScopedResource()
+
+                    await MainActor.run {
+                        deleteAllDataForImport()
+
+                        do {
+                            let result = try DataExporter.importCashBackup(
+                                from: data, into: modelContext)
+                            jsonImportResult = result
+                            showingJSONImportSuccess = true
+                        } catch {
+                            jsonImportErrorMessage = error.localizedDescription
+                            showingJSONImportError = true
+                        }
+                    }
+                } catch {
+                    url.stopAccessingSecurityScopedResource()
+                    await MainActor.run {
+                        jsonImportErrorMessage = error.localizedDescription
+                        showingJSONImportError = true
+                    }
+                }
+            }
+
+        case .failure(let error):
+            jsonImportErrorMessage = error.localizedDescription
+            showingJSONImportError = true
+        }
+    }
+
+    private func deleteAllDataForImport() {
+        let attachments = (try? modelContext.fetch(FetchDescriptor<Attachment>())) ?? []
+        for attachment in attachments { modelContext.delete(attachment) }
+
+        let rules = (try? modelContext.fetch(FetchDescriptor<RecurrenceRule>())) ?? []
+        for rule in rules { modelContext.delete(rule) }
+
+        let entries = (try? modelContext.fetch(FetchDescriptor<Entry>())) ?? []
+        for entry in entries { modelContext.delete(entry) }
+
+        let txns = (try? modelContext.fetch(FetchDescriptor<Transaction>())) ?? []
+        for txn in txns { modelContext.delete(txn) }
+
+        let accts = (try? modelContext.fetch(FetchDescriptor<Account>())) ?? []
+        for acct in accts { modelContext.delete(acct) }
+
+        let budgets = (try? modelContext.fetch(FetchDescriptor<Budget>())) ?? []
+        for budget in budgets { modelContext.delete(budget) }
+
+        let loans = (try? modelContext.fetch(FetchDescriptor<Loan>())) ?? []
+        for loan in loans { modelContext.delete(loan) }
     }
 
     // MARK: - OFX Import Handler
@@ -283,7 +402,9 @@ struct MainTabView: View {
 
             AccountsTabView()
                 .tabItem {
-                    Label("Accounts", systemImage: selectedTab == .accounts ? "creditcard.fill" : "creditcard")
+                    Label(
+                        "Accounts",
+                        systemImage: selectedTab == .accounts ? "creditcard.fill" : "creditcard")
                 }
                 .tag(MainTab.accounts)
 
@@ -291,7 +412,8 @@ struct MainTabView: View {
                 BudgetView()
             }
             .tabItem {
-                Label("Budget", systemImage: selectedTab == .budget ? "chart.pie.fill" : "chart.pie")
+                Label(
+                    "Budget", systemImage: selectedTab == .budget ? "chart.pie.fill" : "chart.pie")
             }
             .tag(MainTab.budget)
 
@@ -299,7 +421,9 @@ struct MainTabView: View {
                 MoreMenuView()
             }
             .tabItem {
-                Label("More", systemImage: selectedTab == .more ? "ellipsis.circle.fill" : "ellipsis.circle")
+                Label(
+                    "More",
+                    systemImage: selectedTab == .more ? "ellipsis.circle.fill" : "ellipsis.circle")
             }
             .tag(MainTab.more)
         }
@@ -327,10 +451,10 @@ struct MainTabView: View {
                 .presentationDetents([.medium])
         }
         #if ENABLE_ICLOUD
-        .sheet(isPresented: $showingICloudSheet) {
-            ICloudSyncSettingsSheet()
+            .sheet(isPresented: $showingICloudSheet) {
+                ICloudSyncSettingsSheet()
                 .presentationDetents([.medium])
-        }
+            }
         #endif
         .sheet(isPresented: $showingExportFormatPicker) {
             iPadExportFormatPicker
@@ -387,11 +511,11 @@ struct MainTabView: View {
             // Data Section
             Section("Data") {
                 #if ENABLE_ICLOUD
-                Button {
-                    showingICloudSheet = true
-                } label: {
-                    Label("iCloud Sync", systemImage: "icloud.fill")
-                }
+                    Button {
+                        showingICloudSheet = true
+                    } label: {
+                        Label("iCloud Sync", systemImage: "icloud.fill")
+                    }
                 #endif
 
                 Button {
@@ -443,8 +567,8 @@ struct MainTabView: View {
             // About Section
             Section("About") {
                 VStack(spacing: CashSpacing.md) {
-                    if let icon = Bundle.main.icon {
-                        Image(uiImage: icon)
+                    if let iconImage = Bundle.main.iconImage {
+                        iconImage
                             .resizable()
                             .frame(width: 48, height: 48)
                             .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
@@ -454,9 +578,11 @@ struct MainTabView: View {
                         Text("Cash")
                             .font(CashTypography.headline)
 
-                        Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
-                            .font(CashTypography.caption)
-                            .foregroundStyle(.secondary)
+                        Text(
+                            "Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")"
+                        )
+                        .font(CashTypography.caption)
+                        .foregroundStyle(.secondary)
                     }
                 }
                 .frame(maxWidth: .infinity)
@@ -510,9 +636,94 @@ struct MainTabView: View {
             )
         }
     }
+
+    // MARK: - macOS Sidebar View
+
+    #if os(macOS)
+        private var macOSSidebarView: some View {
+            NavigationSplitView(columnVisibility: $columnVisibility) {
+                macOSSidebar
+            } detail: {
+                macOSDetailView
+            }
+            .sheet(isPresented: $showingThemeSheet) {
+                ThemeSettingsSheet()
+            }
+            .sheet(isPresented: $showingLanguageSheet) {
+                LanguageSettingsSheet()
+            }
+            .sheet(isPresented: $showingETFQuotesSheet) {
+                ETFQuotesSettingsSheet()
+            }
+            #if ENABLE_ICLOUD
+                .sheet(isPresented: $showingICloudSheet) {
+                    ICloudSyncSettingsSheet()
+                }
+            #endif
+            .sheet(isPresented: $showingExportFormatPicker) {
+                iPadExportFormatPicker
+            }
+        }
+
+        private var macOSSidebar: some View {
+            List(selection: $selectedSidebarItem) {
+                // Overview Section
+                Section("Overview") {
+                    Label(iPadSidebarItem.home.title, systemImage: iPadSidebarItem.home.icon)
+                        .tag(iPadSidebarItem.home)
+                    Label(
+                        iPadSidebarItem.accounts.title, systemImage: iPadSidebarItem.accounts.icon
+                    )
+                    .tag(iPadSidebarItem.accounts)
+                    Label(iPadSidebarItem.budget.title, systemImage: iPadSidebarItem.budget.icon)
+                        .tag(iPadSidebarItem.budget)
+                }
+
+                // Finance Tools Section
+                Section("Finance Tools") {
+                    Label(iPadSidebarItem.loans.title, systemImage: iPadSidebarItem.loans.icon)
+                        .tag(iPadSidebarItem.loans)
+                    Label(
+                        iPadSidebarItem.scheduled.title, systemImage: iPadSidebarItem.scheduled.icon
+                    )
+                    .tag(iPadSidebarItem.scheduled)
+                }
+
+                // Analytics Section
+                Section("Analytics") {
+                    Label(
+                        iPadSidebarItem.netWorth.title, systemImage: iPadSidebarItem.netWorth.icon
+                    )
+                    .tag(iPadSidebarItem.netWorth)
+                    Label(
+                        iPadSidebarItem.forecast.title, systemImage: iPadSidebarItem.forecast.icon
+                    )
+                    .tag(iPadSidebarItem.forecast)
+                    Label(iPadSidebarItem.reports.title, systemImage: iPadSidebarItem.reports.icon)
+                        .tag(iPadSidebarItem.reports)
+                }
+            }
+            .listStyle(.sidebar)
+            .frame(minWidth: 200)
+            .navigationTitle("Cash")
+        }
+
+        @ViewBuilder
+        private var macOSDetailView: some View {
+            // Reuse iPad detail view logic
+            iPadDetailView
+        }
+    #endif
 }
 
 // MARK: - Add Transaction Sheet
+
+// MARK: - Add Transaction Item (for sheet)
+
+struct AddTransactionItem: Identifiable {
+    let id = UUID()
+    let transactionType: SimpleTransactionType
+}
 
 struct AddTransactionSheet: View {
     var transactionType: SimpleTransactionType = .expense
@@ -550,15 +761,22 @@ struct AccountsTabView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     List {
-                        ForEach(AccountClass.allCases.sorted(by: { $0.displayOrder < $1.displayOrder })) { accountClass in
-                            let classAccounts = accounts
-                                .filter { $0.accountClass == accountClass && $0.isActive && !$0.isSystem }
+                        ForEach(
+                            AccountClass.allCases.sorted(by: { $0.displayOrder < $1.displayOrder })
+                        ) { accountClass in
+                            let classAccounts =
+                                accounts
+                                .filter {
+                                    $0.accountClass == accountClass && $0.isActive && !$0.isSystem
+                                }
                                 .sorted { a, b in
                                     if a.accountType.localizedName != b.accountType.localizedName {
                                         return a.accountType.localizedName
-                                            .localizedCaseInsensitiveCompare(b.accountType.localizedName) == .orderedAscending
+                                            .localizedCaseInsensitiveCompare(
+                                                b.accountType.localizedName) == .orderedAscending
                                     }
-                                    return a.displayName.localizedCaseInsensitiveCompare(b.displayName) == .orderedAscending
+                                    return a.displayName.localizedCaseInsensitiveCompare(
+                                        b.displayName) == .orderedAscending
                                 }
 
                             if !classAccounts.isEmpty {
@@ -580,7 +798,7 @@ struct AccountsTabView: View {
                             }
                         }
                     }
-                    .listStyle(.insetGrouped)
+                    .listStyleInsetGrouped()
                 }
             }
             .navigationTitle("Accounts")
@@ -708,7 +926,9 @@ struct LoadingOverlayView: View {
 
 #Preview {
     MainTabView()
-        .modelContainer(for: [Account.self, Transaction.self, AppConfiguration.self], inMemory: true)
+        .modelContainer(
+            for: [Account.self, Transaction.self, AppConfiguration.self], inMemory: true
+        )
         .environment(AppSettings.shared)
         .environment(NavigationState())
 }

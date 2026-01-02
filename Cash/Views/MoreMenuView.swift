@@ -221,8 +221,8 @@ struct MoreMenuView: View {
                 // About Section
                 Section {
                     VStack(spacing: CashSpacing.lg) {
-                        if let icon = Bundle.main.icon {
-                            Image(uiImage: icon)
+                        if let iconImage = Bundle.main.iconImage {
+                            iconImage
                                 .resizable()
                                 .frame(width: 72, height: 72)
                                 .clipShape(RoundedRectangle(cornerRadius: CashRadius.large))
@@ -273,7 +273,7 @@ struct MoreMenuView: View {
                     Text("About")
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyleInsetGrouped()
             .navigationTitle("More")
             .sheet(isPresented: $showingExportFormatPicker) {
                 ExportFormatPickerView { format in
@@ -572,9 +572,9 @@ struct ThemeSettingsSheet: View {
                     Text("Choose your preferred color scheme")
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyleInsetGrouped()
             .navigationTitle("Theme")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayModeInline()
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
@@ -641,9 +641,9 @@ struct LanguageSettingsSheet: View {
                     Text("Select your preferred language")
                 }
             }
-            .listStyle(.insetGrouped)
+            .listStyleInsetGrouped()
             .navigationTitle("Language")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayModeInline()
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
@@ -877,7 +877,7 @@ struct ExportFormatPickerView: View {
                 }
             }
             .navigationTitle(String(localized: "Export data"))
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayModeInline()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(String(localized: "Cancel")) {
@@ -886,7 +886,9 @@ struct ExportFormatPickerView: View {
                 }
             }
         }
+        #if os(iOS)
         .presentationDetents([.medium])
+        #endif
     }
 }
 
@@ -916,6 +918,18 @@ struct ExportDocument: FileDocument {
 // MARK: - Bundle Extension for App Icon
 
 extension Bundle {
+    #if os(macOS)
+    var icon: NSImage? {
+        NSImage(named: "AppIcon")
+    }
+
+    var iconImage: Image? {
+        if let nsImage = icon {
+            return Image(nsImage: nsImage)
+        }
+        return nil
+    }
+    #else
     var icon: UIImage? {
         if let icons = infoDictionary?["CFBundleIcons"] as? [String: Any],
             let primaryIcon = icons["CFBundlePrimaryIcon"] as? [String: Any],
@@ -926,6 +940,14 @@ extension Bundle {
         }
         return nil
     }
+
+    var iconImage: Image? {
+        if let uiImage = icon {
+            return Image(uiImage: uiImage)
+        }
+        return nil
+    }
+    #endif
 }
 
 // MARK: - Preview

@@ -111,7 +111,7 @@ struct ExpenseByCategoryReportView: View {
             // Header with controls
             HStack {
                 // Period picker
-                if UIDevice.current.userInterfaceIdiom == .phone {
+                if DeviceType.current.isCompact {
                     GlassMenuPicker(selectedPeriod.localizedName, selection: $selectedPeriod) {
                         ForEach(ReportPeriod.allCases) { period in
                             Button {

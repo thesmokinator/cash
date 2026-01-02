@@ -107,7 +107,7 @@ struct HomeView: View {
             .cashBackground()
             .navigationTitle("Home")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     HStack(spacing: CashSpacing.md) {
                         // iCloud sync indicator
                         if cloudManager.shouldShowSyncIndicator && cloudManager.syncState.isSyncing {
@@ -543,11 +543,11 @@ struct AllTransactionsView: View {
                             .padding()
                     }
                 }
-                .listStyle(.insetGrouped)
+                .listStyleInsetGrouped()
             }
         }
         .navigationTitle("Recent Transactions")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayModeInline()
         .task {
             await loadInitialTransactions()
         }

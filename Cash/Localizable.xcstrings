@@ -4165,6 +4165,9 @@
         }
       }
     },
+    "Cash on GitHub" : {
+
+    },
     "Cash payment from a security. Dividends are deposited to your cash account without affecting your share count." : {
       "localizations" : {
         "de" : {
@@ -5523,6 +5526,9 @@
         }
       }
     },
+    "Danger Zone" : {
+
+    },
     "Dark" : {
       "localizations" : {
         "de" : {
@@ -5927,6 +5933,9 @@
         }
       }
     },
+    "Delete Everything" : {
+
+    },
     "Delete Loan" : {
       "localizations" : {
         "de" : {
@@ -6296,6 +6305,9 @@
           }
         }
       }
+    },
+    "Display real-time quotes for investment accounts" : {
+
     },
     "Dividend" : {
       "localizations" : {
@@ -7807,6 +7819,9 @@
         }
       }
     },
+    "Export Data..." : {
+
+    },
     "Export error" : {
       "localizations" : {
         "de" : {
@@ -7862,6 +7877,12 @@
           }
         }
       }
+    },
+    "Export your data in JSON format for backup" : {
+
+    },
+    "Export..." : {
+
     },
     "Failed to compress data" : {
       "localizations" : {
@@ -8571,6 +8592,9 @@
         }
       }
     },
+    "General" : {
+
+    },
     "German" : {
       "localizations" : {
         "de" : {
@@ -8750,6 +8774,9 @@
           }
         }
       }
+    },
+    "Hide sensitive balance information" : {
+
     },
     "High risk of financial difficulty. Strongly reconsider." : {
       "localizations" : {
@@ -9059,6 +9086,9 @@
         }
       }
     },
+    "Import & Export" : {
+
+    },
     "Import %lld" : {
       "localizations" : {
         "de" : {
@@ -9115,6 +9145,9 @@
         }
       }
     },
+    "Import Data" : {
+
+    },
     "Import data?" : {
       "localizations" : {
         "de" : {
@@ -9142,6 +9175,9 @@
           }
         }
       }
+    },
+    "Import error" : {
+
     },
     "Import failed: %@" : {
       "localizations" : {
@@ -9255,6 +9291,9 @@
         }
       }
     },
+    "Import OFX..." : {
+
+    },
     "Import successful" : {
       "localizations" : {
         "de" : {
@@ -9282,6 +9321,12 @@
           }
         }
       }
+    },
+    "Import transactions from your bank" : {
+
+    },
+    "Import..." : {
+
     },
     "Imported %lld accounts and %lld transactions." : {
       "localizations" : {
@@ -10338,6 +10383,9 @@
           }
         }
       }
+    },
+    "Keep your data in sync across all your devices" : {
+
     },
     "Language" : {
       "localizations" : {
@@ -11877,6 +11925,9 @@
         }
       }
     },
+    "New Account" : {
+
+    },
     "New Budget" : {
       "localizations" : {
         "de" : {
@@ -12190,6 +12241,9 @@
         }
       }
     },
+    "New Transaction" : {
+
+    },
     "Next" : {
       "localizations" : {
         "de" : {
@@ -12329,6 +12383,9 @@
           }
         }
       }
+    },
+    "Next Budget" : {
+
     },
     "Next Monday" : {
       "localizations" : {
@@ -14532,6 +14589,9 @@
         }
       }
     },
+    "Permanently delete all accounts, transactions, and budgets" : {
+
+    },
     "Personal care" : {
       "localizations" : {
         "de" : {
@@ -15008,6 +15068,9 @@
         }
       }
     },
+    "Previous Budget" : {
+
+    },
     "Previous Friday" : {
       "localizations" : {
         "de" : {
@@ -15154,6 +15217,9 @@
         }
       }
     },
+    "Privacy Mode" : {
+
+    },
     "Privacy policy" : {
       "localizations" : {
         "de" : {
@@ -15181,6 +15247,9 @@
           }
         }
       }
+    },
+    "Privacy Policy" : {
+
     },
     "Progress" : {
       "localizations" : {
@@ -16242,6 +16311,9 @@
         }
       }
     },
+    "Reset All Data?" : {
+
+    },
     "Reset to Default" : {
       "localizations" : {
         "de" : {
@@ -16270,6 +16342,9 @@
         }
       }
     },
+    "Reset..." : {
+
+    },
     "Restore Backup" : {
       "localizations" : {
         "de" : {
@@ -16297,6 +16372,9 @@
           }
         }
       }
+    },
+    "Restore your data from a JSON backup" : {
+
     },
     "Results" : {
       "localizations" : {
@@ -18517,6 +18595,9 @@
           }
         }
       }
+    },
+    "This will permanently delete all accounts, transactions, and budgets. This action cannot be undone." : {
+
     },
     "This will permanently delete all your accounts and transactions. This action cannot be undone." : {
       "localizations" : {

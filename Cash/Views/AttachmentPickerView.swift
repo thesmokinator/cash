@@ -12,15 +12,25 @@ import PDFKit
 
 // MARK: - Cross-Platform Image Helper
 
-struct PlatformImage {
+struct AttachmentImage {
     let data: Data
 
-    var image: UIImage? {
-        UIImage(data: data)
+    #if os(macOS)
+    var image: NSImage? {
+        NSImage(data: data)
     }
 
-    var hasValidImage: Bool {
-        image != nil
+    var swiftUIImage: Image {
+        if let nsImage = image {
+            return Image(nsImage: nsImage)
+                .resizable()
+        }
+        return Image(systemName: "photo")
+            .resizable()
+    }
+    #else
+    var image: UIImage? {
+        UIImage(data: data)
     }
 
     var swiftUIImage: Image {
@@ -30,6 +40,11 @@ struct PlatformImage {
         }
         return Image(systemName: "photo")
             .resizable()
+    }
+    #endif
+
+    var hasValidImage: Bool {
+        image != nil
     }
 }
 
@@ -172,9 +187,9 @@ struct AttachmentThumbnail: View {
             Button(action: onTap) {
                 VStack(spacing: 4) {
                     if attachment.isImage {
-                        let platformImage = PlatformImage(data: attachment.data)
-                        if platformImage.hasValidImage {
-                            platformImage.swiftUIImage
+                        let attachmentImage = AttachmentImage(data: attachment.data)
+                        if attachmentImage.hasValidImage {
+                            attachmentImage.swiftUIImage
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 60, height: 60)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -220,9 +235,9 @@ struct AttachmentPreviewView: View {
         NavigationStack {
             Group {
                 if attachment.isImage {
-                    let platformImage = PlatformImage(data: attachment.data)
-                    if platformImage.hasValidImage {
-                        platformImage.swiftUIImage
+                    let attachmentImage = AttachmentImage(data: attachment.data)
+                    if attachmentImage.hasValidImage {
+                        attachmentImage.swiftUIImage
                             .aspectRatio(contentMode: .fit)
                     } else {
                         previewUnavailableView
@@ -260,6 +275,24 @@ struct AttachmentPreviewView: View {
 
 // MARK: - PDF Preview
 
+#if os(macOS)
+struct PDFPreviewView: NSViewRepresentable {
+    let data: Data
+
+    func makeNSView(context: Context) -> PDFView {
+        let pdfView = PDFView()
+        pdfView.autoScales = true
+        pdfView.displayMode = .singlePageContinuous
+        return pdfView
+    }
+
+    func updateNSView(_ pdfView: PDFView, context: Context) {
+        if let document = PDFDocument(data: data) {
+            pdfView.document = document
+        }
+    }
+}
+#else
 struct PDFPreviewView: UIViewRepresentable {
     let data: Data
 
@@ -277,6 +310,7 @@ struct PDFPreviewView: UIViewRepresentable {
         }
     }
 }
+#endif
 
 // View for existing attachments from database
 struct ExistingAttachmentRow: View {
@@ -318,9 +352,9 @@ struct ExistingAttachmentView: View {
             } label: {
                 VStack(spacing: 4) {
                     if attachment.isImage {
-                        let platformImage = PlatformImage(data: attachment.data)
-                        if platformImage.hasValidImage {
-                            platformImage.swiftUIImage
+                        let attachmentImage = AttachmentImage(data: attachment.data)
+                        if attachmentImage.hasValidImage {
+                            attachmentImage.swiftUIImage
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 60, height: 60)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -369,9 +403,9 @@ struct ExistingAttachmentPreviewView: View {
         NavigationStack {
             Group {
                 if attachment.isImage {
-                    let platformImage = PlatformImage(data: attachment.data)
-                    if platformImage.hasValidImage {
-                        platformImage.swiftUIImage
+                    let attachmentImage = AttachmentImage(data: attachment.data)
+                    if attachmentImage.hasValidImage {
+                        attachmentImage.swiftUIImage
                             .aspectRatio(contentMode: .fit)
                     } else {
                         previewUnavailableView

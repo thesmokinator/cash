@@ -57,7 +57,7 @@ struct ReconciliationView: View {
     
     var body: some View {
         Group {
-            if UIDevice.current.userInterfaceIdiom == .phone {
+            if DeviceType.current.isCompact {
                 // Modern iPhone layout
                 NavigationStack {
                 ScrollView {
@@ -85,7 +85,9 @@ struct ReconciliationView: View {
                                         .foregroundStyle(.secondary)
                                     HStack(spacing: 8) {
                                         TextField("0.00", text: $statementBalance)
+                                            #if os(iOS)
                                             .keyboardType(.decimalPad)
+                                            #endif
                                             .font(.title2)
                                             .fontWeight(.semibold)
                                         Text(account.currency)
@@ -96,7 +98,7 @@ struct ReconciliationView: View {
                             }
                         }
                         .padding()
-                        .background(Color(.systemBackground))
+                        .background(Color.platformWindowBackground)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .shadow(color: .black.opacity(0.05), radius: 2, y: 1)
                         
@@ -143,7 +145,7 @@ struct ReconciliationView: View {
                             }
                         }
                         .padding()
-                        .background(Color(.systemBackground))
+                        .background(Color.platformWindowBackground)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                         .shadow(color: .black.opacity(0.05), radius: 2, y: 1)
                         
@@ -200,9 +202,9 @@ struct ReconciliationView: View {
                     }
                     .padding()
                 }
-                .background(Color(.systemGroupedBackground))
+                .background(Color.platformSecondaryBackground)
                 .navigationTitle("Reconcile")
-                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarTitleDisplayModeInline()
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { dismiss() }
