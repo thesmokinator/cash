@@ -317,10 +317,30 @@ struct GlassSecondaryButtonStyle: ButtonStyle {
     }
 }
 
+// Simple action button style without gradient - for empty states and CTAs
+struct GlassActionButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(CashTypography.headline)
+            .foregroundColor(.white)
+            .padding(.horizontal, CashSpacing.xl)
+            .padding(.vertical, CashSpacing.md)
+            .background(CashColors.primary)
+            .clipShape(RoundedRectangle(cornerRadius: CashRadius.medium))
+            .opacity(configuration.isPressed ? 0.8 : 1.0)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)
+    }
+}
+
 extension ButtonStyle where Self == GlassPrimaryButtonStyle {
     static var glassPrimary: GlassPrimaryButtonStyle { GlassPrimaryButtonStyle() }
 }
 
 extension ButtonStyle where Self == GlassSecondaryButtonStyle {
     static var glassSecondary: GlassSecondaryButtonStyle { GlassSecondaryButtonStyle() }
+}
+
+extension ButtonStyle where Self == GlassActionButtonStyle {
+    static var glassAction: GlassActionButtonStyle { GlassActionButtonStyle() }
 }

@@ -131,9 +131,9 @@ struct BudgetView: View {
                         Button {
                             budgetForEnvelope = budget
                         } label: {
-                            Text("Add Envelope")
+                            Label("Add Envelope", systemImage: "plus.circle")
                         }
-                        .buttonStyle(GlassPrimaryButtonStyle())
+                        .buttonStyle(GlassActionButtonStyle())
                         Spacer()
                     }
                 }
@@ -151,9 +151,9 @@ struct BudgetView: View {
                     Button {
                         showingCreateBudget = true
                     } label: {
-                        Text("Create Budget")
+                        Label("Create Budget", systemImage: "plus.circle")
                     }
-                    .buttonStyle(GlassPrimaryButtonStyle())
+                    .buttonStyle(GlassActionButtonStyle())
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)

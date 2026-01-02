@@ -38,7 +38,8 @@ struct ScheduledTransactionsView: View {
             )
             .padding(.horizontal)
             .padding(.top, 8)
-            .navigationTitle("Scheduled Transactions")
+            .padding(.bottom, CashSpacing.md)
+            .navigationTitle("Scheduled")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: { showingAddScheduled = true }) {

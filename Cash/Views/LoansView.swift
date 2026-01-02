@@ -59,20 +59,20 @@ struct LoansView: View {
                 } description: {
                     Text("Add a new loan calculation or track an existing loan")
                 } actions: {
-                    HStack(spacing: 16) {
+                    VStack(spacing: 12) {
                         Button {
                             showingNewLoanCalculator = true
                         } label: {
-                            Label("New Calculation", systemImage: "function")
+                            Text("New calculation")
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(GlassActionButtonStyle())
                         
                         Button {
                             showingAddExistingLoan = true
                         } label: {
-                            Label("Add Existing", systemImage: "plus.circle")
+                            Text("Add existing")
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(GlassSecondaryButtonStyle())
                     }
                 }
                 Spacer()
