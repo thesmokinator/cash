@@ -177,13 +177,13 @@ struct AccountPicker: View {
             ForEach(accounts) { account in
                 if showClass {
                     HStack {
-                        Label(account.displayName, systemImage: account.effectiveIconName)
+                        Text(account.displayName)
                         Text("(\(account.accountClass.localizedName))")
                             .foregroundStyle(.secondary)
                     }
                     .tag(account as Account?)
                 } else {
-                    Label(account.displayName, systemImage: account.effectiveIconName)
+                    Text(account.displayName)
                         .tag(account as Account?)
                 }
             }
@@ -360,10 +360,27 @@ struct LabeledAmountRow: View {
 
 struct IconPickerView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding var selectedIcon: String?
 
     @State private var searchText = ""
     @State private var selectedCategory: IconCategory = .all
+
+    private var isCompact: Bool {
+        #if os(iOS)
+            return horizontalSizeClass == .compact
+        #else
+            return false
+        #endif
+    }
+
+    private var gridColumns: Int {
+        isCompact ? 6 : 8
+    }
+
+    private var iconSize: CGFloat {
+        isCompact ? 50 : 70
+    }
 
     enum IconCategory: String, CaseIterable, Identifiable {
         case all = "All"
@@ -489,8 +506,9 @@ struct IconPickerView: View {
                 // Icons grid with tighter spacing
                 ScrollView {
                     LazyVGrid(
-                        columns: Array(repeating: GridItem(.fixed(70), spacing: 0), count: 8),
-                        spacing: 0
+                        columns: Array(
+                            repeating: GridItem(.flexible(), spacing: 4), count: gridColumns),
+                        spacing: 4
                     ) {
                         ForEach(filteredIcons, id: \.self) { iconName in
                             Button {
@@ -498,8 +516,9 @@ struct IconPickerView: View {
                                 dismiss()
                             } label: {
                                 Image(systemName: iconName)
-                                    .font(.title3)
-                                    .frame(width: 70, height: 60)
+                                    .font(isCompact ? .body : .title3)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: iconSize)
                                     .background(
                                         selectedIcon == iconName
                                             ? Color.accentColor.opacity(0.2) : Color.clear
@@ -514,6 +533,7 @@ struct IconPickerView: View {
                     .padding(.horizontal, 8)
                     .padding(.vertical, 8)
                 }
+                .frame(maxHeight: .infinity)
             }
             .navigationTitle("Choose Icon")
             .toolbar {
@@ -521,7 +541,20 @@ struct IconPickerView: View {
                     Button("Cancel") { dismiss() }
                 }
             }
+            #if os(macOS)
+                .frame(width: 600, height: 500)
+            #elseif os(iOS)
+                .frame(
+                    minWidth: isCompact ? nil : 500,
+                    idealWidth: isCompact ? nil : 600,
+                    minHeight: isCompact ? nil : 400,
+                    idealHeight: isCompact ? nil : 500
+                )
+            #endif
         }
-        .frame(width: 600, height: 500)
+        #if os(iOS)
+            .presentationDetents(isCompact ? [.large] : [.large])
+            .presentationDragIndicator(isCompact ? .visible : .hidden)
+        #endif
     }
 }
